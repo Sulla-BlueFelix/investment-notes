@@ -7,15 +7,13 @@ website:
     left:
       - href: index.qmd
         text: Home
-      - about.qmd
+      - text: Macro
+        href: macro/index.qmd
+      - text: Stocks
+        href: stocks/index.qmd
 
 format:
   html:
-    theme:
-      - cosmo
-      - brand
+    theme: cosmo
     css: styles.css
     toc: true
-
-
-

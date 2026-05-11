@@ -2,6 +2,15 @@
 title: "Investment Notes"
 ---
 
-This is a Quarto website.
+マクロトレンドを軸に、テクノロジーセクターを中心とした投資分析のメモ。
 
-To learn more about Quarto websites visit <https://quarto.org/docs/websites>.
+## 最近の分析
+
+- [POET Technologies](stocks/POET/index.qmd) — フォトニクス集積回路の本命か
+
+## セクション
+
+| | |
+|---|---|
+| [Macro](macro/index.qmd) | 金利・セクターローテーション・地政学リスク |
+| [Stocks](stocks/index.qmd) | 個別銘柄の定性・定量分析 |

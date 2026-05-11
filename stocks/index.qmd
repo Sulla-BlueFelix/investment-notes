@@ -1,0 +1,9 @@
+---
+title: "Stocks"
+---
+
+個別銘柄の分析一覧。
+
+| Ticker | 企業名 | セクター | 最終更新 |
+|---|---|---|---|
+| [POET](POET/index.qmd) | POET Technologies | 半導体・フォトニクス | 2026-05 |
