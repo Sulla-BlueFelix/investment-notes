@@ -1,10 +1,66 @@
 [
   {
+    "objectID": "stocks/POET/index.html",
+    "href": "stocks/POET/index.html",
+    "title": "POET Technologies (POET)",
+    "section": "",
+    "text": "ステータス: 保有中 / 注目銘柄 取引所: NASDAQ | セクター: 半導体・フォトニクス | 本社: トロント、カナダ"
+  },
+  {
+    "objectID": "stocks/POET/index.html#会社概要",
+    "href": "stocks/POET/index.html#会社概要",
+    "title": "POET Technologies (POET)",
+    "section": "会社概要",
+    "text": "会社概要\nPOET Technologies はOptical Interposer（光学インターポーザー）プラットフォームを開発するカナダ発の半導体企業。電子デバイスと光デバイスをウェハーレベルで単一チップ上に集積する独自技術を持ち、従来の光トランシーバーとは根本的に異なるアーキテクチャを提案している。\n主要製品・技術：\n\nPOET Optical Interposer: 電子・光子デバイスの単一チップ集積プラットフォーム\n光エンジン / 光トランシーバーモジュール: データセンター向け高速・低消費電力接続\n光源製品: LiDAR、OCT（医療）、VRセンシング向け\n\n主要市場：\n\n\n\n市場\n用途\n\n\n\n\nデータセンターAI\n高帯域・低消費電力の光インターコネクト\n\n\n5G / 通信\nPON、GPON、エッジコンピューティング\n\n\nセンシング\nLiDAR、OCT（医療機器）、VR\n\n\n\n従業員数はわずか 80名（2025年時点）。少人数で技術プラットフォームの開発・ライセンスに集中するファブレス型に近いモデル。"
+  },
+  {
+    "objectID": "stocks/POET/index.html#業績",
+    "href": "stocks/POET/index.html#業績",
+    "title": "POET Technologies (POET)",
+    "section": "業績",
+    "text": "業績\n\n損益推移\n\n\n\n指標\nFY2022\nFY2023\nFY2024\nFY2025\n\n\n\n\n売上高\n$553K\n$466K\n$41K\n$1.07M\n\n\n営業損失\n-$19.7M\n-$20.4M\n-$23.6M\n-$33.9M\n\n\nR&D費\n$10.7M\n$10.1M\n$11.3M\n$18.1M\n\n\nSG&A\n$8.2M\n$8.9M\n$10.2M\n$13.5M\n\n\n純損失\n-$21.0M\n-$20.3M\n-$56.7M\n-$63.0M\n\n\n\n\n\n\n\n\n\nNote\n\n\n\nFY2025の純損失 -$63Mのうち、約 -$25M は有価証券売却損等の特殊項目。実態的な営業キャッシュバーンは年間 $33〜35M 程度とみられる。\n\n\n読み方のポイント：\n\n売上高はほぼゼロ水準（FY2024は特に低調 $41K）。FY2025は$1.07Mに回復したが、商業的にはまだ黎明期\nR&D費がFY2025で$18Mへ急増 — 技術開発・製品化への投資を積極的に加速させている\n営業損失の拡大はネガティブではなく、R&D投資拡大の裏返しとして読む必要がある\n\n\n\nセグメント\n公式には単一セグメント。製品カテゴリ別の売上開示はなく、売上のほぼ全額が試験的な製品販売・開発契約収益とみられる。"
+  },
+  {
+    "objectID": "stocks/POET/index.html#財務株主構成",
+    "href": "stocks/POET/index.html#財務株主構成",
+    "title": "POET Technologies (POET)",
+    "section": "財務・株主構成",
+    "text": "財務・株主構成\n\n\n\n指標\n数値\n\n\n\n\n時価総額\n約 $2.1B\n\n\n従業員数\n80名\n\n\nインサイダー保有比率\n0.08%（極めて低い）\n\n\n機関投資家保有比率\n7.4%（116機関）\n\n\n\n\n主要機関投資家（上位10件）\n\n\n\n機関名\n保有比率\n保有株数\n\n\n\n\nMMCAP International\n1.16%\n1,526,205\n\n\nMorgan Stanley\n0.92%\n1,220,206\n\n\nSusquehanna International Group\n0.52%\n686,181\n\n\nRaymond James Financial\n0.52%\n689,017\n\n\nCitadel Advisors\n0.51%\n678,216\n\n\nFédération Des Caisses Desjardins\n0.47%\n618,604\n\n\nParagon Capital Management\n0.36%\n471,720\n\n\nGSA Capital Partners\n0.28%\n363,463\n\n\nJane Street Group\n0.26%\n349,776\n\n\nLPL Financial\n0.24%\n315,024\n\n\n\n\n\n\n\n\n\nWarning\n\n\n\nインサイダー保有が0.08%と非常に低い点は要注意。経営陣のスキンインザゲームが薄く、株主との利益一致に懸念が残る。\n\n\n大手戦略投資家（QualcommやNVIDIAなど）の名前は現時点では機関投資家リストに見当たらない。"
+  },
+  {
+    "objectID": "stocks/POET/index.html#今後の展望定性分析",
+    "href": "stocks/POET/index.html#今後の展望定性分析",
+    "title": "POET Technologies (POET)",
+    "section": "今後の展望（定性分析）",
+    "text": "今後の展望（定性分析）\n\nなぜ今、注目されるのか\nAI時代のデータセンターにおいて、GPU間・チップ間の光インターコネクトは次の主戦場になりつつある。現在の電気接続では帯域・消費電力の限界が見え始めており、Co-Packaged Optics（CPO）への移行が業界トレンドとして加速している。\nPOETの Optical Interposer は、このCPOトレンドに直撃するポジショニングにある。従来の光トランシーバーはボードに外付けだったが、POETのアプローチはチップと光学素子を同一パッケージに収める——これにより消費電力・レイテンシ・コストの三重改善が理論上可能。\n\n\nQualcomm出資の噂について\n2026年5月、Qualcommが POET に出資する可能性があるとの噂が市場に広まり、株価が一時 +25% 急騰。 現時点では未確認情報であり、公式発表はない。ただし、もし事実であれば：\n\n技術検証: 大手半導体メーカーがPOETの技術を認めたことを意味する\n商業化加速: Qualcommの製品ラインへの採用・共同開発の可能性\n資金調達: キャッシュバーンが続く中での資本注入\n\nこの噂の真偽と続報が、短期的な株価の最大のカタリストになる。\n\n\n投資テーゼのサマリー\nBull ケース： CPOの標準技術としてPOET Optical Interposerが採用される。データセンター向け光エンジン・トランシーバー市場（数百億ドル規模）の一角を取れれば、現在の時価総額は正当化される。Qualcomm等の戦略投資が実現すれば加速。\nBear ケース： 技術的差別化が維持できず、Intel、Broadcom、Marvell等の大手に市場を奪われる。資金調達が続く中での希薄化リスク。商業化が遅れると、キャッシュバーン($33-35M/年)が経営を圧迫。\n\n\n主要リスク\n\n\n\n\n\n\n\nリスク\n内容\n\n\n\n\n資金リスク\n売上ほぼゼロで年$33-35Mのバーン。増資・希薄化リスクが継続\n\n\n競合リスク\nIntel CPO、Ayar Labs、Ranovus等の競合も同空間に参入中\n\n\n実行リスク\n量産化・歩留まり改善は半導体開発において最大の関門\n\n\nインサイダーリスク\n経営陣保有0.08%。株主目線の経営が担保されにくい\n\n\n噂リスク\nQualcomm出資が不発に終わった場合の反動下落\n\n\n\n\n最終更新: 2026-05-12 | データソース: yfinance (Yahoo Finance)"
+  },
+  {
     "objectID": "index.html",
     "href": "index.html",
     "title": "Investment Notes",
     "section": "",
-    "text": "This is a Quarto website.\nTo learn more about Quarto websites visit https://quarto.org/docs/websites."
+    "text": "マクロトレンドを軸に、テクノロジーセクターを中心とした投資分析のメモ。"
+  },
+  {
+    "objectID": "index.html#最近の分析",
+    "href": "index.html#最近の分析",
+    "title": "Investment Notes",
+    "section": "最近の分析",
+    "text": "最近の分析\n\nPOET Technologies — フォトニクス集積回路の本命か"
+  },
+  {
+    "objectID": "index.html#セクション",
+    "href": "index.html#セクション",
+    "title": "Investment Notes",
+    "section": "セクション",
+    "text": "セクション\n\n\n\nMacro\n金利・セクターローテーション・地政学リスク\n\n\nStocks\n個別銘柄の定性・定量分析"
+  },
+  {
+    "objectID": "macro/index.html",
+    "href": "macro/index.html",
+    "title": "Macro",
+    "section": "",
+    "text": "準備中\n金利動向、セクターローテーション、地政学リスクなどマクロ環境の分析。"
   },
   {
     "objectID": "about.html",
@@ -12,5 +68,12 @@
     "title": "About",
     "section": "",
     "text": "About this site"
+  },
+  {
+    "objectID": "stocks/index.html",
+    "href": "stocks/index.html",
+    "title": "Stocks",
+    "section": "",
+    "text": "個別銘柄の分析一覧。\n\n\n\nTicker\n企業名\nセクター\n最終更新\n\n\n\n\nPOET\nPOET Technologies\n半導体・フォトニクス\n2026-05"
   }
 ]
