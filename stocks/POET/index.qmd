@@ -2,10 +2,47 @@
 title: "POET Technologies (POET)"
 date: 2026-05-12
 categories: [半導体, フォトニクス, 米国株]
+jupyter: python3
 ---
 
 > **ステータス**: 保有中 / 注目銘柄
 > **取引所**: NASDAQ | **セクター**: 半導体・フォトニクス | **本社**: トロント、カナダ
+
+---
+
+## 株価チャート（過去1年）
+
+```{python}
+#| echo: false
+#| warning: false
+
+import yfinance as yf
+import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
+
+df = yf.Ticker("POET").history(period="1y")
+
+fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(10, 6), gridspec_kw={"height_ratios": [3, 1]}, sharex=True)
+fig.patch.set_facecolor("#f8f9fa")
+ax1.set_facecolor("#f8f9fa")
+ax2.set_facecolor("#f8f9fa")
+
+ax1.plot(df.index, df["Close"], color="#2563eb", linewidth=1.5)
+ax1.fill_between(df.index, df["Close"], alpha=0.1, color="#2563eb")
+ax1.set_ylabel("株価 (USD)")
+ax1.set_title("POET Technologies (POET) — 株価・出来高", fontsize=13)
+ax1.grid(True, alpha=0.3)
+
+ax2.bar(df.index, df["Volume"] / 1e6, color="#64748b", alpha=0.7, width=1)
+ax2.set_ylabel("出来高 (M)")
+ax2.xaxis.set_major_formatter(mdates.DateFormatter("%Y-%m"))
+ax2.xaxis.set_major_locator(mdates.MonthLocator(interval=2))
+ax2.grid(True, alpha=0.3)
+
+plt.xticks(rotation=30)
+plt.tight_layout()
+plt.show()
+```
 
 ---
 
