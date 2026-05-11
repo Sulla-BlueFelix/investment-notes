@@ -14,3 +14,4 @@ title: "Investment Notes"
 |---|---|
 | [Macro](macro/index.qmd) | 金利・セクターローテーション・地政学リスク |
 | [Stocks](stocks/index.qmd) | 個別銘柄の定性・定量分析 |
+
