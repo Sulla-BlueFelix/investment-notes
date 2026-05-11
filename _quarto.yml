@@ -15,6 +15,12 @@ website:
 execute:
   freeze: auto
 
+jupyter:
+  kernelspec:
+    name: python3
+    language: python
+    display_name: Python 3
+
 format:
   html:
     theme: cosmo
