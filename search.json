@@ -4,7 +4,42 @@
     "href": "index.html",
     "title": "Investment Notes",
     "section": "",
-    "text": "This is a Quarto website.\nTo learn more about Quarto websites visit https://quarto.org/docs/websites."
+    "text": "マクロトレンドを軸に、テクノロジーセクターを中心とした投資分析のメモ。"
+  },
+  {
+    "objectID": "index.html#最近の分析",
+    "href": "index.html#最近の分析",
+    "title": "Investment Notes",
+    "section": "最近の分析",
+    "text": "最近の分析\n\nPOET Technologies — フォトニクス集積回路の本命か"
+  },
+  {
+    "objectID": "index.html#セクション",
+    "href": "index.html#セクション",
+    "title": "Investment Notes",
+    "section": "セクション",
+    "text": "セクション\n\n\n\nMacro\n金利・セクターローテーション・地政学リスク\n\n\nStocks\n個別銘柄の定性・定量分析"
+  },
+  {
+    "objectID": "macro/index.html",
+    "href": "macro/index.html",
+    "title": "Macro",
+    "section": "",
+    "text": "準備中\n金利動向、セクターローテーション、地政学リスクなどマクロ環境の分析。"
+  },
+  {
+    "objectID": "stocks/index.html",
+    "href": "stocks/index.html",
+    "title": "Stocks",
+    "section": "",
+    "text": "個別銘柄の分析一覧。\n\n\n\nTicker\n企業名\nセクター\n最終更新\n\n\n\n\nPOET\nPOET Technologies\n半導体・フォトニクス\n2026-05"
+  },
+  {
+    "objectID": "stocks/POET/index.html",
+    "href": "stocks/POET/index.html",
+    "title": "POET Technologies (POET)",
+    "section": "",
+    "text": "分析準備中"
   },
   {
     "objectID": "about.html",
