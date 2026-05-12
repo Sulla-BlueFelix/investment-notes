@@ -477,13 +477,14 @@ if 'HG=F' in hist_data:
         })
 
     if beta_rows:
+        from IPython.display import display
         df_beta = pd.DataFrame(beta_rows).set_index('銘柄')
-        df_beta.style.set_table_styles([
+        display(df_beta.style.set_table_styles([
             {'selector': 'th', 'props': [('background-color', '#2c3e50'), ('color', 'white'),
                                           ('font-size', '12px'), ('padding', '6px 10px')]},
             {'selector': 'td', 'props': [('font-size', '12px'), ('padding', '5px 10px')]},
             {'selector': 'tr:nth-child(even)', 'props': [('background-color', '#f5f5f5')]},
-        ])
+        ]))
 ```
 
 ### 2028年3倍シナリオ逆算
@@ -548,11 +549,136 @@ for ticker, name in COPPER_STOCKS.items():
             '予想PER':            'N/A',
         })
 
+from IPython.display import display
 df_scen = pd.DataFrame(scenario_rows).set_index('銘柄')
-df_scen.style.set_table_styles([
+display(df_scen.style.set_table_styles([
     {'selector': 'th', 'props': [('background-color', '#1a5276'), ('color', 'white'),
                                   ('font-size', '12px'), ('padding', '6px 10px')]},
     {'selector': 'td', 'props': [('font-size', '12px'), ('padding', '5px 10px')]},
     {'selector': 'tr:nth-child(even)', 'props': [('background-color', '#eaf4fb')]},
-])
+]))
 ```
+
+---
+
+## 銅価格の構造的サポートと生産者の暗黙的価格決定力
+
+### なぜ「価格決定力」が議論できるのか
+
+銅はLME/COMEX市場で価格が決まる**コモディティ**であり、FCXもSCCOも原則としてプライス・テイカー（市場価格を受け入れる側）である。しかし以下の構造的メカニズムにより、大手低コスト生産者は中長期的な価格形成に対して**暗黙的な影響力**を持つ。
+
+**① 設備投資タイミングの管理（最も強力なレバー）**
+
+新規銅鉱山の開発には平均15〜20年を要する。既存大手が新プロジェクトへの投資を2〜3年遅らせるだけで、中期的な供給ひっ迫は固定化される。これは「OPEC的な生産調整」（独禁法上グレー）とは異なり、各社が自社利益の範囲内で合理的に選択できる行動だ。
+
+**② 需要の非弾力性（Wood Mackenzie）**
+
+データセンター建設コスト全体に占める銅調達費用は**わずか0.5%未満**。ビッグテックは銅価格が30〜50%上昇しても建設を止めない。需要側からの価格抑制圧力がほぼ存在しない構造。
+
+**③ 構造的供給赤字（BloombergNEF）**
+
+2027年には一次供給不足が**約450万トン**のピークに達すると予測。既存鉱山の枯渇速度が新規開発を上回っており、特段の生産管理がなくても銅価格の下方硬直性は高い。
+
+**④ 高コスト鉱山の退出効果（価格フロアの存在）**
+
+世界の銅生産限界コスト（90パーセンタイル）は$3.50〜4.00/lb程度。この水準を下回ると高コスト鉱山が生産停止し、自動的に供給が引き締まる。市場には**構造的な価格フロア**が存在する。
+
+### 「生産者管理」シナリオの根拠（$12,000/mt / $5.44/lb）
+
+FCX・SCCO・Codelco・Glencore・BHPの上位5社で世界供給の約40%を占める。これらが新規設備投資を2年遅らせた場合、BloombergNEFの450kt不足推計と整合する水準として**$12,000/mt（$5.44/lb）**での安定推移が試算できる。
+
+> 注：COMEXの現在価格（$6.50/lb）は米国の銅輸入関税25%を巡る前倒し需要が上乗せされた特殊水準。LMEは約$9,500/mt（$4.31/lb）前後で推移しており、長期シナリオにはLMEベースの予測値を使用する。
+
+---
+
+### EPS感応度・株価シナリオ分析
+
+銅価格シナリオごとに、FCXとSCCOの予想EPSおよび株価水準を試算する。
+
+**前提条件：**
+
+- 基準年：2025年実績（FCX EPS $1.53、SCCO EPS $5.22、銅 $4.82/lb 年平均）
+- FCX感応度：**$0.270/share per $0.10/lb**（FCX 2024年次報告書公式開示値）
+- SCCO感応度：**$0.233/share per $0.10/lb**（2023〜2025年実データ回帰、R²=0.982）
+- コスト一定・生産量一定の仮定（実際は年次でコスト変動あり）
+
+```{python}
+#| echo: false
+#| label: eps-copper-scenario
+
+from IPython.display import display
+
+FCX_BASE_EPS  = 1.53
+FCX_BASE_CU   = 4.82
+FCX_SENS      = 0.270
+FCX_PRICE     = 64.37
+
+SCCO_BASE_EPS = 5.22
+SCCO_BASE_CU  = 4.82
+SCCO_SENS     = 0.233
+SCCO_PRICE    = 185.23
+
+scenarios_eps = [
+    ("Bear",           "WB $9,500/mt",           4.31),
+    ("Neutral",        "GS $10,750/mt",           4.88),
+    ("Supply Floor",   "生産者管理 $12,000/mt",   5.44),
+    ("Bull",           "Citi $13,000/mt",          5.90),
+    ("Extreme",        "OG $15,000/mt",            6.80),
+    ("COMEX現在",      "関税込み $6.50/lb",        6.50),
+]
+
+rows_eps = []
+for sc_name, note, cu in scenarios_eps:
+    fe = FCX_BASE_EPS  + FCX_SENS  * (cu - FCX_BASE_CU)  / 0.10
+    se = SCCO_BASE_EPS + SCCO_SENS * (cu - SCCO_BASE_CU) / 0.10
+    fx = fe / FCX_BASE_EPS
+    sx = se / SCCO_BASE_EPS
+    rows_eps.append({
+        'シナリオ':       f"{sc_name}（{note}）",
+        '$/lb':           f"${cu:.2f}",
+        'FCX EPS':        f"${fe:.2f} ({fx:.1f}x)",
+        'FCX @P/E17':     f"${fe*17:.0f}",
+        'FCX @P/E22':     f"${fe*22:.0f}",
+        'SCCO EPS':       f"${se:.2f} ({sx:.1f}x)",
+        'SCCO @P/E25':    f"${se*25:.0f}",
+        'SCCO @P/E30':    f"${se*30:.0f}",
+    })
+
+df_eps = pd.DataFrame(rows_eps).set_index('シナリオ')
+display(df_eps.style.set_table_styles([
+    {'selector': 'th', 'props': [('background-color', '#1a5276'), ('color', 'white'),
+                                  ('font-size', '12px'), ('padding', '6px 10px')]},
+    {'selector': 'td', 'props': [('font-size', '12px'), ('padding', '5px 10px')]},
+    {'selector': 'tr:nth-child(even)', 'props': [('background-color', '#eaf4fb')]},
+]).set_caption("FCX・SCCO 銅価格シナリオ別EPS・株価試算（2025年実績ベース）"))
+```
+
+**読み方：**
+
+- **FCX 3倍目標 = $193**：Extreme（OG $15,000/mt）× P/E 28x 相当。条件は厳しいが、低P/E出発点と大規模生産を考えると最も現実的な3倍候補。
+- **SCCO 3倍目標 = $556**：Bull以下のシナリオではいずれも届かない。現在のP/E（27〜35x）が既に高水準すぎる。Bull + P/E30x でも $232 止まり。
+
+---
+
+### 住友金属鉱山（5713.T）：銅プレイとしての再評価
+
+住友金属鉱山は銅鉱山（Sierra Gorda 50.1%、Cerro Verde 16.8%等）を保有するが、ニッケル事業・電子材料事業の影響が大きく、**銅価格との連動性が壊れている**。
+
+| 年 | 銅価格（COMEX） | 純利益 |
+|---|---|---|
+| 2022 | $4.00/lb | ¥281B |
+| 2023 | $3.85/lb | ¥161B |
+| 2024 | $4.22/lb | ¥59B |
+| 2025 | $4.82/lb | ¥17B |
+
+銅価格が上昇する中で純利益が**¥281B → ¥17B に激減**。原因はLMEニッケル価格の崩壊（$25,000/mt → $13,000/mt）とバッテリー材料事業の損失。ニッケル市場の回復（インドネシア増産の一巡）が確認されるまで、銅プレイとしての組み入れは保留が妥当。
+
+---
+
+### 銅セクター投資結論
+
+| 銘柄 | 方針 | 根拠 |
+|---|---|---|
+| **FCX** | リスク枠（10万円）で検討 | P/E 15〜17x（実質）、世界最大級の銅生産規模、3倍可能性あり（Extreme + P/E再評価） |
+| **SCCO** | 現時点では見送り | P/E 27〜35x で既に高評価。Bull以下では2x届かず、現状では報酬対リスクが見合わない |
+| **住友金属鉱山** | 保留 | ニッケル問題が解消されるまで銅プレイとして機能しない |
