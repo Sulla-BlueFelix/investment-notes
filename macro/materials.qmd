@@ -161,7 +161,9 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 import warnings
+import logging
 warnings.filterwarnings('ignore')
+logging.getLogger('yfinance').setLevel(logging.CRITICAL)
 
 plt.rcParams['font.family'] = 'Meiryo'
 plt.rcParams['axes.unicode_minus'] = False
@@ -196,17 +198,26 @@ def fetch_info(ticker):
         return {}
 
 def pct(v):
-    return f"{v*100:.1f}%" if v is not None and str(v) != 'nan' else "N/A"
+    try:
+        if v is None or (isinstance(v, float) and pd.isna(v)):
+            return "N/A"
+        return f"{v*100:.1f}%"
+    except Exception:
+        return "N/A"
 
 def fmt(v, decimals=1):
     try:
-        return f"{v:.{decimals}f}" if v is not None else "N/A"
+        if v is None or (isinstance(v, float) and pd.isna(v)):
+            return "N/A"
+        return f"{v:.{decimals}f}"
     except Exception:
         return "N/A"
 
 def billions(v):
     try:
-        return f"${v/1e9:.1f}B" if v is not None else "N/A"
+        if v is None or (isinstance(v, float) and pd.isna(v)):
+            return "N/A"
+        return f"${v/1e9:.1f}B"
     except Exception:
         return "N/A"
 
@@ -224,20 +235,25 @@ for group, stocks in GROUPS.items():
     for ticker, name in stocks.items():
         info = infos[ticker]
         rows.append({
-            'グループ':       group,
-            '銘柄':           f"{name} ({ticker})",
-            '時価総額':       billions(info.get('marketCap')),
-            '予想PER':        fmt(info.get('forwardPE')),
-            'EV/EBITDA':      fmt(info.get('enterpriseToEbitda')),
-            '営業利益率':     pct(info.get('operatingMargins')),
-            '売上成長率(YoY)':pct(info.get('revenueGrowth')),
-            'ROE':            pct(info.get('returnOnEquity')),
-            'D/E':            fmt(info.get('debtToEquity')),
+            'グループ':        group,
+            '銘柄':            f"{name} ({ticker})",
+            '時価総額':        billions(info.get('marketCap')),
+            '予想PER':         fmt(info.get('forwardPE')),
+            'EV/EBITDA':       fmt(info.get('enterpriseToEbitda')),
+            '営業利益率':      pct(info.get('operatingMargins')),
+            '売上成長(YoY)':   pct(info.get('revenueGrowth')),
+            'ROE':             pct(info.get('returnOnEquity')),
+            'D/E':             fmt(info.get('debtToEquity')),
         })
 
 df = pd.DataFrame(rows)
-df = df.set_index(['グループ', '銘柄'])
-print(df.to_string())
+df.set_index(['グループ', '銘柄'], inplace=True)
+df.style.set_table_styles([
+    {'selector': 'th', 'props': [('background-color', '#2c3e50'), ('color', 'white'),
+                                  ('font-size', '12px'), ('padding', '6px 10px')]},
+    {'selector': 'td', 'props': [('font-size', '12px'), ('padding', '5px 10px')]},
+    {'selector': 'tr:nth-child(even)', 'props': [('background-color', '#f5f5f5')]},
+])
 ```
 
 ### 株価パフォーマンス比較（過去1年）
@@ -245,13 +261,11 @@ print(df.to_string())
 ```{python}
 #| echo: false
 #| label: price-chart
-#| fig-width: 12
-#| fig-height: 8
+#| fig-width: 9
+#| fig-height: 6
 
-fig, axes = plt.subplots(2, 2, figsize=(14, 10))
+fig, axes = plt.subplots(2, 2, figsize=(9, 6))
 axes = axes.flatten()
-
-group_names = list(GROUPS.keys())
 colors = plt.cm.tab10.colors
 
 for ax_idx, (group, stocks) in enumerate(GROUPS.items()):
@@ -263,23 +277,22 @@ for ax_idx, (group, stocks) in enumerate(GROUPS.items()):
                 continue
             normalized = hist['Close'] / hist['Close'].iloc[0] * 100
             ax.plot(normalized.index, normalized.values,
-                    label=f"{name} ({ticker})", color=colors[i], linewidth=1.8)
+                    label=f"{name}", color=colors[i], linewidth=1.5)
         except Exception:
             continue
-
-    ax.axhline(100, color='gray', linestyle='--', linewidth=0.8, alpha=0.6)
-    ax.set_title(group, fontsize=13, fontweight='bold', pad=10)
-    ax.set_ylabel('相対パフォーマンス（基準=100）', fontsize=9)
-    ax.legend(fontsize=8, loc='upper left')
+    ax.axhline(100, color='gray', linestyle='--', linewidth=0.7, alpha=0.6)
+    ax.set_title(group, fontsize=10, fontweight='bold', pad=6)
+    ax.set_ylabel('基準=100', fontsize=8)
+    ax.legend(fontsize=7, loc='upper left')
     ax.xaxis.set_major_formatter(mdates.DateFormatter('%y/%m'))
-    ax.xaxis.set_major_locator(mdates.MonthLocator(interval=2))
+    ax.xaxis.set_major_locator(mdates.MonthLocator(interval=3))
     ax.grid(True, alpha=0.3)
-    ax.tick_params(axis='x', rotation=30, labelsize=8)
+    ax.tick_params(axis='x', rotation=30, labelsize=7)
+    ax.tick_params(axis='y', labelsize=7)
 
-fig.suptitle('素材セクター：株価パフォーマンス比較（過去1年、基準=100）',
-             fontsize=14, fontweight='bold', y=1.01)
+fig.suptitle('株価パフォーマンス比較（過去1年、基準=100）',
+             fontsize=11, fontweight='bold')
 plt.tight_layout()
-plt.savefig('materials_performance.png', dpi=150, bbox_inches='tight')
 plt.show()
 ```
 
@@ -288,33 +301,36 @@ plt.show()
 ```{python}
 #| echo: false
 #| label: margin-chart
-#| fig-width: 10
-#| fig-height: 5
+#| fig-width: 7
+#| fig-height: 4
 
 margins = {}
 for ticker, name in ALL.items():
     v = infos[ticker].get('operatingMargins')
     if v is not None:
         try:
-            margins[f"{name}\n({ticker})"] = v * 100
+            if not (isinstance(v, float) and pd.isna(v)):
+                margins[f"{name} ({ticker})"] = v * 100
         except Exception:
             pass
 
 if margins:
     labels = list(margins.keys())
     values = list(margins.values())
-    colors_bar = ['#2196F3' if v >= 20 else '#FF9800' if v >= 10 else '#F44336' for v in values]
+    bar_colors = ['#2196F3' if v >= 20 else '#FF9800' if v >= 10 else '#F44336'
+                  for v in values]
 
-    fig, ax = plt.subplots(figsize=(12, 5))
-    bars = ax.barh(labels, values, color=colors_bar, alpha=0.85)
+    fig, ax = plt.subplots(figsize=(7, 4))
+    bars = ax.barh(labels, values, color=bar_colors, alpha=0.85)
     ax.axvline(0, color='black', linewidth=0.8)
-    ax.set_xlabel('営業利益率（%）', fontsize=10)
-    ax.set_title('営業利益率の比較（青≥20%、オレンジ≥10%、赤<10%）',
-                 fontsize=12, fontweight='bold')
+    ax.set_xlabel('営業利益率（%）', fontsize=9)
+    ax.set_title('営業利益率（青≥20%　オレンジ≥10%　赤<10%）',
+                 fontsize=10, fontweight='bold')
     for bar, val in zip(bars, values):
-        ax.text(val + 0.3, bar.get_y() + bar.get_height()/2,
-                f'{val:.1f}%', va='center', fontsize=9)
+        ax.text(val + 0.3, bar.get_y() + bar.get_height() / 2,
+                f'{val:.1f}%', va='center', fontsize=8)
     ax.grid(True, axis='x', alpha=0.3)
+    ax.tick_params(labelsize=8)
     plt.tight_layout()
     plt.show()
 ```
