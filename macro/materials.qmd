@@ -376,3 +376,183 @@ if margins:
     plt.tight_layout()
     plt.show()
 ```
+
+---
+
+## 銅セクター深掘り分析：FCX・SCCO・住友金属鉱山
+
+```{python}
+#| echo: false
+#| label: copper-setup
+import numpy as np
+from scipy import stats
+from datetime import datetime
+
+COPPER_STOCKS = {
+    'FCX':    'Freeport-McMoRan',
+    'SCCO':   'Southern Copper',
+    '5713.T': '住友金属鉱山',
+}
+
+# 銅価格（COMEX先物）と株価を3年分取得
+end   = datetime.today()
+hist_data = {}
+for ticker in list(COPPER_STOCKS.keys()) + ['HG=F']:
+    try:
+        df_h = yf.Ticker(ticker).history(period='3y')
+        if not df_h.empty:
+            hist_data[ticker] = df_h['Close']
+    except Exception:
+        pass
+```
+
+### 銅価格 vs 株価の相関チャート（過去3年）
+
+```{python}
+#| echo: false
+#| label: copper-correlation-chart
+#| fig-width: 9
+#| fig-height: 4
+
+if 'HG=F' in hist_data:
+    fig, ax1 = plt.subplots(figsize=(9, 4))
+    colors_c = {'FCX': '#2196F3', 'SCCO': '#4CAF50', '5713.T': '#FF9800'}
+
+    # 銅価格（右軸）
+    copper = hist_data['HG=F']
+    ax2 = ax1.twinx()
+    ax2.fill_between(copper.index, copper.values, alpha=0.12, color='gray')
+    ax2.plot(copper.index, copper.values, color='gray', linewidth=1.2,
+             linestyle='--', label='銅価格 ($/lb)', alpha=0.7)
+    ax2.set_ylabel('銅価格 ($/lb)', fontsize=8, color='gray')
+    ax2.tick_params(axis='y', labelcolor='gray', labelsize=7)
+
+    # 各株価（左軸・正規化）
+    for ticker, name in COPPER_STOCKS.items():
+        if ticker in hist_data:
+            s = hist_data[ticker]
+            norm = s / s.iloc[0] * 100
+            ax1.plot(norm.index, norm.values, label=name,
+                     color=colors_c.get(ticker, 'black'), linewidth=1.8)
+
+    ax1.axhline(100, color='gray', linestyle=':', linewidth=0.7, alpha=0.5)
+    ax1.set_ylabel('株価（基準=100）', fontsize=8)
+    ax1.legend(fontsize=8, loc='upper left')
+    ax1.xaxis.set_major_formatter(mdates.DateFormatter('%y/%m'))
+    ax1.xaxis.set_major_locator(mdates.MonthLocator(interval=4))
+    ax1.tick_params(axis='x', rotation=30, labelsize=7)
+    ax1.tick_params(axis='y', labelsize=7)
+    ax1.grid(True, alpha=0.25)
+    ax1.set_title('銅価格 vs 銅株パフォーマンス（過去3年）', fontsize=11, fontweight='bold')
+    plt.tight_layout()
+    plt.show()
+```
+
+### 銅価格感応度（ベータ回帰分析）
+
+銅価格が1%動いたとき、各株価が何%動くかを月次リターンの回帰で推定。
+
+```{python}
+#| echo: false
+#| label: copper-beta
+
+if 'HG=F' in hist_data:
+    copper_monthly = hist_data['HG=F'].resample('ME').last().pct_change().dropna()
+    beta_rows = []
+    for ticker, name in COPPER_STOCKS.items():
+        if ticker not in hist_data:
+            continue
+        stock_monthly = hist_data[ticker].resample('ME').last().pct_change().dropna()
+        common = copper_monthly.index.intersection(stock_monthly.index)
+        if len(common) < 12:
+            continue
+        x = copper_monthly.loc[common].values
+        y = stock_monthly.loc[common].values
+        slope, intercept, r, p, _ = stats.linregress(x, y)
+        beta_rows.append({
+            '銘柄':           f"{name} ({ticker})",
+            '銅ベータ':       f"{slope:.2f}",
+            'R²':             f"{r**2:.2f}",
+            '解釈':           f"銅+1% → 株価約+{slope:.1f}%",
+        })
+
+    if beta_rows:
+        df_beta = pd.DataFrame(beta_rows).set_index('銘柄')
+        df_beta.style.set_table_styles([
+            {'selector': 'th', 'props': [('background-color', '#2c3e50'), ('color', 'white'),
+                                          ('font-size', '12px'), ('padding', '6px 10px')]},
+            {'selector': 'td', 'props': [('font-size', '12px'), ('padding', '5px 10px')]},
+            {'selector': 'tr:nth-child(even)', 'props': [('background-color', '#f5f5f5')]},
+        ])
+```
+
+### 2028年3倍シナリオ逆算
+
+現在価格から2028年（約2.5年後）に3倍を達成するために必要な年率リターンと、それを正当化するEPS成長率を逆算する。
+
+```{python}
+#| echo: false
+#| label: scenario-table
+
+years_to_2028 = 2.5
+target_multiple = 3.0
+required_cagr = target_multiple ** (1 / years_to_2028) - 1
+
+scenario_rows = []
+for ticker, name in COPPER_STOCKS.items():
+    info = infos.get(ticker, {})
+    try:
+        cur_price = info.get('currentPrice') or info.get('regularMarketPrice')
+        if cur_price is None:
+            raise ValueError
+        # 日本株はUSD換算
+        if ticker in JPY_TICKERS:
+            cur_price_usd = cur_price / USD_JPY
+            cur_price_str = f"¥{cur_price:,.0f} (~${cur_price_usd:.1f})"
+        else:
+            cur_price_usd = cur_price
+            cur_price_str = f"${cur_price:.2f}"
+
+        target_price = cur_price * target_multiple
+        if ticker in JPY_TICKERS:
+            target_str = f"¥{target_price:,.0f}"
+        else:
+            target_str = f"${target_price:.2f}"
+
+        fwd_pe   = info.get('forwardPE')
+        fwd_eps  = info.get('forwardEps')
+
+        # 3倍株価に必要なEPS（現在のPERが維持された場合）
+        if fwd_pe and fwd_eps:
+            needed_eps     = fwd_eps * target_multiple
+            eps_cagr_needed = (target_multiple ** (1 / years_to_2028) - 1)
+            eps_str         = f"{eps_cagr_needed*100:.1f}%/年"
+        else:
+            eps_str = "N/A"
+
+        scenario_rows.append({
+            '銘柄':               f"{name} ({ticker})",
+            '現在株価':           cur_price_str,
+            '3倍目標株価':        target_str,
+            '必要年率リターン':   f"{required_cagr*100:.1f}%",
+            '必要EPS成長率':      eps_str,
+            '予想PER':            fmt(fwd_pe),
+        })
+    except Exception:
+        scenario_rows.append({
+            '銘柄':               f"{name} ({ticker})",
+            '現在株価':           'N/A',
+            '3倍目標株価':        'N/A',
+            '必要年率リターン':   f"{required_cagr*100:.1f}%",
+            '必要EPS成長率':      'N/A',
+            '予想PER':            'N/A',
+        })
+
+df_scen = pd.DataFrame(scenario_rows).set_index('銘柄')
+df_scen.style.set_table_styles([
+    {'selector': 'th', 'props': [('background-color', '#1a5276'), ('color', 'white'),
+                                  ('font-size', '12px'), ('padding', '6px 10px')]},
+    {'selector': 'td', 'props': [('font-size', '12px'), ('padding', '5px 10px')]},
+    {'selector': 'tr:nth-child(even)', 'props': [('background-color', '#eaf4fb')]},
+])
+```
