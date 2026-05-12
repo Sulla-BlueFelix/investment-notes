@@ -21,95 +21,74 @@
     "text": "セクション\n\n\n\nMacro\n金利・セクターローテーション・地政学リスク\n\n\nStocks\n個別銘柄の定性・定量分析"
   },
   {
-    "objectID": "macro/index.html",
-    "href": "macro/index.html",
-    "title": "AIデータセンター・バリューチェーン全体像",
+    "objectID": "analysis/copper.html",
+    "href": "analysis/copper.html",
+    "title": "銅セクター分析：FCX / SCCO / 住友金属鉱山",
     "section": "",
-    "text": "AIの進化は「ソフトウェアやシリコンの魔法」によってもたらされるものではない。メガワット単位の電力、液冷の物理学、超高純度の化学素材、そして限界に挑む精密加工技術のすべてが統合されることで初めて成立する「物理インフラの極致」である。"
+    "text": "目的： AIデータセンター特需を背景とした銅セクターへの投資判断を、定量・定性の両面から分析する。\n主要な結論（先出し） - FCX：低PER出発点 × リーチング技術 × 2030年期待織り込みで3倍の経路あり → 主力候補 - SCCO：高品質だが高バリュエーション。Bull以下では2x届かず - 住友金属鉱山：ニッケル価格崩壊で銅プレイとして機能していない → 保留\nimport yfinance as yf\nimport pandas as pd\nimport numpy as np\nimport matplotlib.pyplot as plt\nimport matplotlib.dates as mdates\nfrom scipy import stats\nimport warnings, logging\n\nwarnings.filterwarnings('ignore')\nlogging.getLogger('yfinance').setLevel(logging.CRITICAL)\n\n# 日本語フォント（Windows）\nfrom matplotlib import rcParams\nrcParams['font.family'] = 'sans-serif'\nrcParams['font.sans-serif'] = ['MS Gothic', 'Meiryo', 'Yu Gothic', 'DejaVu Sans']\nrcParams['axes.unicode_minus'] = False\n\n# USDJPY レート\nfx = yf.Ticker('USDJPY=X').history(period='1d')\nUSDJPY = float(fx['Close'].iloc[-1]) if not fx.empty else 150.0\nprint(f'USDJPY: {USDJPY:.2f}')\n\nTICKERS = {\n    'FCX':    'Freeport-McMoRan',\n    'SCCO':   'Southern Copper',\n    '5713.T': '住友金属鉱山',\n}"
   },
   {
-    "objectID": "macro/index.html#なぜ今インフラに着目するのか",
-    "href": "macro/index.html#なぜ今インフラに着目するのか",
-    "title": "AIデータセンター・バリューチェーン全体像",
-    "section": "なぜ今、インフラに着目するのか",
-    "text": "なぜ今、インフラに着目するのか\nモルガン・スタンレー（2026年）によれば、AI関連インフラ投資は2028年までに約3兆ドル規模に達すると予測されており、その80%以上はこれから投下される段階にある。マッキンゼーの試算では、2025〜2030年のデータセンター向けCapExは5.2〜7.9兆ドルに及ぶとされる。\n投資機会は「GPU争奪戦（計算能力の確保）」という初期フェーズから、「物理的制約の突破（電力・冷却・極小素材）」という二次・三次フェーズへとシフトしている。"
+    "objectID": "analysis/copper.html#基本財務データ",
+    "href": "analysis/copper.html#基本財務データ",
+    "title": "銅セクター分析：FCX / SCCO / 住友金属鉱山",
+    "section": "1. 基本財務データ",
+    "text": "1. 基本財務データ\n\nrows = []\nfor ticker, name in TICKERS.items():\n    info = yf.Ticker(ticker).info\n    price = info.get('currentPrice') or info.get('regularMarketPrice', 0)\n    eps   = info.get('trailingEps', None)\n    pe    = info.get('trailingPE', None)\n    fpe   = info.get('forwardPE', None)\n    mcap  = info.get('marketCap', None)\n    om    = info.get('operatingMargins', None)\n\n    is_jpy = ticker.endswith('.T')\n    if is_jpy:\n        price_str = f'¥{price:,.0f} (~${price/USDJPY:.1f})'\n        mcap_str  = f'~${mcap/USDJPY/1e9:.0f}B' if mcap else 'N/A'\n    else:\n        price_str = f'${price:.2f}'\n        mcap_str  = f'~${mcap/1e9:.0f}B' if mcap else 'N/A'\n\n    rows.append({\n        '銘柄':       f'{name} ({ticker})',\n        '現在株価':   price_str,\n        '時価総額':   mcap_str,\n        'Trailing EPS': f'${eps:.2f}' if eps and not is_jpy else (f'¥{eps:.0f}' if eps else 'N/A'),\n        'Trailing PER': f'{pe:.1f}x' if pe else 'N/A',\n        'Forward PER':  f'{fpe:.1f}x' if fpe else 'N/A',\n        '営業利益率':  f'{om*100:.1f}%' if om else 'N/A',\n    })\n\ndf_basic = pd.DataFrame(rows).set_index('銘柄')\ndf_basic"
   },
   {
-    "objectID": "macro/index.html#テーマ別パフォーマンス資金はどこまで来たか",
-    "href": "macro/index.html#テーマ別パフォーマンス資金はどこまで来たか",
-    "title": "AIデータセンター・バリューチェーン全体像",
-    "section": "テーマ別パフォーマンス：資金はどこまで来たか",
-    "text": "テーマ別パフォーマンス：資金はどこまで来たか\nAIインフラの波はバリューチェーンの上流から下流へ、順番に資金が流れ込む構造をとっている。チャートは各テーマの代表銘柄の過去2年パフォーマンス（構成銘柄の平均、開始=100）。「既に発見され爆騰したテーマ」と「まだ資金が来ていないテーマ」を一目で把握できる。\n\n\n\n\n\n\n\n\n\n\n読み方： 各線はテーマ内の代表銘柄の平均。x3.89は2年で3.89倍（+289%）を意味する。日本株（安川電機・ファナック）は円建て騰落率のためUSD換算なし。\n\n\nテーマ別 現在PER\nPERは「市場がそのテーマにどれだけの将来成長を織り込んでいるか」を示す。パフォーマンスチャートと合わせて読むことで、「既に爆騰＋高PER＝フル評価」か「まだ動いていない＋低PER＝未発見の余地あり」かが見えてくる。\n\n\n\n\n\n\n\n\n\n\n読み方： trailing PER平均（取得不可の場合はforward PERで代替）。N/Aは赤字企業。25x点線＝市場平均、50x点線＝高成長プレミアム水準。"
+    "objectID": "analysis/copper.html#銅価格トレンドと-comex-lme-乖離",
+    "href": "analysis/copper.html#銅価格トレンドと-comex-lme-乖離",
+    "title": "銅セクター分析：FCX / SCCO / 住友金属鉱山",
+    "section": "2. 銅価格トレンドと COMEX / LME 乖離",
+    "text": "2. 銅価格トレンドと COMEX / LME 乖離\n重要な文脈： 現在のCOMEX（HG=F）は米国の銅輸入関税25%を見越した前倒し需要でLMEより大幅高。 - FCX（米国内生産あり）はCOMEX価格の恩恵を受けるが、国際生産（約70%）はLMEベース。 - シナリオ分析はLMEベースの機関予測を使用する。\n\nhg = yf.Ticker('HG=F').history(period='2y')\nhg.index = pd.to_datetime(hg.index).tz_localize(None)\n\n# 年次平均\nannual_avg = hg['Close'].resample('YS').mean()\nprint('COMEX 年次平均 ($/lb):')\nfor yr, p in annual_avg.items():\n    print(f'  {yr.year}: ${p:.2f}/lb = ${p*2204.62:,.0f}/mt')\n\ncurrent_lb = float(hg['Close'].iloc[-1])\nprint(f'\\n現在 (COMEX): ${current_lb:.2f}/lb = ${current_lb*2204.62:,.0f}/mt')\nprint(f'推定 LME:     ~$4.31/lb = ~$9,500/mt')\nprint(f'COMEX-LME乖離: ${current_lb-4.31:.2f}/lb ({(current_lb/4.31-1)*100:.0f}%)')\n\nfig, ax = plt.subplots(figsize=(10, 4))\nax.plot(hg.index, hg['Close'], color='#795548', linewidth=1.8)\nax.fill_between(hg.index, hg['Close'], alpha=0.15, color='#795548')\nax.set_ylabel('$/lb (COMEX)', fontsize=9)\nax.set_title('銅先物価格推移（COMEX HG=F、過去2年）', fontsize=11, fontweight='bold')\nax.xaxis.set_major_formatter(mdates.DateFormatter('%y/%m'))\nax.xaxis.set_major_locator(mdates.MonthLocator(interval=3))\nax.tick_params(axis='x', rotation=30, labelsize=8)\nax.grid(True, alpha=0.25)\nplt.tight_layout()\nplt.show()"
   },
   {
-    "objectID": "macro/index.html#バリューチェーン構造図",
-    "href": "macro/index.html#バリューチェーン構造図",
-    "title": "AIデータセンター・バリューチェーン全体像",
-    "section": "バリューチェーン構造図",
-    "text": "バリューチェーン構造図\nAIデータセンターの構築を6フェーズに分解すると、以下のサプライチェーンが見えてくる。\n\n\n\nフェーズ\n内容\n主な投資テーマ\n\n\n\n\nPh.1 原材料\n銅・ガリウム・ゲルマニウム・フッ素化合物・ヘリウム\n素材\n\n\nPh.2 半導体\nEDA/IP設計 → EUV露光 → 先進パッケージング → テスト\n半導体エコシステム / フォトニクス / 先進パッケージング\n\n\nPh.3 基礎インフラ\n光ファイバー・電線ケーブル・DACケーブル\n電力インフラ\n\n\nPh.4 ハードウェア\n液冷システム・光トランシーバー・サーバーラック\n液冷・冷却 / フォトニクス\n\n\nPh.5 施設建設\nDC建設施工・免震・MEP工事\n電力インフラ\n\n\nPh.6 電力・運用\n変圧器・電気工事・SMR自家発電\n電力インフラ / SMR\n\n\n\nさらにDCの外側へと展開するテーマとして、宇宙インフラ・フィジカルAI・ロボティクス・DC REITがある。"
+    "objectID": "analysis/copper.html#銅価格-vs-株価-相関チャート過去3年",
+    "href": "analysis/copper.html#銅価格-vs-株価-相関チャート過去3年",
+    "title": "銅セクター分析：FCX / SCCO / 住友金属鉱山",
+    "section": "3. 銅価格 vs 株価 相関チャート（過去3年）",
+    "text": "3. 銅価格 vs 株価 相関チャート（過去3年）\n\nhist_data = {}\nfor ticker in list(TICKERS.keys()) + ['HG=F']:\n    try:\n        df_h = yf.Ticker(ticker).history(period='3y')\n        if not df_h.empty:\n            s = df_h['Close'].copy()\n            s.index = pd.to_datetime(s.index).tz_localize(None)\n            hist_data[ticker] = s\n    except Exception:\n        pass\n\nif 'HG=F' in hist_data:\n    fig, ax1 = plt.subplots(figsize=(10, 5))\n    colors_c = {'FCX': '#2196F3', 'SCCO': '#4CAF50', '5713.T': '#FF9800'}\n\n    copper = hist_data['HG=F']\n    ax2 = ax1.twinx()\n    ax2.fill_between(copper.index, copper.values, alpha=0.10, color='gray')\n    ax2.plot(copper.index, copper.values, color='gray', linewidth=1.2,\n             linestyle='--', label='銅価格 ($/lb)', alpha=0.7)\n    ax2.set_ylabel('銅価格 ($/lb)', fontsize=8, color='gray')\n    ax2.tick_params(axis='y', labelcolor='gray', labelsize=7)\n\n    for ticker, name in TICKERS.items():\n        if ticker in hist_data:\n            s = hist_data[ticker]\n            norm = s / s.iloc[0] * 100\n            ax1.plot(norm.index, norm.values, label=name,\n                     color=colors_c.get(ticker, 'black'), linewidth=1.8)\n\n    ax1.axhline(100, color='gray', linestyle=':', linewidth=0.7, alpha=0.5)\n    ax1.set_ylabel('株価（基準=100）', fontsize=8)\n    ax1.legend(fontsize=8, loc='upper left')\n    ax2.legend(fontsize=8, loc='upper right')\n    ax1.xaxis.set_major_formatter(mdates.DateFormatter('%y/%m'))\n    ax1.xaxis.set_major_locator(mdates.MonthLocator(interval=4))\n    ax1.tick_params(axis='x', rotation=30, labelsize=7)\n    ax1.tick_params(axis='y', labelsize=7)\n    ax1.grid(True, alpha=0.2)\n    ax1.set_title('銅価格 vs 銅株パフォーマンス（過去3年）', fontsize=11, fontweight='bold')\n    plt.tight_layout()\n    plt.show()"
   },
   {
-    "objectID": "macro/index.html#つの隠れたボトルネック",
-    "href": "macro/index.html#つの隠れたボトルネック",
-    "title": "AIデータセンター・バリューチェーン全体像",
-    "section": "5つの隠れたボトルネック",
-    "text": "5つの隠れたボトルネック\n需要に対して供給が構造的に追いつかず、強力な価格決定権（プライシング・パワー）を持つ可能性が高い急所。\n\n\n\n#\nボトルネック\n象徴的な事実\n詳細テーマ\n\n\n\n\n①\n超大型変圧器・配電インフラ\n納期が12週間→160週間（約3年強）に長期化\n電力インフラ\n\n\n②\n次世代ガラスコア基板（TGV/LIDE）\n有機基板の反り・限界を突破する次のゲームチェンジャー\n先進パッケージング\n\n\n③\nEUVフォトレジスト・ペリクル\n日本企業が世界シェア96%以上を独占する絶対的チョークポイント\n半導体エコシステム\n\n\n④\n液冷用クイック・ディスコネクト（UQD）\n1滴の液漏れが数億円のラック破壊を招くため価格より信頼性が優先\n液冷・冷却\n\n\n⑤\nSMR（小型モジュール炉）による自家発電\nグリッド接続申請の待機期間が米国で平均5年→ビハインド・ザ・メーターへ\nSMR"
+    "objectID": "analysis/copper.html#eps感応度分析",
+    "href": "analysis/copper.html#eps感応度分析",
+    "title": "銅セクター分析：FCX / SCCO / 住友金属鉱山",
+    "section": "4. EPS感応度分析",
+    "text": "4. EPS感応度分析\n銅価格 $0.10/lb 変化 → EPS 変化 を実データ回帰と公式値で導出。\n\n\n\n\n\n\n\n\n銘柄\n感応度\n根拠\n\n\n\n\nFCX\n$0.270/share per $0.10/lb\nFCX 2024年次報告書（10-K）公式開示\n\n\nSCCO\n$0.233/share per $0.10/lb\n2023〜2025年実データ回帰（R²=0.982）\n\n\n住友金属鉱山\n算出不可\nニッケル価格の影響が支配的で銅との相関が崩壊\n\n\n\n\n# 実証データ（年次 net income と COMEX 銅価格平均）\ncopper_annual = {2022: 4.00, 2023: 3.85, 2024: 4.22, 2025: 4.82}\n\nfcx_ni  = {2022: 3.468, 2023: 1.848, 2024: 1.889, 2025: 2.204}  # $B\nscco_ni = {2022: 2.639, 2023: 2.425, 2024: 3.377, 2025: 4.335}  # $B\nsmm_ni  = {2022: 281.0, 2023: 160.6, 2024: 58.6,  2025: 16.5}   # JPY B\n\nFCX_SHARES  = 1.44e9\nSCCO_SHARES = 0.83e9\n\n# SCCO 回帰（2022はモリブデン等の特殊要因でFCXが歪む → 2023-2025のみ）\nyrs = [2023, 2024, 2025]\ncu  = [copper_annual[y] for y in yrs]\nsc  = [scco_ni[y] for y in yrs]\nslope_s, _, r_s, _, _ = stats.linregress(cu, sc)\nscco_sens_empirical = (slope_s / 10) / SCCO_SHARES * 1e9\nprint(f'SCCO 実証感応度: ${scco_sens_empirical:.3f}/share per $0.10/lb (R²={r_s**2:.3f})')\n\n# 住友金属鉱山：銅価格上昇なのに純利益激減を確認\nprint('\\n住友金属鉱山 純利益トレンド（銅価格上昇にもかかわらず）:')\nfor yr in sorted(smm_ni):\n    print(f'  {yr}: 銅 ${copper_annual[yr]:.2f}/lb → 純利益 JPY {smm_ni[yr]:.0f}B')\nprint('  → ニッケル価格崩壊（$25,000→$13,000/mt）が銅利益を完全に打ち消し')"
   },
   {
-    "objectID": "macro/index.html#テーマ別ページ一覧",
-    "href": "macro/index.html#テーマ別ページ一覧",
-    "title": "AIデータセンター・バリューチェーン全体像",
-    "section": "テーマ別ページ一覧",
-    "text": "テーマ別ページ一覧\n\n\n\nテーマ\nページ\n優先度\n\n\n\n\n素材（銅・レアメタル・特殊化学）\nmaterials.qmd\n高\n\n\n半導体エコシステム（EDA/IP・製造・装置）\nsemiconductor.qmd\n高\n\n\nフォトニクス・光インターコネクト\nphotonics.qmd\n高\n\n\n液冷・冷却\nliquid-cooling.qmd\n高\n\n\n先進パッケージング（ガラスコア基板）\nglass-substrate.qmd\n高\n\n\n電力インフラ（変圧器・配電・建設）\npower-infra.qmd\n高\n\n\nSMR・自家発電\nsmr.qmd\n中\n\n\n宇宙インフラ・宇宙DC構想\nspace.qmd\n中\n\n\nフィジカルAI・ロボティクス\nphysical-ai.qmd\n中\n\n\nDC REIT\nreit.qmd\n低"
+    "objectID": "analysis/copper.html#銅価格シナリオ別-eps株価試算",
+    "href": "analysis/copper.html#銅価格シナリオ別-eps株価試算",
+    "title": "銅セクター分析：FCX / SCCO / 住友金属鉱山",
+    "section": "5. 銅価格シナリオ別 EPS・株価試算",
+    "text": "5. 銅価格シナリオ別 EPS・株価試算\n前提： - 基準：2025年実績（FCX EPS $1.53、SCCO EPS $5.22、COMEX平均 $4.82/lb） - 感応度：FCX $0.270、SCCO \\(0.233（\\)/share per $0.10/lb） - シナリオはLMEベースの機関予測。COMEX現在は関税プレミアム込み。\n\nFCX_BASE_EPS  = 1.53\nSCCO_BASE_EPS = 5.22\nBASE_CU       = 4.82\nFCX_SENS      = 0.270\nSCCO_SENS     = 0.233\nFCX_PRICE     = 64.37\nSCCO_PRICE    = 185.23\n\nscenarios = [\n    ('Bear',         'WB $9,500/mt',           4.31),\n    ('Neutral',      'GS $10,750/mt',           4.88),\n    ('Supply Floor', '生産者管理 $12,000/mt',   5.44),\n    ('Bull',         'Citi $13,000/mt',          5.90),\n    ('Extreme',      'OG $15,000/mt',            6.80),\n    ('COMEX現在',    '関税込み $6.50/lb',        6.50),\n]\n\nrows = []\nfor name, note, cu in scenarios:\n    fe = FCX_BASE_EPS  + FCX_SENS  * (cu - BASE_CU) / 0.10\n    se = SCCO_BASE_EPS + SCCO_SENS * (cu - BASE_CU) / 0.10\n    rows.append({\n        'シナリオ':     f'{name}（{note}）',\n        '$/lb':         f'${cu:.2f}',\n        'FCX EPS':      f'${fe:.2f} ({fe/FCX_BASE_EPS:.1f}x)',\n        'FCX @P/E17':   f'${fe*17:.0f}',\n        'FCX @P/E22':   f'${fe*22:.0f}',\n        'FCX @P/E30':   f'${fe*30:.0f}',\n        'SCCO EPS':     f'${se:.2f} ({se/SCCO_BASE_EPS:.1f}x)',\n        'SCCO @P/E25':  f'${se*25:.0f}',\n        'SCCO @P/E30':  f'${se*30:.0f}',\n    })\n\ndf_sc = pd.DataFrame(rows).set_index('シナリオ')\nprint(f'FCX  3倍目標: ${FCX_PRICE*3:.0f}')\nprint(f'SCCO 3倍目標: ${SCCO_PRICE*3:.0f}')\nprint()\ndf_sc"
   },
   {
-    "objectID": "stocks/POET/index.html",
-    "href": "stocks/POET/index.html",
-    "title": "POET Technologies (POET)",
-    "section": "",
-    "text": "ステータス: 保有中 / 注目銘柄 取引所: NASDAQ | セクター: 半導体・フォトニクス | 本社: トロント、カナダ"
+    "objectID": "analysis/copper.html#年期待値の2028年への前倒し織り込み",
+    "href": "analysis/copper.html#年期待値の2028年への前倒し織り込み",
+    "title": "銅セクター分析：FCX / SCCO / 住友金属鉱山",
+    "section": "6. 2030年期待値の2028年への前倒し織り込み",
+    "text": "6. 2030年期待値の2028年への前倒し織り込み\n定量分析は「2028年の実現EPS × 現在のP/E」で止まるが、実際の市場は2028年時点で2030年の期待を織り込む。 AI市場が2030年までに5倍なら、銅需要（AI DC向け）も相応に拡大。2028年の株価には2030年EPS × 市場が評価するP/Eが乗ってくる。\n\n# 2030年のExtremeシナリオ（OG $15,000/mt = $6.80/lb）でのEPS\nfcx_2030e  = FCX_BASE_EPS  + FCX_SENS  * (6.80 - BASE_CU) / 0.10  # $6.88\nscco_2030e = SCCO_BASE_EPS + SCCO_SENS * (6.80 - BASE_CU) / 0.10  # $9.83\n\nprint('2030E EPS（Extreme銅シナリオ $6.80/lb）:')\nprint(f'  FCX:  ${fcx_2030e:.2f}/share')\nprint(f'  SCCO: ${scco_2030e:.2f}/share')\nprint()\nprint('2028年株価試算（市場が2030年EPSを2年先取りして評価）:')\nprint()\nprint(f'{\"P/E\":&gt;6} | {\"FCX株価\":&gt;10} | {\"FCX倍率\":&gt;8} | {\"SCCO株価\":&gt;10} | {\"SCCO倍率\":&gt;8}')\nprint('-' * 55)\nfor pe in [17, 22, 25, 30, 35]:\n    fp = fcx_2030e * pe\n    sp = scco_2030e * pe\n    print(f'{pe:&gt;5}x | ${fp:&gt;9.0f} | {fp/FCX_PRICE:&gt;7.1f}x | ${sp:&gt;9.0f} | {sp/SCCO_PRICE:&gt;7.1f}x')\n\nprint(f'\\n→ FCXはP/E 30xで {fcx_2030e*30/FCX_PRICE:.1f}x（3倍超）')\nprint(f'→ SCCOはP/E 55x超が必要（現実的でない）')"
   },
   {
-    "objectID": "stocks/POET/index.html#株価チャート過去1年",
-    "href": "stocks/POET/index.html#株価チャート過去1年",
-    "title": "POET Technologies (POET)",
-    "section": "株価チャート（過去1年）",
-    "text": "株価チャート（過去1年）"
+    "objectID": "analysis/copper.html#資金フロー銅の相対的な早さの確認",
+    "href": "analysis/copper.html#資金フロー銅の相対的な早さの確認",
+    "title": "銅セクター分析：FCX / SCCO / 住友金属鉱山",
+    "section": "7. 資金フロー：銅の相対的な「早さ」の確認",
+    "text": "7. 資金フロー：銅の相対的な「早さ」の確認\n\n# AIインフラ主要テーマの2年パフォーマンス比較（銅の相対位置確認）\ncompare_tickers = {\n    'VRT':  'Vertiv（液冷）',\n    'PWR':  'Quanta（電力工事）',\n    'NVDA': 'Nvidia（GPU）',\n    'FCX':  'Freeport（銅）',\n    'SCCO': 'Southern Copper（銅）',\n}\n\nperf = {}\nfor t, name in compare_tickers.items():\n    for period, label in [('2y','2年'), ('1y','1年'), ('3mo','3ヶ月'), ('1mo','1ヶ月')]:\n        h = yf.Ticker(t).history(period=period)\n        if not h.empty:\n            ret = (h['Close'].iloc[-1] / h['Close'].iloc[0] - 1) * 100\n            perf.setdefault(name, {})[label] = f'{ret:+.0f}%'\n\ndf_perf = pd.DataFrame(perf).T[['2年','1年','3ヶ月','1ヶ月']]\nprint('相対パフォーマンス（先行組 vs 銅）')\nprint(df_perf.to_string())\nprint('\\n→ VRT/PWRは2年で3〜4倍（終盤）、FCXは+27%（まだ来ていない）')"
   },
   {
-    "objectID": "stocks/POET/index.html#会社概要",
-    "href": "stocks/POET/index.html#会社概要",
-    "title": "POET Technologies (POET)",
-    "section": "会社概要",
-    "text": "会社概要\nPOET Technologies はOptical Interposer（光学インターポーザー）プラットフォームを開発するカナダ発の半導体企業。電子デバイスと光デバイスをウェハーレベルで単一チップ上に集積する独自技術を持ち、従来の光トランシーバーとは根本的に異なるアーキテクチャを提案している。\n主要製品・技術：\n\nPOET Optical Interposer: 電子・光子デバイスの単一チップ集積プラットフォーム\n光エンジン / 光トランシーバーモジュール: データセンター向け高速・低消費電力接続\n光源製品: LiDAR、OCT（医療）、VRセンシング向け\n\n主要市場：\n\n\n\n市場\n用途\n\n\n\n\nデータセンターAI\n高帯域・低消費電力の光インターコネクト\n\n\n5G / 通信\nPON、GPON、エッジコンピューティング\n\n\nセンシング\nLiDAR、OCT（医療機器）、VR\n\n\n\n従業員数はわずか 80名（2025年時点）。少人数で技術プラットフォームの開発・ライセンスに集中するファブレス型に近いモデル。"
+    "objectID": "analysis/copper.html#fcx-リーチング技術追加生産インパクト試算",
+    "href": "analysis/copper.html#fcx-リーチング技術追加生産インパクト試算",
+    "title": "銅セクター分析：FCX / SCCO / 住友金属鉱山",
+    "section": "8. FCX リーチング技術：追加生産インパクト試算",
+    "text": "8. FCX リーチング技術：追加生産インパクト試算\nFCXの新バイオ浸出技術（既存の廃棄物堆積鉱から低コストで銅を回収）の生産量と財務インパクト。\n\n\n\n年\n追加生産量\n\n\n\n\n2023年実績\n144M lbs\n\n\n2024年実績\n214M lbs\n\n\n2025-2026目標\n300〜400M lbs/年\n\n\n2030目標\n800M lbs/年\n\n\n\nコスト：$1/lb以下（市場価格の1/4〜1/6）\n\n# 2030年に800M lbs の追加生産が実現した場合のEPS上乗せ試算\nleach_lbs      = 800e6          # 800M lbs\ncopper_scenarios_lb = {'Bear $4.31': 4.31, 'Base $4.88': 4.88,\n                        'Bull $5.90': 5.90, 'Extreme $6.80': 6.80}\ncost_per_lb    = 0.80           # リーチングコスト $0.80/lb（保守的）\ntax_rate       = 0.25\n\nprint('リーチング800M lbs 追加によるEPS上乗せ試算（2030年）')\nprint(f'{\"シナリオ\":&gt;20} | {\"追加純利益\":&gt;12} | {\"EPS上乗せ\":&gt;10}')\nprint('-' * 48)\nfor sc_name, price in copper_scenarios_lb.items():\n    margin     = price - cost_per_lb\n    net_income = leach_lbs * margin * (1 - tax_rate)\n    eps_add    = net_income / FCX_SHARES\n    print(f'{sc_name:&gt;20} | ${net_income/1e9:&gt;10.2f}B | +${eps_add:&gt;8.2f}/share')\n\nprint(f'\\n→ Bull以上のシナリオでは EPS が +$2.5〜4.0 追加で乗ってくる')\nprint(f'  この上乗せ分はEPS感応度の計算に含まれていない → 上振れ余地')"
   },
   {
-    "objectID": "stocks/POET/index.html#業績",
-    "href": "stocks/POET/index.html#業績",
-    "title": "POET Technologies (POET)",
-    "section": "業績",
-    "text": "業績\n\n損益推移\n\n\n\n指標\nFY2022\nFY2023\nFY2024\nFY2025\n\n\n\n\n売上高\n$553K\n$466K\n$41K\n$1.07M\n\n\n営業損失\n-$19.7M\n-$20.4M\n-$23.6M\n-$33.9M\n\n\nR&D費\n$10.7M\n$10.1M\n$11.3M\n$18.1M\n\n\nSG&A\n$8.2M\n$8.9M\n$10.2M\n$13.5M\n\n\n純損失\n-$21.0M\n-$20.3M\n-$56.7M\n-$63.0M\n\n\n\n\n\n\n\n\n\nNote\n\n\n\nFY2025の純損失 -$63Mのうち、約 -$25M は有価証券売却損等の特殊項目。実態的な営業キャッシュバーンは年間 $33〜35M 程度とみられる。\n\n\n読み方のポイント：\n\n売上高はほぼゼロ水準（FY2024は特に低調 $41K）。FY2025は$1.07Mに回復したが、商業的にはまだ黎明期\nR&D費がFY2025で$18Mへ急増 — 技術開発・製品化への投資を積極的に加速させている\n営業損失の拡大はネガティブではなく、R&D投資拡大の裏返しとして読む必要がある\n\n\n\nセグメント\n公式には単一セグメント。製品カテゴリ別の売上開示はなく、売上のほぼ全額が試験的な製品販売・開発契約収益とみられる。"
-  },
-  {
-    "objectID": "stocks/POET/index.html#財務株主構成",
-    "href": "stocks/POET/index.html#財務株主構成",
-    "title": "POET Technologies (POET)",
-    "section": "財務・株主構成",
-    "text": "財務・株主構成\n\n\n\n指標\n数値\n\n\n\n\n時価総額\n約 $2.1B\n\n\n従業員数\n80名\n\n\nインサイダー保有比率\n0.08%（極めて低い）\n\n\n機関投資家保有比率\n7.4%（116機関）\n\n\n\n\n主要機関投資家（上位10件）\n\n\n\n機関名\n保有比率\n保有株数\n\n\n\n\nMMCAP International\n1.16%\n1,526,205\n\n\nMorgan Stanley\n0.92%\n1,220,206\n\n\nSusquehanna International Group\n0.52%\n686,181\n\n\nRaymond James Financial\n0.52%\n689,017\n\n\nCitadel Advisors\n0.51%\n678,216\n\n\nFédération Des Caisses Desjardins\n0.47%\n618,604\n\n\nParagon Capital Management\n0.36%\n471,720\n\n\nGSA Capital Partners\n0.28%\n363,463\n\n\nJane Street Group\n0.26%\n349,776\n\n\nLPL Financial\n0.24%\n315,024\n\n\n\n\n\n\n\n\n\nWarning\n\n\n\nインサイダー保有が0.08%と非常に低い点は要注意。経営陣のスキンインザゲームが薄く、株主との利益一致に懸念が残る。\n\n\n大手戦略投資家（QualcommやNVIDIAなど）の名前は現時点では機関投資家リストに見当たらない。"
-  },
-  {
-    "objectID": "stocks/POET/index.html#今後の展望定性分析",
-    "href": "stocks/POET/index.html#今後の展望定性分析",
-    "title": "POET Technologies (POET)",
-    "section": "今後の展望（定性分析）",
-    "text": "今後の展望（定性分析）\n\nなぜ今、注目されるのか\nAI時代のデータセンターにおいて、GPU間・チップ間の光インターコネクトは次の主戦場になりつつある。現在の電気接続では帯域・消費電力の限界が見え始めており、Co-Packaged Optics（CPO）への移行が業界トレンドとして加速している。\nPOETの Optical Interposer は、このCPOトレンドに直撃するポジショニングにある。従来の光トランシーバーはボードに外付けだったが、POETのアプローチはチップと光学素子を同一パッケージに収める——これにより消費電力・レイテンシ・コストの三重改善が理論上可能。\n\n\nQualcomm出資の噂について\n2026年5月、Qualcommが POET に出資する可能性があるとの噂が市場に広まり、株価が一時 +25% 急騰。 現時点では未確認情報であり、公式発表はない。ただし、もし事実であれば：\n\n技術検証: 大手半導体メーカーがPOETの技術を認めたことを意味する\n商業化加速: Qualcommの製品ラインへの採用・共同開発の可能性\n資金調達: キャッシュバーンが続く中での資本注入\n\nこの噂の真偽と続報が、短期的な株価の最大のカタリストになる。\n\n\n投資テーゼのサマリー\nBull ケース： CPOの標準技術としてPOET Optical Interposerが採用される。データセンター向け光エンジン・トランシーバー市場（数百億ドル規模）の一角を取れれば、現在の時価総額は正当化される。Qualcomm等の戦略投資が実現すれば加速。\nBear ケース： 技術的差別化が維持できず、Intel、Broadcom、Marvell等の大手に市場を奪われる。資金調達が続く中での希薄化リスク。商業化が遅れると、キャッシュバーン($33-35M/年)が経営を圧迫。\n\n\n主要リスク\n\n\n\n\n\n\n\nリスク\n内容\n\n\n\n\n資金リスク\n売上ほぼゼロで年$33-35Mのバーン。増資・希薄化リスクが継続\n\n\n競合リスク\nIntel CPO、Ayar Labs、Ranovus等の競合も同空間に参入中\n\n\n実行リスク\n量産化・歩留まり改善は半導体開発において最大の関門\n\n\nインサイダーリスク\n経営陣保有0.08%。株主目線の経営が担保されにくい\n\n\n噂リスク\nQualcomm出資が不発に終わった場合の反動下落\n\n\n\n\n最終更新: 2026-05-12 | データソース: yfinance (Yahoo Finance)"
-  },
-  {
-    "objectID": "stocks/index.html",
-    "href": "stocks/index.html",
-    "title": "Stocks",
-    "section": "",
-    "text": "個別銘柄の分析一覧。\n\n\n\nTicker\n企業名\nセクター\n最終更新\n\n\n\n\nPOET\nPOET Technologies\n半導体・フォトニクス\n2026-05"
+    "objectID": "analysis/copper.html#投資結論",
+    "href": "analysis/copper.html#投資結論",
+    "title": "銅セクター分析：FCX / SCCO / 住友金属鉱山",
+    "section": "9. 投資結論",
+    "text": "9. 投資結論\n\nFCX（Freeport-McMoRan）\n\n推奨：運用枠（40万円の一部）で検討\nP/E 15〜17x の低い出発点 → 2030年期待値の前倒し織り込みでP/E 30x到達余地あり\nExtreme銅（$6.80/lb）× P/E 30x → 株価 $206（現在比 3.2x）\nリーチング技術（2030年 800M lbs）は EPS感応度の計算に含まれていない追加上乗せ\nAmazon/Rio Tinto「クリーン銅」契約はFCXへのBig Tech需要の前兆\n\n\n\nSCCO（Southern Copper）\n\n推奨：現時点では見送り\nP/E 27〜35x で既にフル評価。Bull以下では 2x に届かない\n3x達成にはP/E 55x超が必要（現実的でない）\n長期（2030年以降）の埋蔵量は世界最大だが、2028年タイムラインには機動力が低い\n\n\n\n住友金属鉱山（5713.T）\n\n推奨：保留\n銅価格上昇（$3.85→$4.82/lb）にもかかわらず純利益が ¥161B → ¥17B に激減\nニッケル価格崩壊（$25,000→$13,000/mt）とバッテリー材料事業の損失が支配的\nニッケル市場の回復が確認されるまで、銅プレイとしては機能しない"
   },
   {
     "objectID": "macro/materials.html",
@@ -180,6 +159,97 @@
     "title": "素材・上流資源：AIインフラの物理的基盤",
     "section": "銅価格の構造的サポートと生産者の暗黙的価格決定力",
     "text": "銅価格の構造的サポートと生産者の暗黙的価格決定力\n\nなぜ「価格決定力」が議論できるのか\n銅はLME/COMEX市場で価格が決まるコモディティであり、FCXもSCCOも原則としてプライス・テイカー（市場価格を受け入れる側）である。しかし以下の構造的メカニズムにより、大手低コスト生産者は中長期的な価格形成に対して暗黙的な影響力を持つ。\n① 設備投資タイミングの管理（最も強力なレバー）\n新規銅鉱山の開発には平均15〜20年を要する。既存大手が新プロジェクトへの投資を2〜3年遅らせるだけで、中期的な供給ひっ迫は固定化される。これは「OPEC的な生産調整」（独禁法上グレー）とは異なり、各社が自社利益の範囲内で合理的に選択できる行動だ。\n② 需要の非弾力性（Wood Mackenzie）\nデータセンター建設コスト全体に占める銅調達費用はわずか0.5%未満。ビッグテックは銅価格が30〜50%上昇しても建設を止めない。需要側からの価格抑制圧力がほぼ存在しない構造。\n③ 構造的供給赤字（BloombergNEF）\n2027年には一次供給不足が約450万トンのピークに達すると予測。既存鉱山の枯渇速度が新規開発を上回っており、特段の生産管理がなくても銅価格の下方硬直性は高い。\n④ 高コスト鉱山の退出効果（価格フロアの存在）\n世界の銅生産限界コスト（90パーセンタイル）は$3.50〜4.00/lb程度。この水準を下回ると高コスト鉱山が生産停止し、自動的に供給が引き締まる。市場には構造的な価格フロアが存在する。\n\n\n「生産者管理」シナリオの根拠（$12,000/mt / $5.44/lb）\nFCX・SCCO・Codelco・Glencore・BHPの上位5社で世界供給の約40%を占める。これらが新規設備投資を2年遅らせた場合、BloombergNEFの450kt不足推計と整合する水準として$12,000/mt（$5.44/lb）での安定推移が試算できる。\n\n注：COMEXの現在価格（$6.50/lb）は米国の銅輸入関税25%を巡る前倒し需要が上乗せされた特殊水準。LMEは約$9,500/mt（$4.31/lb）前後で推移しており、長期シナリオにはLMEベースの予測値を使用する。\n\n\n\n\nEPS感応度・株価シナリオ分析\n銅価格シナリオごとに、FCXとSCCOの予想EPSおよび株価水準を試算する。\n前提条件：\n\n基準年：2025年実績（FCX EPS $1.53、SCCO EPS $5.22、銅 $4.82/lb 年平均）\nFCX感応度：$0.270/share per $0.10/lb（FCX 2024年次報告書公式開示値）\nSCCO感応度：$0.233/share per $0.10/lb（2023〜2025年実データ回帰、R²=0.982）\nコスト一定・生産量一定の仮定（実際は年次でコスト変動あり）\n\n\n\n\n\n\n\n\nTable 1: FCX・SCCO 銅価格シナリオ別EPS・株価試算（2025年実績ベース）\n\n\n\n\n\n \n$/lb\nFCX EPS\nFCX @P/E17\nFCX @P/E22\nSCCO EPS\nSCCO @P/E25\nSCCO @P/E30\n\n\nシナリオ\n \n \n \n \n \n \n \n\n\n\n\nBear（WB $9,500/mt）\n$4.31\n$0.15 (0.1x)\n$3\n$3\n$4.03 (0.8x)\n$101\n$121\n\n\nNeutral（GS $10,750/mt）\n$4.88\n$1.69 (1.1x)\n$29\n$37\n$5.36 (1.0x)\n$134\n$161\n\n\nSupply Floor（生産者管理 $12,000/mt）\n$5.44\n$3.20 (2.1x)\n$54\n$70\n$6.66 (1.3x)\n$167\n$200\n\n\nBull（Citi $13,000/mt）\n$5.90\n$4.45 (2.9x)\n$76\n$98\n$7.74 (1.5x)\n$193\n$232\n\n\nExtreme（OG $15,000/mt）\n$6.80\n$6.88 (4.5x)\n$117\n$151\n$9.83 (1.9x)\n$246\n$295\n\n\nCOMEX現在（関税込み $6.50/lb）\n$6.50\n$6.07 (4.0x)\n$103\n$133\n$9.13 (1.7x)\n$228\n$274\n\n\n\n\n\n\n\n\n読み方：\n\nFCX 3倍目標 = $193：Extreme（OG $15,000/mt）× P/E 28x 相当。条件は厳しいが、低P/E出発点と大規模生産を考えると最も現実的な3倍候補。\nSCCO 3倍目標 = $556：Bull以下のシナリオではいずれも届かない。現在のP/E（27〜35x）が既に高水準すぎる。Bull + P/E30x でも $232 止まり。\n\n\n\n\n住友金属鉱山（5713.T）：銅プレイとしての再評価\n住友金属鉱山は銅鉱山（Sierra Gorda 50.1%、Cerro Verde 16.8%等）を保有するが、ニッケル事業・電子材料事業の影響が大きく、銅価格との連動性が壊れている。\n\n\n\n年\n銅価格（COMEX）\n純利益\n\n\n\n\n2022\n$4.00/lb\n¥281B\n\n\n2023\n$3.85/lb\n¥161B\n\n\n2024\n$4.22/lb\n¥59B\n\n\n2025\n$4.82/lb\n¥17B\n\n\n\n銅価格が上昇する中で純利益が¥281B → ¥17B に激減。原因はLMEニッケル価格の崩壊（$25,000/mt → $13,000/mt）とバッテリー材料事業の損失。ニッケル市場の回復（インドネシア増産の一巡）が確認されるまで、銅プレイとしての組み入れは保留が妥当。\n\n\n\n銅セクター投資結論\n\n\n\n\n\n\n\n\n銘柄\n方針\n根拠\n\n\n\n\nFCX\nリスク枠（10万円）で検討\nP/E 15〜17x（実質）、世界最大級の銅生産規模、3倍可能性あり（Extreme + P/E再評価）\n\n\nSCCO\n現時点では見送り\nP/E 27〜35x で既に高評価。Bull以下では2x届かず、現状では報酬対リスクが見合わない\n\n\n住友金属鉱山\n保留\nニッケル問題が解消されるまで銅プレイとして機能しない"
+  },
+  {
+    "objectID": "stocks/index.html",
+    "href": "stocks/index.html",
+    "title": "Stocks",
+    "section": "",
+    "text": "個別銘柄の分析一覧。\n\n\n\nTicker\n企業名\nセクター\n最終更新\n\n\n\n\nPOET\nPOET Technologies\n半導体・フォトニクス\n2026-05"
+  },
+  {
+    "objectID": "stocks/POET/index.html",
+    "href": "stocks/POET/index.html",
+    "title": "POET Technologies (POET)",
+    "section": "",
+    "text": "ステータス: 保有中 / 注目銘柄 取引所: NASDAQ | セクター: 半導体・フォトニクス | 本社: トロント、カナダ"
+  },
+  {
+    "objectID": "stocks/POET/index.html#株価チャート過去1年",
+    "href": "stocks/POET/index.html#株価チャート過去1年",
+    "title": "POET Technologies (POET)",
+    "section": "株価チャート（過去1年）",
+    "text": "株価チャート（過去1年）"
+  },
+  {
+    "objectID": "stocks/POET/index.html#会社概要",
+    "href": "stocks/POET/index.html#会社概要",
+    "title": "POET Technologies (POET)",
+    "section": "会社概要",
+    "text": "会社概要\nPOET Technologies はOptical Interposer（光学インターポーザー）プラットフォームを開発するカナダ発の半導体企業。電子デバイスと光デバイスをウェハーレベルで単一チップ上に集積する独自技術を持ち、従来の光トランシーバーとは根本的に異なるアーキテクチャを提案している。\n主要製品・技術：\n\nPOET Optical Interposer: 電子・光子デバイスの単一チップ集積プラットフォーム\n光エンジン / 光トランシーバーモジュール: データセンター向け高速・低消費電力接続\n光源製品: LiDAR、OCT（医療）、VRセンシング向け\n\n主要市場：\n\n\n\n市場\n用途\n\n\n\n\nデータセンターAI\n高帯域・低消費電力の光インターコネクト\n\n\n5G / 通信\nPON、GPON、エッジコンピューティング\n\n\nセンシング\nLiDAR、OCT（医療機器）、VR\n\n\n\n従業員数はわずか 80名（2025年時点）。少人数で技術プラットフォームの開発・ライセンスに集中するファブレス型に近いモデル。"
+  },
+  {
+    "objectID": "stocks/POET/index.html#業績",
+    "href": "stocks/POET/index.html#業績",
+    "title": "POET Technologies (POET)",
+    "section": "業績",
+    "text": "業績\n\n損益推移\n\n\n\n指標\nFY2022\nFY2023\nFY2024\nFY2025\n\n\n\n\n売上高\n$553K\n$466K\n$41K\n$1.07M\n\n\n営業損失\n-$19.7M\n-$20.4M\n-$23.6M\n-$33.9M\n\n\nR&D費\n$10.7M\n$10.1M\n$11.3M\n$18.1M\n\n\nSG&A\n$8.2M\n$8.9M\n$10.2M\n$13.5M\n\n\n純損失\n-$21.0M\n-$20.3M\n-$56.7M\n-$63.0M\n\n\n\n\n\n\n\n\n\nNote\n\n\n\nFY2025の純損失 -$63Mのうち、約 -$25M は有価証券売却損等の特殊項目。実態的な営業キャッシュバーンは年間 $33〜35M 程度とみられる。\n\n\n読み方のポイント：\n\n売上高はほぼゼロ水準（FY2024は特に低調 $41K）。FY2025は$1.07Mに回復したが、商業的にはまだ黎明期\nR&D費がFY2025で$18Mへ急増 — 技術開発・製品化への投資を積極的に加速させている\n営業損失の拡大はネガティブではなく、R&D投資拡大の裏返しとして読む必要がある\n\n\n\nセグメント\n公式には単一セグメント。製品カテゴリ別の売上開示はなく、売上のほぼ全額が試験的な製品販売・開発契約収益とみられる。"
+  },
+  {
+    "objectID": "stocks/POET/index.html#財務株主構成",
+    "href": "stocks/POET/index.html#財務株主構成",
+    "title": "POET Technologies (POET)",
+    "section": "財務・株主構成",
+    "text": "財務・株主構成\n\n\n\n指標\n数値\n\n\n\n\n時価総額\n約 $2.1B\n\n\n従業員数\n80名\n\n\nインサイダー保有比率\n0.08%（極めて低い）\n\n\n機関投資家保有比率\n7.4%（116機関）\n\n\n\n\n主要機関投資家（上位10件）\n\n\n\n機関名\n保有比率\n保有株数\n\n\n\n\nMMCAP International\n1.16%\n1,526,205\n\n\nMorgan Stanley\n0.92%\n1,220,206\n\n\nSusquehanna International Group\n0.52%\n686,181\n\n\nRaymond James Financial\n0.52%\n689,017\n\n\nCitadel Advisors\n0.51%\n678,216\n\n\nFédération Des Caisses Desjardins\n0.47%\n618,604\n\n\nParagon Capital Management\n0.36%\n471,720\n\n\nGSA Capital Partners\n0.28%\n363,463\n\n\nJane Street Group\n0.26%\n349,776\n\n\nLPL Financial\n0.24%\n315,024\n\n\n\n\n\n\n\n\n\nWarning\n\n\n\nインサイダー保有が0.08%と非常に低い点は要注意。経営陣のスキンインザゲームが薄く、株主との利益一致に懸念が残る。\n\n\n大手戦略投資家（QualcommやNVIDIAなど）の名前は現時点では機関投資家リストに見当たらない。"
+  },
+  {
+    "objectID": "stocks/POET/index.html#今後の展望定性分析",
+    "href": "stocks/POET/index.html#今後の展望定性分析",
+    "title": "POET Technologies (POET)",
+    "section": "今後の展望（定性分析）",
+    "text": "今後の展望（定性分析）\n\nなぜ今、注目されるのか\nAI時代のデータセンターにおいて、GPU間・チップ間の光インターコネクトは次の主戦場になりつつある。現在の電気接続では帯域・消費電力の限界が見え始めており、Co-Packaged Optics（CPO）への移行が業界トレンドとして加速している。\nPOETの Optical Interposer は、このCPOトレンドに直撃するポジショニングにある。従来の光トランシーバーはボードに外付けだったが、POETのアプローチはチップと光学素子を同一パッケージに収める——これにより消費電力・レイテンシ・コストの三重改善が理論上可能。\n\n\nQualcomm出資の噂について\n2026年5月、Qualcommが POET に出資する可能性があるとの噂が市場に広まり、株価が一時 +25% 急騰。 現時点では未確認情報であり、公式発表はない。ただし、もし事実であれば：\n\n技術検証: 大手半導体メーカーがPOETの技術を認めたことを意味する\n商業化加速: Qualcommの製品ラインへの採用・共同開発の可能性\n資金調達: キャッシュバーンが続く中での資本注入\n\nこの噂の真偽と続報が、短期的な株価の最大のカタリストになる。\n\n\n投資テーゼのサマリー\nBull ケース： CPOの標準技術としてPOET Optical Interposerが採用される。データセンター向け光エンジン・トランシーバー市場（数百億ドル規模）の一角を取れれば、現在の時価総額は正当化される。Qualcomm等の戦略投資が実現すれば加速。\nBear ケース： 技術的差別化が維持できず、Intel、Broadcom、Marvell等の大手に市場を奪われる。資金調達が続く中での希薄化リスク。商業化が遅れると、キャッシュバーン($33-35M/年)が経営を圧迫。\n\n\n主要リスク\n\n\n\n\n\n\n\nリスク\n内容\n\n\n\n\n資金リスク\n売上ほぼゼロで年$33-35Mのバーン。増資・希薄化リスクが継続\n\n\n競合リスク\nIntel CPO、Ayar Labs、Ranovus等の競合も同空間に参入中\n\n\n実行リスク\n量産化・歩留まり改善は半導体開発において最大の関門\n\n\nインサイダーリスク\n経営陣保有0.08%。株主目線の経営が担保されにくい\n\n\n噂リスク\nQualcomm出資が不発に終わった場合の反動下落\n\n\n\n\n最終更新: 2026-05-12 | データソース: yfinance (Yahoo Finance)"
+  },
+  {
+    "objectID": "macro/index.html",
+    "href": "macro/index.html",
+    "title": "AIデータセンター・バリューチェーン全体像",
+    "section": "",
+    "text": "AIの進化は「ソフトウェアやシリコンの魔法」によってもたらされるものではない。メガワット単位の電力、液冷の物理学、超高純度の化学素材、そして限界に挑む精密加工技術のすべてが統合されることで初めて成立する「物理インフラの極致」である。"
+  },
+  {
+    "objectID": "macro/index.html#なぜ今インフラに着目するのか",
+    "href": "macro/index.html#なぜ今インフラに着目するのか",
+    "title": "AIデータセンター・バリューチェーン全体像",
+    "section": "なぜ今、インフラに着目するのか",
+    "text": "なぜ今、インフラに着目するのか\nモルガン・スタンレー（2026年）によれば、AI関連インフラ投資は2028年までに約3兆ドル規模に達すると予測されており、その80%以上はこれから投下される段階にある。マッキンゼーの試算では、2025〜2030年のデータセンター向けCapExは5.2〜7.9兆ドルに及ぶとされる。\n投資機会は「GPU争奪戦（計算能力の確保）」という初期フェーズから、「物理的制約の突破（電力・冷却・極小素材）」という二次・三次フェーズへとシフトしている。"
+  },
+  {
+    "objectID": "macro/index.html#テーマ別パフォーマンス資金はどこまで来たか",
+    "href": "macro/index.html#テーマ別パフォーマンス資金はどこまで来たか",
+    "title": "AIデータセンター・バリューチェーン全体像",
+    "section": "テーマ別パフォーマンス：資金はどこまで来たか",
+    "text": "テーマ別パフォーマンス：資金はどこまで来たか\nAIインフラの波はバリューチェーンの上流から下流へ、順番に資金が流れ込む構造をとっている。チャートは各テーマの代表銘柄の過去2年パフォーマンス（構成銘柄の平均、開始=100）。「既に発見され爆騰したテーマ」と「まだ資金が来ていないテーマ」を一目で把握できる。\n\n\n\n\n\n\n\n\n\n\n読み方： 各線はテーマ内の代表銘柄の平均。x3.89は2年で3.89倍（+289%）を意味する。日本株（安川電機・ファナック）は円建て騰落率のためUSD換算なし。\n\n\nテーマ別 現在PER\nPERは「市場がそのテーマにどれだけの将来成長を織り込んでいるか」を示す。パフォーマンスチャートと合わせて読むことで、「既に爆騰＋高PER＝フル評価」か「まだ動いていない＋低PER＝未発見の余地あり」かが見えてくる。\n\n\n\n\n\n\n\n\n\n\n読み方： trailing PER平均（取得不可の場合はforward PERで代替）。N/Aは赤字企業。25x点線＝市場平均、50x点線＝高成長プレミアム水準。"
+  },
+  {
+    "objectID": "macro/index.html#バリューチェーン構造図",
+    "href": "macro/index.html#バリューチェーン構造図",
+    "title": "AIデータセンター・バリューチェーン全体像",
+    "section": "バリューチェーン構造図",
+    "text": "バリューチェーン構造図\nAIデータセンターの構築を6フェーズに分解すると、以下のサプライチェーンが見えてくる。\n\n\n\nフェーズ\n内容\n主な投資テーマ\n\n\n\n\nPh.1 原材料\n銅・ガリウム・ゲルマニウム・フッ素化合物・ヘリウム\n素材\n\n\nPh.2 半導体\nEDA/IP設計 → EUV露光 → 先進パッケージング → テスト\n半導体エコシステム / フォトニクス / 先進パッケージング\n\n\nPh.3 基礎インフラ\n光ファイバー・電線ケーブル・DACケーブル\n電力インフラ\n\n\nPh.4 ハードウェア\n液冷システム・光トランシーバー・サーバーラック\n液冷・冷却 / フォトニクス\n\n\nPh.5 施設建設\nDC建設施工・免震・MEP工事\n電力インフラ\n\n\nPh.6 電力・運用\n変圧器・電気工事・SMR自家発電\n電力インフラ / SMR\n\n\n\nさらにDCの外側へと展開するテーマとして、宇宙インフラ・フィジカルAI・ロボティクス・DC REITがある。"
+  },
+  {
+    "objectID": "macro/index.html#つの隠れたボトルネック",
+    "href": "macro/index.html#つの隠れたボトルネック",
+    "title": "AIデータセンター・バリューチェーン全体像",
+    "section": "5つの隠れたボトルネック",
+    "text": "5つの隠れたボトルネック\n需要に対して供給が構造的に追いつかず、強力な価格決定権（プライシング・パワー）を持つ可能性が高い急所。\n\n\n\n#\nボトルネック\n象徴的な事実\n詳細テーマ\n\n\n\n\n①\n超大型変圧器・配電インフラ\n納期が12週間→160週間（約3年強）に長期化\n電力インフラ\n\n\n②\n次世代ガラスコア基板（TGV/LIDE）\n有機基板の反り・限界を突破する次のゲームチェンジャー\n先進パッケージング\n\n\n③\nEUVフォトレジスト・ペリクル\n日本企業が世界シェア96%以上を独占する絶対的チョークポイント\n半導体エコシステム\n\n\n④\n液冷用クイック・ディスコネクト（UQD）\n1滴の液漏れが数億円のラック破壊を招くため価格より信頼性が優先\n液冷・冷却\n\n\n⑤\nSMR（小型モジュール炉）による自家発電\nグリッド接続申請の待機期間が米国で平均5年→ビハインド・ザ・メーターへ\nSMR"
+  },
+  {
+    "objectID": "macro/index.html#テーマ別ページ一覧",
+    "href": "macro/index.html#テーマ別ページ一覧",
+    "title": "AIデータセンター・バリューチェーン全体像",
+    "section": "テーマ別ページ一覧",
+    "text": "テーマ別ページ一覧\n\n\n\nテーマ\nページ\n優先度\n\n\n\n\n素材（銅・レアメタル・特殊化学）\nmaterials.qmd\n高\n\n\n半導体エコシステム（EDA/IP・製造・装置）\nsemiconductor.qmd\n高\n\n\nフォトニクス・光インターコネクト\nphotonics.qmd\n高\n\n\n液冷・冷却\nliquid-cooling.qmd\n高\n\n\n先進パッケージング（ガラスコア基板）\nglass-substrate.qmd\n高\n\n\n電力インフラ（変圧器・配電・建設）\npower-infra.qmd\n高\n\n\nSMR・自家発電\nsmr.qmd\n中\n\n\n宇宙インフラ・宇宙DC構想\nspace.qmd\n中\n\n\nフィジカルAI・ロボティクス\nphysical-ai.qmd\n中\n\n\nDC REIT\nreit.qmd\n低"
   },
   {
     "objectID": "about.html",
