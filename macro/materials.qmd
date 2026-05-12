@@ -377,6 +377,78 @@ if margins:
     plt.show()
 ```
 
+### 直近リターン比較（素材グループ別）
+
+「既にどれだけ資金が入ってしまっているか」を把握するための期間別リターン比較。1年・6ヶ月・3ヶ月・1ヶ月の4軸で各銘柄のモメンタムを確認する。
+
+```{python}
+#| echo: false
+#| label: recent-returns-chart
+#| fig-width: 10
+#| fig-height: 7
+
+from matplotlib.patches import Patch
+
+PERIODS = [
+    ('1年',   '1y',  '#1565C0'),
+    ('6ヶ月', '6mo', '#00838F'),
+    ('3ヶ月', '3mo', '#F57F17'),
+    ('1ヶ月', '1mo', '#E53935'),
+]
+
+# 各銘柄・各期間のリターン取得
+all_ret = {}
+for ticker in ALL:
+    all_ret[ticker] = {}
+    for label, period, _ in PERIODS:
+        try:
+            h = yf.Ticker(ticker).history(period=period)
+            if not h.empty:
+                all_ret[ticker][label] = (h['Close'].iloc[-1] / h['Close'].iloc[0] - 1) * 100
+            else:
+                all_ret[ticker][label] = None
+        except Exception:
+            all_ret[ticker][label] = None
+
+# 2×2 サブプロット（素材グループ別）
+fig, axes = plt.subplots(2, 2, figsize=(10, 7))
+axes = axes.flatten()
+bar_h = 0.17
+
+for ax_idx, (group, stocks) in enumerate(GROUPS.items()):
+    ax = axes[ax_idx]
+    n = len(PERIODS)
+    y_centers = []
+
+    for i, (ticker, name) in enumerate(stocks.items()):
+        y_c = i * (n * bar_h + 0.18)
+        y_centers.append(y_c)
+        for j, (label, _, color) in enumerate(PERIODS):
+            y = y_c + (n / 2 - j - 0.5) * bar_h
+            val = all_ret[ticker].get(label)
+            if val is not None:
+                ax.barh(y, val, height=bar_h * 0.85, color=color, alpha=0.85)
+                x_off = 0.4 if val >= 0 else -0.4
+                ha   = 'left' if val >= 0 else 'right'
+                ax.text(val + x_off, y, f'{val:+.0f}%',
+                        va='center', ha=ha, fontsize=6, color=color)
+
+    short_names = [s[:13] for s in stocks.values()]
+    ax.set_yticks(y_centers)
+    ax.set_yticklabels(short_names, fontsize=8)
+    ax.axvline(0, color='black', linewidth=0.7, alpha=0.5)
+    ax.set_title(group, fontsize=10, fontweight='bold')
+    ax.grid(True, axis='x', alpha=0.2)
+    ax.tick_params(labelsize=7)
+
+legend_patches = [Patch(facecolor=c, alpha=0.85, label=lbl) for lbl, _, c in PERIODS]
+fig.legend(handles=legend_patches, loc='lower center', ncol=4,
+           fontsize=8, bbox_to_anchor=(0.5, -0.01))
+fig.suptitle('素材セクター 主要銘柄 直近リターン比較', fontsize=11, fontweight='bold')
+plt.tight_layout(rect=[0, 0.05, 1, 1])
+plt.show()
+```
+
 ---
 
 ## 銅セクター深掘り分析：FCX・SCCO・住友金属鉱山
