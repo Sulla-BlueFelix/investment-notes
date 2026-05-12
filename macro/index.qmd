@@ -12,6 +12,88 @@ title: "AIデータセンター・バリューチェーン全体像"
 
 ---
 
+## テーマ別パフォーマンス：資金はどこまで来たか
+
+AIインフラの波は**バリューチェーンの上流から下流へ**、順番に資金が流れ込む構造をとっている。チャートは各テーマの代表銘柄の過去2年パフォーマンス（構成銘柄の平均、開始=100）。「既に発見され爆騰したテーマ」と「まだ資金が来ていないテーマ」を一目で把握できる。
+
+```{python}
+#| echo: false
+#| label: theme-flow-chart
+#| fig-width: 11
+#| fig-height: 6.5
+
+import yfinance as yf
+import pandas as pd
+import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
+import warnings, logging
+warnings.filterwarnings("ignore")
+logging.getLogger("yfinance").setLevel(logging.CRITICAL)
+
+THEMES = {
+    "GPU/AIアクセラレーター":     ["NVDA", "AVGO"],
+    "CPU/サーバーチップ":         ["INTC", "AMD"],
+    "ハイパースケーラー":         ["AMZN", "MSFT", "GOOGL"],
+    "メモリ (HBM/DRAM)":         ["MU"],
+    "電力・グリッド":             ["ETN", "PWR"],
+    "液冷・冷却":                 ["VRT", "NVENT"],
+    "銅・素材":                   ["FCX", "SCCO"],
+    "フォトニクス":               ["COHR", "LITE"],
+    "宇宙インフラ":               ["RKLB", "ASTS"],
+    "フィジカルAI・ロボティクス": ["TSLA", "6506.T", "6954.T"],
+}
+
+COLORS = [
+    "#E53935", "#1565C0", "#6A1B9A", "#00838F", "#F57F17",
+    "#00695C", "#795548", "#AD1457", "#37474F", "#558B2F",
+]
+
+theme_series = {}
+for theme, tickers in THEMES.items():
+    normed_list = []
+    for t in tickers:
+        try:
+            hist = yf.Ticker(t).history(period="2y")["Close"]
+            if len(hist) < 20:
+                continue
+            hist.index = pd.to_datetime(hist.index).tz_localize(None)
+            normed = hist / hist.iloc[0] * 100
+            normed_list.append(normed)
+        except Exception:
+            pass
+    if normed_list:
+        avg = pd.concat(normed_list, axis=1).mean(axis=1)
+        theme_series[theme] = avg
+
+fig, ax = plt.subplots(figsize=(11, 6.5))
+
+for (theme, series), color in zip(theme_series.items(), COLORS):
+    final = series.iloc[-1]
+    ax.plot(series.index, series.values,
+            label=f"{theme}  (x{final/100:.2f})",
+            color=color, linewidth=2.0, alpha=0.9)
+    ax.annotate(f"  x{final/100:.2f}",
+                xy=(series.index[-1], final),
+                fontsize=7, color=color, va="center")
+
+ax.axhline(100, color="gray", linestyle=":", linewidth=0.8, alpha=0.4)
+ax.set_ylabel("パフォーマンス（2年前=100）", fontsize=9)
+ax.set_title("AIインフラ バリューチェーン別 株価パフォーマンス（過去2年）",
+             fontsize=11, fontweight="bold", pad=12)
+ax.legend(fontsize=7.5, loc="upper left", framealpha=0.85, ncol=2, columnspacing=1.0)
+ax.xaxis.set_major_formatter(mdates.DateFormatter("%y/%m"))
+ax.xaxis.set_major_locator(mdates.MonthLocator(interval=3))
+ax.tick_params(axis="x", rotation=30, labelsize=8)
+ax.tick_params(axis="y", labelsize=8)
+ax.grid(True, alpha=0.2)
+plt.tight_layout()
+plt.show()
+```
+
+> **読み方：** 各線はテーマ内の代表銘柄の平均。`x3.89`は2年で3.89倍（+289%）を意味する。日本株（安川電機・ファナック）は円建て騰落率のためUSD換算なし。
+
+---
+
 ## バリューチェーン構造図
 
 AIデータセンターの構築を6フェーズに分解すると、以下のサプライチェーンが見えてくる。
