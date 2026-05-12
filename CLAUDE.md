@@ -1,5 +1,13 @@
 # Investment Notes - Project Guidelines
 
+## 投資対象ユニバース
+
+- **対象市場：米国上場株（NYSE・NASDAQ）および日本株（東証）のみ**
+- 理由：実際に購入できる市場に限定することで、分析を実用的に保つ
+- LSE（ロンドン）、ASX（オーストラリア）、EUR市場（ユーロネクスト等）上場銘柄は対象外
+  - 例：Glencore（LSE）、Lynas Rare Earths（ASX）、Air Liquide（EPA）は分析対象外
+- ADR（米国預託証券）として米国市場に上場している銘柄は対象に含む（例：BHP）
+
 ## 投資哲学
 
 - **分析対象はその技術・市場でトップレベルの企業を優先する**
