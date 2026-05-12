@@ -213,15 +213,57 @@ def fmt(v, decimals=1):
     except Exception:
         return "N/A"
 
-def billions(v):
+infos = {t: fetch_info(t) for t in ALL}
+
+# USD/JPY レート取得
+try:
+    _fx = yf.Ticker('USDJPY=X').history(period='1d')
+    USD_JPY = float(_fx['Close'].iloc[-1]) if not _fx.empty else 150.0
+except Exception:
+    USD_JPY = 150.0
+
+JPY_TICKERS = {t for t in ALL if t.endswith('.T')}
+
+def to_usd(v, ticker):
+    if v is None or (isinstance(v, float) and pd.isna(v)):
+        return None
+    return v / USD_JPY if ticker in JPY_TICKERS else v
+
+def pct(v):
     try:
         if v is None or (isinstance(v, float) and pd.isna(v)):
             return "N/A"
-        return f"${v/1e9:.1f}B"
+        return f"{v*100:.1f}%"
     except Exception:
         return "N/A"
 
-infos = {t: fetch_info(t) for t in ALL}
+def fmt(v, decimals=1):
+    try:
+        if v is None or (isinstance(v, float) and pd.isna(v)):
+            return "N/A"
+        return f"{v:.{decimals}f}"
+    except Exception:
+        return "N/A"
+
+def approx_billions(v, ticker):
+    """時価総額をレンジ感のある近似値で表示（JPY→USD変換込み）"""
+    try:
+        usd = to_usd(v, ticker)
+        if usd is None:
+            return "N/A"
+        b = usd / 1e9
+        if b < 1:
+            return f"~${b*1000:.0f}M"
+        elif b < 10:
+            return f"~${b:.1f}B"
+        elif b < 50:
+            return f"~${round(b/2.5)*2.5:.0f}B"
+        elif b < 200:
+            return f"~${round(b/10)*10:.0f}B"
+        else:
+            return f"~${round(b/20)*20:.0f}B"
+    except Exception:
+        return "N/A"
 ```
 
 ### バリュエーション・収益性サマリー
@@ -237,7 +279,7 @@ for group, stocks in GROUPS.items():
         rows.append({
             'グループ':        group,
             '銘柄':            f"{name} ({ticker})",
-            '時価総額':        billions(info.get('marketCap')),
+            '時価総額(USD)':   approx_billions(info.get('marketCap'), ticker),
             '予想PER':         fmt(info.get('forwardPE')),
             'EV/EBITDA':       fmt(info.get('enterpriseToEbitda')),
             '営業利益率':      pct(info.get('operatingMargins')),
