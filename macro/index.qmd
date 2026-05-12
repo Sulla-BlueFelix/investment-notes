@@ -30,6 +30,11 @@ import warnings, logging
 warnings.filterwarnings("ignore")
 logging.getLogger("yfinance").setLevel(logging.CRITICAL)
 
+from matplotlib import rcParams
+rcParams['font.family'] = 'sans-serif'
+rcParams['font.sans-serif'] = ['MS Gothic', 'Meiryo', 'Yu Gothic', 'DejaVu Sans']
+rcParams['axes.unicode_minus'] = False
+
 THEMES = {
     "GPU/AIアクセラレーター":     ["NVDA", "AVGO"],
     "CPU/サーバーチップ":         ["INTC", "AMD"],
@@ -91,6 +96,96 @@ plt.show()
 ```
 
 > **読み方：** 各線はテーマ内の代表銘柄の平均。`x3.89`は2年で3.89倍（+289%）を意味する。日本株（安川電機・ファナック）は円建て騰落率のためUSD換算なし。
+
+### テーマ別 現在PER
+
+PERは「市場がそのテーマにどれだけの将来成長を織り込んでいるか」を示す。パフォーマンスチャートと合わせて読むことで、「既に爆騰＋高PER＝フル評価」か「まだ動いていない＋低PER＝未発見の余地あり」かが見えてくる。
+
+```{python}
+#| echo: false
+#| label: theme-per-chart
+#| fig-width: 10
+#| fig-height: 5.5
+
+import yfinance as yf
+import matplotlib.pyplot as plt
+import warnings, logging
+warnings.filterwarnings("ignore")
+logging.getLogger("yfinance").setLevel(logging.CRITICAL)
+
+from matplotlib import rcParams
+rcParams['font.family'] = 'sans-serif'
+rcParams['font.sans-serif'] = ['MS Gothic', 'Meiryo', 'Yu Gothic', 'DejaVu Sans']
+rcParams['axes.unicode_minus'] = False
+
+THEMES_PE = [
+    ("GPU/AIアクセラレーター",     ["NVDA", "AVGO"],           "#E53935"),
+    ("CPU/サーバーチップ",         ["INTC", "AMD"],            "#1565C0"),
+    ("ハイパースケーラー",         ["AMZN", "MSFT", "GOOGL"], "#6A1B9A"),
+    ("メモリ (HBM/DRAM)",         ["MU"],                     "#00838F"),
+    ("電力・グリッド",             ["ETN", "PWR"],             "#F57F17"),
+    ("液冷・冷却",                 ["VRT", "NVENT"],           "#00695C"),
+    ("銅・素材",                   ["FCX", "SCCO"],            "#795548"),
+    ("フォトニクス",               ["COHR", "LITE"],           "#AD1457"),
+    ("宇宙インフラ",               ["RKLB", "ASTS"],           "#37474F"),
+    ("フィジカルAI・ロボティクス", ["TSLA", "6506.T", "6954.T"], "#558B2F"),
+]
+
+pe_data = []
+for theme, tickers, color in THEMES_PE:
+    pes, na_list = [], []
+    for t in tickers:
+        try:
+            info = yf.Ticker(t).info
+            pe = info.get('trailingPE')
+            if pe and isinstance(pe, (int, float)) and 0 < pe < 500:
+                pes.append(pe)
+            else:
+                fpe = info.get('forwardPE')
+                if fpe and isinstance(fpe, (int, float)) and 0 < fpe < 500:
+                    pes.append(fpe)
+                    na_list.append(f"{t}(fwd)")
+                else:
+                    na_list.append(t)
+        except Exception:
+            na_list.append(t)
+    avg_pe = sum(pes) / len(pes) if pes else None
+    note = f"  ※{', '.join(na_list)} N/A" if na_list else ""
+    pe_data.append((theme, avg_pe, color, note))
+
+valid   = sorted([(t, v, c, n) for t, v, c, n in pe_data if v is not None], key=lambda x: x[1])
+invalid = [(t, v, c, n) for t, v, c, n in pe_data if v is None]
+rows = valid + invalid
+
+labels  = [r[0] for r in rows]
+vals    = [r[1] if r[1] is not None else 0 for r in rows]
+colors  = [r[2] for r in rows]
+notes   = [r[3] for r in rows]
+max_val = max(v for v in vals if v > 0)
+
+fig, ax = plt.subplots(figsize=(10, 5.5))
+ax.barh(labels, vals, color=colors, alpha=0.85, height=0.65)
+
+for label, val, note in zip(labels, vals, notes):
+    if val > 0:
+        ax.text(val + max_val * 0.01, labels.index(label),
+                f"{val:.0f}x{note}", va='center', fontsize=7.5)
+    else:
+        ax.text(max_val * 0.01, labels.index(label),
+                "N/A（赤字）", va='center', fontsize=7.5, style='italic', color='gray')
+
+ax.axvline(25, color='#E53935', linestyle='--', linewidth=0.9, alpha=0.5, label='25x')
+ax.axvline(50, color='#FF9800', linestyle='--', linewidth=0.9, alpha=0.5, label='50x')
+ax.set_xlabel('PER（倍）', fontsize=9)
+ax.set_title('AIインフラ テーマ別 現在PER（構成銘柄平均）', fontsize=11, fontweight='bold')
+ax.legend(fontsize=8, loc='lower right')
+ax.grid(True, axis='x', alpha=0.2)
+ax.tick_params(labelsize=8)
+plt.tight_layout()
+plt.show()
+```
+
+> **読み方：** trailing PER平均（取得不可の場合はforward PERで代替）。N/Aは赤字企業。`25x`点線＝市場平均、`50x`点線＝高成長プレミアム水準。
 
 ---
 
