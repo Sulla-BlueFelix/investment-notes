@@ -7,6 +7,13 @@
     "text": "ステータス: 保有中 / 注目銘柄 取引所: NASDAQ | セクター: 半導体・フォトニクス | 本社: トロント、カナダ"
   },
   {
+    "objectID": "stocks/POET/index.html#株価チャート過去1年",
+    "href": "stocks/POET/index.html#株価チャート過去1年",
+    "title": "POET Technologies (POET)",
+    "section": "株価チャート（過去1年）",
+    "text": "株価チャート（過去1年）"
+  },
+  {
     "objectID": "stocks/POET/index.html#会社概要",
     "href": "stocks/POET/index.html#会社概要",
     "title": "POET Technologies (POET)",
@@ -35,6 +42,48 @@
     "text": "今後の展望（定性分析）\n\nなぜ今、注目されるのか\nAI時代のデータセンターにおいて、GPU間・チップ間の光インターコネクトは次の主戦場になりつつある。現在の電気接続では帯域・消費電力の限界が見え始めており、Co-Packaged Optics（CPO）への移行が業界トレンドとして加速している。\nPOETの Optical Interposer は、このCPOトレンドに直撃するポジショニングにある。従来の光トランシーバーはボードに外付けだったが、POETのアプローチはチップと光学素子を同一パッケージに収める——これにより消費電力・レイテンシ・コストの三重改善が理論上可能。\n\n\nQualcomm出資の噂について\n2026年5月、Qualcommが POET に出資する可能性があるとの噂が市場に広まり、株価が一時 +25% 急騰。 現時点では未確認情報であり、公式発表はない。ただし、もし事実であれば：\n\n技術検証: 大手半導体メーカーがPOETの技術を認めたことを意味する\n商業化加速: Qualcommの製品ラインへの採用・共同開発の可能性\n資金調達: キャッシュバーンが続く中での資本注入\n\nこの噂の真偽と続報が、短期的な株価の最大のカタリストになる。\n\n\n投資テーゼのサマリー\nBull ケース： CPOの標準技術としてPOET Optical Interposerが採用される。データセンター向け光エンジン・トランシーバー市場（数百億ドル規模）の一角を取れれば、現在の時価総額は正当化される。Qualcomm等の戦略投資が実現すれば加速。\nBear ケース： 技術的差別化が維持できず、Intel、Broadcom、Marvell等の大手に市場を奪われる。資金調達が続く中での希薄化リスク。商業化が遅れると、キャッシュバーン($33-35M/年)が経営を圧迫。\n\n\n主要リスク\n\n\n\n\n\n\n\nリスク\n内容\n\n\n\n\n資金リスク\n売上ほぼゼロで年$33-35Mのバーン。増資・希薄化リスクが継続\n\n\n競合リスク\nIntel CPO、Ayar Labs、Ranovus等の競合も同空間に参入中\n\n\n実行リスク\n量産化・歩留まり改善は半導体開発において最大の関門\n\n\nインサイダーリスク\n経営陣保有0.08%。株主目線の経営が担保されにくい\n\n\n噂リスク\nQualcomm出資が不発に終わった場合の反動下落\n\n\n\n\n最終更新: 2026-05-12 | データソース: yfinance (Yahoo Finance)"
   },
   {
+    "objectID": "macro/index.html",
+    "href": "macro/index.html",
+    "title": "AIデータセンター・バリューチェーン全体像",
+    "section": "",
+    "text": "AIの進化は「ソフトウェアやシリコンの魔法」によってもたらされるものではない。メガワット単位の電力、液冷の物理学、超高純度の化学素材、そして限界に挑む精密加工技術のすべてが統合されることで初めて成立する「物理インフラの極致」である。"
+  },
+  {
+    "objectID": "macro/index.html#なぜ今インフラに着目するのか",
+    "href": "macro/index.html#なぜ今インフラに着目するのか",
+    "title": "AIデータセンター・バリューチェーン全体像",
+    "section": "なぜ今、インフラに着目するのか",
+    "text": "なぜ今、インフラに着目するのか\nモルガン・スタンレー（2026年）によれば、AI関連インフラ投資は2028年までに約3兆ドル規模に達すると予測されており、その80%以上はこれから投下される段階にある。マッキンゼーの試算では、2025〜2030年のデータセンター向けCapExは5.2〜7.9兆ドルに及ぶとされる。\n投資機会は「GPU争奪戦（計算能力の確保）」という初期フェーズから、「物理的制約の突破（電力・冷却・極小素材）」という二次・三次フェーズへとシフトしている。"
+  },
+  {
+    "objectID": "macro/index.html#バリューチェーン構造図",
+    "href": "macro/index.html#バリューチェーン構造図",
+    "title": "AIデータセンター・バリューチェーン全体像",
+    "section": "バリューチェーン構造図",
+    "text": "バリューチェーン構造図\nAIデータセンターの構築を6フェーズに分解すると、以下のサプライチェーンが見えてくる。\n\n\n\nフェーズ\n内容\n主な投資テーマ\n\n\n\n\nPh.1 原材料\n銅・ガリウム・ゲルマニウム・フッ素化合物・ヘリウム\n素材\n\n\nPh.2 半導体\nEDA/IP設計 → EUV露光 → 先進パッケージング → テスト\n半導体エコシステム / フォトニクス / 先進パッケージング\n\n\nPh.3 基礎インフラ\n光ファイバー・電線ケーブル・DACケーブル\n電力インフラ\n\n\nPh.4 ハードウェア\n液冷システム・光トランシーバー・サーバーラック\n液冷・冷却 / フォトニクス\n\n\nPh.5 施設建設\nDC建設施工・免震・MEP工事\n電力インフラ\n\n\nPh.6 電力・運用\n変圧器・電気工事・SMR自家発電\n電力インフラ / SMR\n\n\n\nさらにDCの外側へと展開するテーマとして、宇宙インフラ・フィジカルAI・ロボティクス・DC REITがある。"
+  },
+  {
+    "objectID": "macro/index.html#つの隠れたボトルネック",
+    "href": "macro/index.html#つの隠れたボトルネック",
+    "title": "AIデータセンター・バリューチェーン全体像",
+    "section": "5つの隠れたボトルネック",
+    "text": "5つの隠れたボトルネック\n需要に対して供給が構造的に追いつかず、強力な価格決定権（プライシング・パワー）を持つ可能性が高い急所。\n\n\n\n#\nボトルネック\n象徴的な事実\n詳細テーマ\n\n\n\n\n①\n超大型変圧器・配電インフラ\n納期が12週間→160週間（約3年強）に長期化\n電力インフラ\n\n\n②\n次世代ガラスコア基板（TGV/LIDE）\n有機基板の反り・限界を突破する次のゲームチェンジャー\n先進パッケージング\n\n\n③\nEUVフォトレジスト・ペリクル\n日本企業が世界シェア96%以上を独占する絶対的チョークポイント\n半導体エコシステム\n\n\n④\n液冷用クイック・ディスコネクト（UQD）\n1滴の液漏れが数億円のラック破壊を招くため価格より信頼性が優先\n液冷・冷却\n\n\n⑤\nSMR（小型モジュール炉）による自家発電\nグリッド接続申請の待機期間が米国で平均5年→ビハインド・ザ・メーターへ\nSMR"
+  },
+  {
+    "objectID": "macro/index.html#テーマ別ページ一覧",
+    "href": "macro/index.html#テーマ別ページ一覧",
+    "title": "AIデータセンター・バリューチェーン全体像",
+    "section": "テーマ別ページ一覧",
+    "text": "テーマ別ページ一覧\n\n\n\nテーマ\nページ\n優先度\n\n\n\n\n素材（銅・レアメタル・特殊化学）\nmaterials.qmd\n高\n\n\n半導体エコシステム（EDA/IP・製造・装置）\nsemiconductor.qmd\n高\n\n\nフォトニクス・光インターコネクト\nphotonics.qmd\n高\n\n\n液冷・冷却\nliquid-cooling.qmd\n高\n\n\n先進パッケージング（ガラスコア基板）\nglass-substrate.qmd\n高\n\n\n電力インフラ（変圧器・配電・建設）\npower-infra.qmd\n高\n\n\nSMR・自家発電\nsmr.qmd\n中\n\n\n宇宙インフラ・宇宙DC構想\nspace.qmd\n中\n\n\nフィジカルAI・ロボティクス\nphysical-ai.qmd\n中\n\n\nDC REIT\nreit.qmd\n低"
+  },
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
+    "section": "",
+    "text": "About this site"
+  },
+  {
     "objectID": "index.html",
     "href": "index.html",
     "title": "Investment Notes",
@@ -56,31 +105,10 @@
     "text": "セクション\n\n\n\nMacro\n金利・セクターローテーション・地政学リスク\n\n\nStocks\n個別銘柄の定性・定量分析"
   },
   {
-    "objectID": "macro/index.html",
-    "href": "macro/index.html",
-    "title": "Macro",
-    "section": "",
-    "text": "準備中\n金利動向、セクターローテーション、地政学リスクなどマクロ環境の分析。"
-  },
-  {
-    "objectID": "about.html",
-    "href": "about.html",
-    "title": "About",
-    "section": "",
-    "text": "About this site"
-  },
-  {
     "objectID": "stocks/index.html",
     "href": "stocks/index.html",
     "title": "Stocks",
     "section": "",
     "text": "個別銘柄の分析一覧。\n\n\n\nTicker\n企業名\nセクター\n最終更新\n\n\n\n\nPOET\nPOET Technologies\n半導体・フォトニクス\n2026-05"
-  },
-  {
-    "objectID": "stocks/POET/index.html#株価チャート過去1年",
-    "href": "stocks/POET/index.html#株価チャート過去1年",
-    "title": "POET Technologies (POET)",
-    "section": "株価チャート（過去1年）",
-    "text": "株価チャート（過去1年）"
   }
 ]

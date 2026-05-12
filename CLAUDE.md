@@ -1,5 +1,11 @@
 # Investment Notes - Project Guidelines
 
+## リサーチ方針
+
+- MCP・APIを使うもの（financial-datasets等）以外のリサーチは、必ず外部AIが担当する
+- ClaudeがWebサイトを独自に調査・検索することはNG（WebSearchツール等の使用禁止）
+- 定性情報（企業概要・競合分析・ニュース等）は外部AIから提供されたものをベースに使用する
+
 ## データソース戦略
 
 | 対象 | ツール | 備考 |
