@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>AIデータセンター・バリューチェーン全体像 – Investment Notes</title>
+<title>液冷・冷却：AIラックの「熱の壁」を破る唯一の手段 – Investment Notes</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -26,7 +26,7 @@ ul.task-list li input[type="checkbox"] {
 </style>
 
 
-<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" integrity="sha384-ZvpUoO/+PpLXR1lu4jmpXWu80pZlYUAfxl5NsBMWOEPSjUn/6Z/hRTt8+pR6L4N2" crossorigin="anonymous"></script><script src="../site_libs/quarto-nav/quarto-nav.js"></script>
 <script src="../site_libs/quarto-nav/headroom.min.js"></script>
 <script src="../site_libs/clipboard/clipboard.min.js"></script>
 <script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
@@ -70,6 +70,12 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
+<script src="https://cdn.jsdelivr.net/npm/requirejs@2.3.6/require.min.js" integrity="sha384-c9c+LnTbwQ3aujuU7ULEPVvgLs+Fn6fJUvIGTsuu1ZcCf11fiEubah0ttpca4ntM sha384-6V1/AdqZRWk1KAlWbKBlGhN7VG4iE/yAZcO6NZPMF8od0vukrvr0tg4qY6NSrItx" crossorigin="anonymous"></script>
+
+
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
 
 
 <link rel="stylesheet" href="../styles.css">
@@ -97,7 +103,7 @@ ul.task-list li input[type="checkbox"] {
 <span class="menu-text">Home</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link active" href="../macro/index.html" aria-current="page"> 
+    <a class="nav-link" href="../macro/index.html"> 
 <span class="menu-text">Macro</span></a>
   </li>  
   <li class="nav-item">
@@ -120,14 +126,26 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#なぜ今インフラに着目するのか" id="toc-なぜ今インフラに着目するのか" class="nav-link active" data-scroll-target="#なぜ今インフラに着目するのか">なぜ今、インフラに着目するのか</a></li>
-  <li><a href="#テーマ別パフォーマンス資金はどこまで来たか" id="toc-テーマ別パフォーマンス資金はどこまで来たか" class="nav-link" data-scroll-target="#テーマ別パフォーマンス資金はどこまで来たか">テーマ別パフォーマンス：資金はどこまで来たか</a>
+  <li><a href="#なぜ今液冷が投資テーマになるのか" id="toc-なぜ今液冷が投資テーマになるのか" class="nav-link active" data-scroll-target="#なぜ今液冷が投資テーマになるのか">なぜ今、液冷が投資テーマになるのか</a></li>
+  <li><a href="#技術レイヤーとチョークポイント構造" id="toc-技術レイヤーとチョークポイント構造" class="nav-link" data-scroll-target="#技術レイヤーとチョークポイント構造">技術レイヤーとチョークポイント構造</a>
   <ul class="collapse">
-  <li><a href="#テーマ別-現在per" id="toc-テーマ別-現在per" class="nav-link" data-scroll-target="#テーマ別-現在per">テーマ別 現在PER</a></li>
+  <li><a href="#uqdが最大のチョークポイントである理由" id="toc-uqdが最大のチョークポイントである理由" class="nav-link" data-scroll-target="#uqdが最大のチョークポイントである理由">UQDが最大のチョークポイントである理由</a></li>
+  <li><a href="#信越化学のtimが代替不可能な理由" id="toc-信越化学のtimが代替不可能な理由" class="nav-link" data-scroll-target="#信越化学のtimが代替不可能な理由">信越化学のTIMが代替不可能な理由</a></li>
   </ul></li>
-  <li><a href="#バリューチェーン構造図" id="toc-バリューチェーン構造図" class="nav-link" data-scroll-target="#バリューチェーン構造図">バリューチェーン構造図</a></li>
-  <li><a href="#つの隠れたボトルネック" id="toc-つの隠れたボトルネック" class="nav-link" data-scroll-target="#つの隠れたボトルネック">5つの隠れたボトルネック</a></li>
-  <li><a href="#テーマ別ページ一覧" id="toc-テーマ別ページ一覧" class="nav-link" data-scroll-target="#テーマ別ページ一覧">テーマ別ページ一覧</a></li>
+  <li><a href="#主要銘柄マップ" id="toc-主要銘柄マップ" class="nav-link" data-scroll-target="#主要銘柄マップ">主要銘柄マップ</a>
+  <ul class="collapse">
+  <li><a href="#コア投資候補業界パワー優先" id="toc-コア投資候補業界パワー優先" class="nav-link" data-scroll-target="#コア投資候補業界パワー優先">コア投資候補（業界パワー優先）</a></li>
+  <li><a href="#チョークポイント保有者" id="toc-チョークポイント保有者" class="nav-link" data-scroll-target="#チョークポイント保有者">チョークポイント保有者</a></li>
+  <li><a href="#ロマン枠変革カタリスト型" id="toc-ロマン枠変革カタリスト型" class="nav-link" data-scroll-target="#ロマン枠変革カタリスト型">ロマン枠（変革カタリスト型）</a></li>
+  <li><a href="#ドキュメント記録のみ現時点では投資対象外" id="toc-ドキュメント記録のみ現時点では投資対象外" class="nav-link" data-scroll-target="#ドキュメント記録のみ現時点では投資対象外">ドキュメント記録のみ（現時点では投資対象外）</a></li>
+  </ul></li>
+  <li><a href="#定量分析" id="toc-定量分析" class="nav-link" data-scroll-target="#定量分析">定量分析</a>
+  <ul class="collapse">
+  <li><a href="#バリュエーション収益性サマリー" id="toc-バリュエーション収益性サマリー" class="nav-link" data-scroll-target="#バリュエーション収益性サマリー">バリュエーション・収益性サマリー</a></li>
+  <li><a href="#株価パフォーマンス比較過去1年" id="toc-株価パフォーマンス比較過去1年" class="nav-link" data-scroll-target="#株価パフォーマンス比較過去1年">株価パフォーマンス比較（過去1年）</a></li>
+  <li><a href="#forward-per-比較割高感の可視化" id="toc-forward-per-比較割高感の可視化" class="nav-link" data-scroll-target="#forward-per-比較割高感の可視化">Forward PER 比較（割高感の可視化）</a></li>
+  </ul></li>
+  <li><a href="#投資判断サマリー" id="toc-投資判断サマリー" class="nav-link" data-scroll-target="#投資判断サマリー">投資判断サマリー</a></li>
   </ul>
 </nav>
     </div>
@@ -136,7 +154,7 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">AIデータセンター・バリューチェーン全体像</h1>
+<h1 class="title">液冷・冷却：AIラックの「熱の壁」を破る唯一の手段</h1>
 </div>
 
 
@@ -154,204 +172,422 @@ ul.task-list li input[type="checkbox"] {
 
 
 <blockquote class="blockquote">
-<p>AIの進化は「ソフトウェアやシリコンの魔法」によってもたらされるものではない。メガワット単位の電力、液冷の物理学、超高純度の化学素材、そして限界に挑む精密加工技術のすべてが統合されることで初めて成立する「物理インフラの極致」である。</p>
+<p>空冷の限界はラックあたり50kW。GB200 NVL72は130kW超を発熱する。物理法則が液冷への移行を強制した。Microsoftは2025年2月に全新規Azure AIインフラで液冷を義務化した。これは選択肢ではなく、インフラの前提だ。</p>
 </blockquote>
-<section id="なぜ今インフラに着目するのか" class="level2">
-<h2 class="anchored" data-anchor-id="なぜ今インフラに着目するのか">なぜ今、インフラに着目するのか</h2>
-<p>モルガン・スタンレー（2026年）によれば、AI関連インフラ投資は2028年までに<strong>約3兆ドル規模</strong>に達すると予測されており、その80%以上はこれから投下される段階にある。マッキンゼーの試算では、2025〜2030年のデータセンター向けCapExは<strong>5.2〜7.9兆ドル</strong>に及ぶとされる。</p>
-<p>投資機会は「GPU争奪戦（計算能力の確保）」という初期フェーズから、<strong>「物理的制約の突破（電力・冷却・極小素材）」</strong>という二次・三次フェーズへとシフトしている。</p>
-<hr>
-</section>
-<section id="テーマ別パフォーマンス資金はどこまで来たか" class="level2">
-<h2 class="anchored" data-anchor-id="テーマ別パフォーマンス資金はどこまで来たか">テーマ別パフォーマンス：資金はどこまで来たか</h2>
-<p>AIインフラの波は<strong>バリューチェーンの上流から下流へ</strong>、順番に資金が流れ込む構造をとっている。チャートは各テーマの代表銘柄の過去2年パフォーマンス（構成銘柄の平均、開始=100）。「既に発見され爆騰したテーマ」と「まだ資金が来ていないテーマ」を一目で把握できる。</p>
-<div id="cell-theme-flow-chart" class="cell" data-fig-height="6.5" data-fig-width="11" data-execution_count="1">
-<div class="cell-output cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="index_files/figure-html/theme-flow-chart-output-1.png" id="theme-flow-chart" width="1044" height="614" class="figure-img"></p>
-</figure>
-</div>
-</div>
-</div>
-<blockquote class="blockquote">
-<p><strong>読み方：</strong> 各線はテーマ内の代表銘柄の平均。<code>x3.89</code>は2年で3.89倍（+289%）を意味する。日本株（安川電機・ファナック）は円建て騰落率のためUSD換算なし。</p>
-</blockquote>
-<section id="テーマ別-現在per" class="level3">
-<h3 class="anchored" data-anchor-id="テーマ別-現在per">テーマ別 現在PER</h3>
-<p>PERは「市場がそのテーマにどれだけの将来成長を織り込んでいるか」を示す。パフォーマンスチャートと合わせて読むことで、「既に爆騰＋高PER＝フル評価」か「まだ動いていない＋低PER＝未発見の余地あり」かが見えてくる。</p>
-<div id="cell-theme-per-chart" class="cell" data-fig-height="5.5" data-fig-width="10" data-execution_count="2">
-<div class="cell-output cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="index_files/figure-html/theme-per-chart-output-1.png" id="theme-per-chart" width="951" height="517" class="figure-img"></p>
-</figure>
-</div>
-</div>
-</div>
-<blockquote class="blockquote">
-<p><strong>読み方：</strong> trailing PER平均（取得不可の場合はforward PERで代替）。N/Aは赤字企業。<code>25x</code>点線＝市場平均、<code>50x</code>点線＝高成長プレミアム水準。</p>
-</blockquote>
-<hr>
-</section>
-</section>
-<section id="バリューチェーン構造図" class="level2">
-<h2 class="anchored" data-anchor-id="バリューチェーン構造図">バリューチェーン構造図</h2>
-<p>AIデータセンターの構築を6フェーズに分解すると、以下のサプライチェーンが見えてくる。</p>
+<section id="なぜ今液冷が投資テーマになるのか" class="level2">
+<h2 class="anchored" data-anchor-id="なぜ今液冷が投資テーマになるのか">なぜ今、液冷が投資テーマになるのか</h2>
+<p>AIチップの熱設計電力（TDP）は世代ごとに暴力的に上昇している。</p>
 <table class="caption-top table">
 <thead>
 <tr class="header">
-<th>フェーズ</th>
+<th>GPUアーキテクチャ</th>
+<th>TDP（チップ単体）</th>
+<th>ラック全体</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Hopper（H100）</td>
+<td>~700W</td>
+<td>~40kW</td>
+</tr>
+<tr class="even">
+<td>Blackwell（B200）</td>
+<td>~1,000W</td>
+<td>~120〜130kW</td>
+</tr>
+<tr class="odd">
+<td>Rubin（VR200、次世代）</td>
+<td>~2,300W（予測）</td>
+<td>200kW超（予測）</td>
+</tr>
+</tbody>
+</table>
+<p>空気の熱伝導率は水の<strong>1/25</strong>。130kWの熱を空気で捌くことは物理的に不可能であり、直接液冷（DLC）への移行は不可逆だ。</p>
+<p>世界の液冷市場は2025年時点の約32〜48億ドルから2033〜2036年には170〜270億ドル規模へ成長すると予測され、CAGRは17〜31%と極めて高い。</p>
+<hr>
+</section>
+<section id="技術レイヤーとチョークポイント構造" class="level2">
+<h2 class="anchored" data-anchor-id="技術レイヤーとチョークポイント構造">技術レイヤーとチョークポイント構造</h2>
+<p>液冷バリューチェーンは4つのレイヤーに分断されており、各レイヤーに独自の参入障壁がある。</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>レイヤー</th>
 <th>内容</th>
-<th>主な投資テーマ</th>
+<th>主な上場プレイヤー</th>
+<th>チョークポイント度</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td><strong>Ph.1</strong> 原材料</td>
-<td>銅・ガリウム・ゲルマニウム・フッ素化合物・ヘリウム</td>
-<td><a href="../macro/materials.html">素材</a></td>
+<td><strong>システム全体（CDU・ラック）</strong></td>
+<td>冷却水分配装置・ラック統合・制御SW</td>
+<td>VRT、ETN、NVT、MOD</td>
+<td>★★★★</td>
 </tr>
 <tr class="even">
-<td><strong>Ph.2</strong> 半導体</td>
-<td>EDA/IP設計 → EUV露光 → 先進パッケージング → テスト</td>
-<td><a href="semiconductor.qmd">半導体エコシステム</a> / <a href="photonics.qmd">フォトニクス</a> / <a href="glass-substrate.qmd">先進パッケージング</a></td>
+<td><strong>UQD継手</strong></td>
+<td>着脱時の無漏洩コネクタ</td>
+<td>PH（首位24.8%）、DOV/CPC（11.5%）</td>
+<td>★★★★★</td>
 </tr>
 <tr class="odd">
-<td><strong>Ph.3</strong> 基礎インフラ</td>
-<td>光ファイバー・電線ケーブル・DACケーブル</td>
-<td><a href="power-infra.qmd">電力インフラ</a></td>
+<td><strong>冷却液</strong></td>
+<td>単相・二相誘電流体、水系</td>
+<td>XOM、SHEL、CC</td>
+<td>★★★</td>
 </tr>
 <tr class="even">
-<td><strong>Ph.4</strong> ハードウェア</td>
-<td>液冷システム・光トランシーバー・サーバーラック</td>
-<td><a href="../macro/liquid-cooling.html">液冷・冷却</a> / <a href="photonics.qmd">フォトニクス</a></td>
-</tr>
-<tr class="odd">
-<td><strong>Ph.5</strong> 施設建設</td>
-<td>DC建設施工・免震・MEP工事</td>
-<td><a href="power-infra.qmd">電力インフラ</a></td>
-</tr>
-<tr class="even">
-<td><strong>Ph.6</strong> 電力・運用</td>
-<td>変圧器・電気工事・SMR自家発電</td>
-<td><a href="power-infra.qmd">電力インフラ</a> / <a href="smr.qmd">SMR</a></td>
+<td><strong>TIM（熱伝導材料）</strong></td>
+<td>チップ〜コールドプレート間の熱抵抗低減素材</td>
+<td>信越化学（4063.T）</td>
+<td>★★★★★</td>
 </tr>
 </tbody>
 </table>
-<p>さらにDCの外側へと展開するテーマとして、<a href="../macro/space.html">宇宙インフラ</a>・<a href="physical-ai.qmd">フィジカルAI・ロボティクス</a>・<a href="reit.qmd">DC REIT</a>がある。</p>
+<section id="uqdが最大のチョークポイントである理由" class="level3">
+<h3 class="anchored" data-anchor-id="uqdが最大のチョークポイントである理由">UQDが最大のチョークポイントである理由</h3>
+<p>液漏れ1滴で数億円のGPUラックが全損する。UQD自体のコストはラック全体の数%に過ぎないが、故障のリスクは破滅的。データセンター事業者は実績のない新参ベンダーを採用するインセンティブを持たない。<strong>リスクの非対称性が参入障壁を形成する構造</strong>だ。</p>
+<p>市場は完全に寡占化されており、上位5社（PH・Danfoss・Stäubli・CEJN・DOV/CPC）が市場の80%超を独占。UQD市場は2025年の3.9億ドルから2030年には7.5億ドルへCAGR 14.3%で成長予測。</p>
+</section>
+<section id="信越化学のtimが代替不可能な理由" class="level3">
+<h3 class="anchored" data-anchor-id="信越化学のtimが代替不可能な理由">信越化学のTIMが代替不可能な理由</h3>
+<p>AI最先端チップは1,000W/cm²超の熱流束密度を発生する。信越化学の「TC-PENシリーズ」は、繰り返しの熱サイクルでも硬化・ポンプアウト現象を起こさず、長期間にわたる低熱抵抗を維持する。NVIDIAのGB200以降の世代では、TIMの性能劣化が即座にGPUのサーマルスロットリングを引き起こすため、代替材料の採用は事実上不可能。</p>
 <hr>
 </section>
-<section id="つの隠れたボトルネック" class="level2">
-<h2 class="anchored" data-anchor-id="つの隠れたボトルネック">5つの隠れたボトルネック</h2>
-<p>需要に対して供給が構造的に追いつかず、<strong>強力な価格決定権（プライシング・パワー）</strong>を持つ可能性が高い急所。</p>
+</section>
+<section id="主要銘柄マップ" class="level2">
+<h2 class="anchored" data-anchor-id="主要銘柄マップ">主要銘柄マップ</h2>
+<section id="コア投資候補業界パワー優先" class="level3">
+<h3 class="anchored" data-anchor-id="コア投資候補業界パワー優先">コア投資候補（業界パワー優先）</h3>
 <table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
 <thead>
 <tr class="header">
-<th>#</th>
-<th>ボトルネック</th>
-<th>象徴的な事実</th>
-<th>詳細テーマ</th>
+<th>銘柄</th>
+<th>業界パワー</th>
+<th>概要</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td>①</td>
-<td><strong>超大型変圧器・配電インフラ</strong></td>
-<td>納期が12週間→160週間（約3年強）に長期化</td>
-<td><a href="power-infra.qmd">電力インフラ</a></td>
+<td><strong>Vertiv（VRT）</strong></td>
+<td>★★★★★</td>
+<td>NVIDIA公式RVL認定パートナー。バックログ$150B。液冷インフラの絶対王者。NVIDIAとGB200向け7MWリファレンスアーキテクチャを共同開発</td>
 </tr>
 <tr class="even">
-<td>②</td>
-<td><strong>次世代ガラスコア基板（TGV/LIDE）</strong></td>
-<td>有機基板の反り・限界を突破する次のゲームチェンジャー</td>
-<td><a href="glass-substrate.qmd">先進パッケージング</a></td>
+<td><strong>Eaton（ETN）</strong></td>
+<td>★★★★★</td>
+<td>NVIDIA RVL認定。電源（UPS・配電）＋液冷CDUの垂直統合で「Grid-to-Chip」を提供。液冷テーマと電力インフラテーマの両取りができる唯一の銘柄</td>
 </tr>
 <tr class="odd">
-<td>③</td>
-<td><strong>EUVフォトレジスト・ペリクル</strong></td>
-<td>日本企業が世界シェア96%以上を独占する絶対的チョークポイント</td>
-<td><a href="semiconductor.qmd">半導体エコシステム</a></td>
+<td><strong>nVent Electric（NVT）</strong></td>
+<td>★★★★☆</td>
+<td>NVIDIA RVLパートナー。売上+53%、バックログ$26B。ラック・PDU・液冷マニホールドの統合ソリューション</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="チョークポイント保有者" class="level3">
+<h3 class="anchored" data-anchor-id="チョークポイント保有者">チョークポイント保有者</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>銘柄</th>
+<th>レイヤー</th>
+<th>概要</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Parker Hannifin（PH）</strong></td>
+<td>UQD</td>
+<td>UQD世界首位24.8%。本物のチョークポイント。ただし多角化企業のためDC純度は薄め</td>
 </tr>
 <tr class="even">
-<td>④</td>
-<td><strong>液冷用クイック・ディスコネクト（UQD）</strong></td>
-<td>1滴の液漏れが数億円のラック破壊を招くため価格より信頼性が優先</td>
-<td><a href="../macro/liquid-cooling.html">液冷・冷却</a></td>
+<td><strong>Dover（DOV）</strong></td>
+<td>UQD</td>
+<td>子会社CPC（Colder Products）がUQD市場11.5%。PH同様に多角化企業</td>
 </tr>
 <tr class="odd">
-<td>⑤</td>
-<td><strong>SMR（小型モジュール炉）による自家発電</strong></td>
-<td>グリッド接続申請の待機期間が米国で平均5年→ビハインド・ザ・メーターへ</td>
-<td><a href="smr.qmd">SMR</a></td>
+<td><strong>信越化学工業（4063.T）</strong></td>
+<td>TIM</td>
+<td>TIM分野で代替不可能な世界首位。DCへの純度は薄いが素材レイヤーのチョークポイント</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="ロマン枠変革カタリスト型" class="level3">
+<h3 class="anchored" data-anchor-id="ロマン枠変革カタリスト型">ロマン枠（変革カタリスト型）</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>銘柄</th>
+<th>概要</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Modine Manufacturing（MOD）</strong></td>
+<td>CDU特化の純粋プレイ。DC向け売上+78%（直近）。2026年Q4にPT部門（自動車向け）をGenthermへRMT方式でスピンオフ予定。完了後にDC冷却専業銘柄として機関投資家の再分類が起きる可能性。PEGレシオ2.0倍（VRT 3.7倍比で割安）。NVIDIA RVL未認定がリスク</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="ドキュメント記録のみ現時点では投資対象外" class="level3">
+<h3 class="anchored" data-anchor-id="ドキュメント記録のみ現時点では投資対象外">ドキュメント記録のみ（現時点では投資対象外）</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>銘柄</th>
+<th>概要</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>日本電産 / Nidec（6594.T）</td>
+<td>Google OCP「Project Deschutes 5」で2MW超CDUを供給する唯一の日本ベンダー</td>
+</tr>
+<tr class="even">
+<td>荏原製作所（6361.T）</td>
+<td>宇宙開発レベルのポンプ技術をDC液冷ポンプに応用。アジア太平洋向けに強み</td>
+</tr>
+<tr class="odd">
+<td>古河電工（5801.T）</td>
+<td>マイクロチャネル構造の銅製コールドプレートで400W/cm²処理実績</td>
+</tr>
+<tr class="even">
+<td>三桜工業（6584.T）</td>
+<td>スーパーコンピュータ「富岳」採用の無漏洩配管技術を保有</td>
 </tr>
 </tbody>
 </table>
 <hr>
 </section>
-<section id="テーマ別ページ一覧" class="level2">
-<h2 class="anchored" data-anchor-id="テーマ別ページ一覧">テーマ別ページ一覧</h2>
-<table class="caption-top table">
+</section>
+<section id="定量分析" class="level2">
+<h2 class="anchored" data-anchor-id="定量分析">定量分析</h2>
+<section id="バリュエーション収益性サマリー" class="level3">
+<h3 class="anchored" data-anchor-id="バリュエーション収益性サマリー">バリュエーション・収益性サマリー</h3>
+<div id="cell-valuation-table" class="cell" data-execution_count="2">
+<div id="valuation-table" class="cell-output cell-output-display">
+<style type="text/css">
+#T_94816 th {
+  background-color: #2c3e50;
+  color: white;
+  font-size: 12px;
+  padding: 6px 10px;
+}
+#T_94816 td {
+  font-size: 12px;
+  padding: 5px 10px;
+}
+#T_94816 tr:nth-child(even) {
+  background-color: #f5f5f5;
+}
+</style>
+
+<table id="T_94816" class="caption-top table table-sm table-striped small">
 <thead>
 <tr class="header">
-<th>テーマ</th>
-<th>ページ</th>
-<th>優先度</th>
+<th class="blank" data-quarto-table-cell-role="th">&nbsp;</th>
+<th class="blank level0" data-quarto-table-cell-role="th">&nbsp;</th>
+<th id="T_94816_level0_col0" class="col_heading level0 col0" data-quarto-table-cell-role="th">時価総額</th>
+<th id="T_94816_level0_col1" class="col_heading level0 col1" data-quarto-table-cell-role="th">Forward PER</th>
+<th id="T_94816_level0_col2" class="col_heading level0 col2" data-quarto-table-cell-role="th">EV/EBITDA</th>
+<th id="T_94816_level0_col3" class="col_heading level0 col3" data-quarto-table-cell-role="th">営業利益率</th>
+<th id="T_94816_level0_col4" class="col_heading level0 col4" data-quarto-table-cell-role="th">売上成長(YoY)</th>
+</tr>
+<tr class="even">
+<th class="index_name level0" data-quarto-table-cell-role="th">カテゴリ</th>
+<th class="index_name level1" data-quarto-table-cell-role="th">銘柄</th>
+<th class="blank col0" data-quarto-table-cell-role="th">&nbsp;</th>
+<th class="blank col1" data-quarto-table-cell-role="th">&nbsp;</th>
+<th class="blank col2" data-quarto-table-cell-role="th">&nbsp;</th>
+<th class="blank col3" data-quarto-table-cell-role="th">&nbsp;</th>
+<th class="blank col4" data-quarto-table-cell-role="th">&nbsp;</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td>素材（銅・レアメタル・特殊化学）</td>
-<td><a href="../macro/materials.html">materials.qmd</a></td>
-<td>高</td>
+<th rowspan="3" id="T_94816_level0_row0" class="row_heading level0 row0" data-quarto-table-cell-role="th">コア（業界パワー）</th>
+<th id="T_94816_level1_row0" class="row_heading level1 row0" data-quarto-table-cell-role="th">Vertiv (VRT)</th>
+<td id="T_94816_row0_col0" class="data row0 col0">~$140B</td>
+<td id="T_94816_row0_col1" class="data row0 col1">43.0</td>
+<td id="T_94816_row0_col2" class="data row0 col2">61.0</td>
+<td id="T_94816_row0_col3" class="data row0 col3">16.4%</td>
+<td id="T_94816_row0_col4" class="data row0 col4">30.1%</td>
 </tr>
 <tr class="even">
-<td>半導体エコシステム（EDA/IP・製造・装置）</td>
-<td><a href="semiconductor.qmd">semiconductor.qmd</a></td>
-<td>高</td>
+<th id="T_94816_level1_row1" class="row_heading level1 row1" data-quarto-table-cell-role="th">Eaton (ETN)</th>
+<td id="T_94816_row1_col0" class="data row1 col0">~$160B</td>
+<td id="T_94816_row1_col1" class="data row1 col1">26.0</td>
+<td id="T_94816_row1_col2" class="data row1 col2">28.3</td>
+<td id="T_94816_row1_col3" class="data row1 col3">16.1%</td>
+<td id="T_94816_row1_col4" class="data row1 col4">16.8%</td>
 </tr>
 <tr class="odd">
-<td>フォトニクス・光インターコネクト</td>
-<td><a href="photonics.qmd">photonics.qmd</a></td>
-<td>高</td>
+<th id="T_94816_level1_row2" class="row_heading level1 row2" data-quarto-table-cell-role="th">nVent Electric (NVT)</th>
+<td id="T_94816_row2_col0" class="data row2 col0">~$30B</td>
+<td id="T_94816_row2_col1" class="data row2 col1">31.2</td>
+<td id="T_94816_row2_col2" class="data row2 col2">32.1</td>
+<td id="T_94816_row2_col3" class="data row2 col3">16.0%</td>
+<td id="T_94816_row2_col4" class="data row2 col4">53.5%</td>
 </tr>
 <tr class="even">
-<td>液冷・冷却</td>
-<td><a href="../macro/liquid-cooling.html">liquid-cooling.qmd</a></td>
-<td>高</td>
+<th rowspan="3" id="T_94816_level0_row3" class="row_heading level0 row3" data-quarto-table-cell-role="th">チョークポイント</th>
+<th id="T_94816_level1_row3" class="row_heading level1 row3" data-quarto-table-cell-role="th">Parker Hannifin (PH)</th>
+<td id="T_94816_row3_col0" class="data row3 col0">~$110B</td>
+<td id="T_94816_row3_col1" class="data row3 col1">25.9</td>
+<td id="T_94816_row3_col2" class="data row3 col2">21.9</td>
+<td id="T_94816_row3_col3" class="data row3 col3">21.5%</td>
+<td id="T_94816_row3_col4" class="data row3 col4">10.6%</td>
 </tr>
 <tr class="odd">
-<td>先進パッケージング（ガラスコア基板）</td>
-<td><a href="glass-substrate.qmd">glass-substrate.qmd</a></td>
-<td>高</td>
+<th id="T_94816_level1_row4" class="row_heading level1 row4" data-quarto-table-cell-role="th">Dover (DOV)</th>
+<td id="T_94816_row4_col0" class="data row4 col0">~$30B</td>
+<td id="T_94816_row4_col1" class="data row4 col1">18.5</td>
+<td id="T_94816_row4_col2" class="data row4 col2">16.4</td>
+<td id="T_94816_row4_col3" class="data row4 col3">16.4%</td>
+<td id="T_94816_row4_col4" class="data row4 col4">10.1%</td>
 </tr>
 <tr class="even">
-<td>電力インフラ（変圧器・配電・建設）</td>
-<td><a href="power-infra.qmd">power-infra.qmd</a></td>
-<td>高</td>
+<th id="T_94816_level1_row5" class="row_heading level1 row5" data-quarto-table-cell-role="th">信越化学工業 (4063.T)</th>
+<td id="T_94816_row5_col0" class="data row5 col0">~$80B</td>
+<td id="T_94816_row5_col1" class="data row5 col1">21.8</td>
+<td id="T_94816_row5_col2" class="data row5 col2">14.4</td>
+<td id="T_94816_row5_col3" class="data row5 col3">21.4%</td>
+<td id="T_94816_row5_col4" class="data row5 col4">1.3%</td>
 </tr>
 <tr class="odd">
-<td>SMR・自家発電</td>
-<td><a href="smr.qmd">smr.qmd</a></td>
-<td>中</td>
-</tr>
-<tr class="even">
-<td>宇宙インフラ・宇宙DC構想</td>
-<td><a href="../macro/space.html">space.qmd</a></td>
-<td>高</td>
-</tr>
-<tr class="odd">
-<td>フィジカルAI・ロボティクス</td>
-<td><a href="physical-ai.qmd">physical-ai.qmd</a></td>
-<td>中</td>
-</tr>
-<tr class="even">
-<td>DC REIT</td>
-<td><a href="reit.qmd">reit.qmd</a></td>
-<td>低</td>
+<th id="T_94816_level0_row6" class="row_heading level0 row6" data-quarto-table-cell-role="th">ロマン枠</th>
+<th id="T_94816_level1_row6" class="row_heading level1 row6" data-quarto-table-cell-role="th">Modine (MOD)</th>
+<td id="T_94816_row6_col0" class="data row6 col0">~$15B</td>
+<td id="T_94816_row6_col1" class="data row6 col1">39.6</td>
+<td id="T_94816_row6_col2" class="data row6 col2">38.3</td>
+<td id="T_94816_row6_col3" class="data row6 col3">11.9%</td>
+<td id="T_94816_row6_col4" class="data row6 col4">30.5%</td>
 </tr>
 </tbody>
 </table>
+</div>
+</div>
+</section>
+<section id="株価パフォーマンス比較過去1年" class="level3">
+<h3 class="anchored" data-anchor-id="株価パフォーマンス比較過去1年">株価パフォーマンス比較（過去1年）</h3>
+<div id="cell-perf-chart" class="cell" data-fig-height="5" data-fig-width="10" data-execution_count="3">
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="liquid-cooling_files/figure-html/perf-chart-output-1.png" id="perf-chart" width="950" height="470" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="forward-per-比較割高感の可視化" class="level3">
+<h3 class="anchored" data-anchor-id="forward-per-比較割高感の可視化">Forward PER 比較（割高感の可視化）</h3>
+<div id="cell-per-chart" class="cell" data-fig-height="4" data-fig-width="8" data-execution_count="4">
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="liquid-cooling_files/figure-html/per-chart-output-1.png" id="per-chart" width="759" height="374" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<hr>
+</section>
+</section>
+<section id="投資判断サマリー" class="level2">
+<h2 class="anchored" data-anchor-id="投資判断サマリー">投資判断サマリー</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>銘柄</th>
+<th>方針</th>
+<th>バケット</th>
+<th>根拠</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>VRT</strong></td>
+<td>本命候補</td>
+<td>運用枠</td>
+<td>液冷王者×NVIDIA RVL×$150Bバックログ。業界パワー最強</td>
+</tr>
+<tr class="even">
+<td><strong>ETN</strong></td>
+<td>本命候補</td>
+<td>運用枠</td>
+<td>RVL認定×電力+液冷の垂直統合。電力インフラテーマとの相乗効果</td>
+</tr>
+<tr class="odd">
+<td><strong>NVT</strong></td>
+<td>次点</td>
+<td>運用枠</td>
+<td>RVL認定×バックログ$26B。VRT・ETNより規模が小さい分アップサイドあり</td>
+</tr>
+<tr class="even">
+<td><strong>MOD</strong></td>
+<td>ロマン枠</td>
+<td>リスク枠</td>
+<td>2026年Q4スピンオフで純粋DC銘柄に変貌するカタリスト内在。PEGレシオ2.0xで割安だが、NVIDIA RVL未認定がリスク</td>
+</tr>
+<tr class="odd">
+<td><strong>PH</strong></td>
+<td>記録のみ</td>
+<td>—</td>
+<td>UQD世界首位のチョークポイント保有者だが多角化企業で純度薄い</td>
+</tr>
+<tr class="even">
+<td><strong>DOV</strong></td>
+<td>記録のみ</td>
+<td>—</td>
+<td>CPC子会社でUQD11.5%。PH同様に純度薄い</td>
+</tr>
+<tr class="odd">
+<td><strong>信越化学（4063）</strong></td>
+<td>記録のみ</td>
+<td>—</td>
+<td>TIM世界首位の代替不可能な素材メーカー。フィジカルAIページと合わせて評価</td>
+</tr>
+</tbody>
+</table>
+<blockquote class="blockquote">
+<p><strong>VRT vs ETN の選択軸：</strong> VRTは液冷に最も純度が高く、ETNは電力インフラとの相乗効果で差別化。電力インフラページとの重複を踏まえてどちらを優先するか検討。</p>
+</blockquote>
 
 
 </section>

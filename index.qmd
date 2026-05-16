@@ -12,6 +12,7 @@ title: "Investment Notes"
 
 | | |
 |---|---|
-| [Macro](macro/index.qmd) | 金利・セクターローテーション・地政学リスク |
+| [銘柄ユニバース](watchlist.qmd) | セクター別注目銘柄一覧・ステータス管理 |
+| [Macro](macro/index.qmd) | AIインフラ・バリューチェーン別テーマ分析 |
 | [Stocks](stocks/index.qmd) | 個別銘柄の定性・定量分析 |
 
