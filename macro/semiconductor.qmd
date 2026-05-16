@@ -1,0 +1,192 @@
+---
+title: "半導体エコシステム：AIチップを生み出すサプライチェーンの全体像"
+---
+
+> NVIDIAは設計するだけだ。製造はTSMC、露光装置はASML、EDA設計ツールはCadenceとSynopsys、それぞれが世界で他に代替不可能な独占的地位を持つ。GPUを1枚作るのに、地球規模のサプライチェーンが絡み合う。
+
+## なぜ半導体エコシステム全体が投資テーマになるのか
+
+NVIDIA・AMD・Broadcomといった「ファブレス」企業はチップを設計するだけで、製造は外部に委託する。この分業構造が生み出した産業チェーンでは、各工程に「世界シェア50〜90%を独占する」プレイヤーが存在する。AIチップへの需要増は、チップメーカーだけでなく、その上流にいる設計ツール・製造装置・テスト・パッケージング各社への受注を等しく爆発させる。
+
+AIチップの製造難易度は世代を経るごとに指数的に上昇しており、参入障壁も高まり続けている。TSMC N2（2nm）の歩留まりを支えるKLA・Lam・Applied Materialsの装置なくして、GB200は1枚も作れない。
+
+---
+
+## 半導体バリューチェーン
+
+| フェーズ | 内容 | 主な上場プレイヤー（米国・日本） |
+|---|---|---|
+| **①設計（EDA/IP）** | チップ設計ツール・IP回路ブロック | CDNS、SNPS、ARM |
+| **②露光（フォトリソグラフィ）** | EUV露光装置（ASML独占） | ASML |
+| **③薄膜・エッチング** | CVD・ALD・エッチング装置 | AMAT、LRCX |
+| **④計測・検査** | プロセス管理・欠陥検査 | KLAC |
+| **⑤先進パッケージング** | CoWoS・SoIC・HBMスタック | AMKR、TSM |
+| **⑥テスト** | ウェーハ・完成品テスト | COHU、FORM |
+| **⑦チップ設計・販売** | GPU・CPU・カスタムASIC | NVDA、AVGO、AMD、INTC |
+
+---
+
+## 主要銘柄マップ
+
+### 絶対的チョークポイント（世界シェア独占）
+
+| 銘柄 | ティッカー | 業界パワー | 独占度 | ステータス |
+|---|---|---|---|---|
+| **ASML** | ASML（NASDAQ） | ★★★★★ | EUV露光装置の世界**独占**（シェア100%） | ウォッチ（高PER） |
+| **Synopsys** | SNPS（NASDAQ） | ★★★★★ | EDAツール世界2強の一角 | ウォッチ |
+| **Cadence Design** | CDNS（NASDAQ） | ★★★★★ | EDAツール世界2強の一角 | ウォッチ |
+| **ARM Holdings** | ARM（NASDAQ） | ★★★★★ | スマートフォンCPU命令セットの世界事実独占。AIチップへの展開加速 | ウォッチ |
+
+### 製造・装置（設備投資の直接受益者）
+
+| 銘柄 | ティッカー | 業界パワー | 概要 | ステータス |
+|---|---|---|---|---|
+| **TSMC** | TSM（NYSE ADR） | ★★★★★ | 先端半導体製造の世界独占（N3・N2の量産はTSMCのみ） | ウォッチ |
+| **Applied Materials** | AMAT（NASDAQ） | ★★★★★ | 半導体製造装置の世界最大手。薄膜・CMP装置 | ウォッチ |
+| **Lam Research** | LRCX（NASDAQ） | ★★★★★ | エッチング・ALD装置。HANAフラッシュ・HBM製造に必須 | ウォッチ |
+| **KLA Corp** | KLAC（NASDAQ） | ★★★★★ | プロセス計測・欠陥検査装置。歩留まり管理の要 | ウォッチ |
+
+### チップ設計・販売
+
+| 銘柄 | ティッカー | 業界パワー | 概要 | ステータス |
+|---|---|---|---|---|
+| **NVIDIA** | NVDA（NASDAQ） | ★★★★★ | AIアクセラレーターの世界標準。CUDAエコシステムが参入障壁 | ウォッチ（割高） |
+| **Broadcom** | AVGO（NASDAQ） | ★★★★★ | ネットワーキングASIC・カスタムAIチップ（Google TPU等を受注） | ウォッチ |
+| **AMD** | AMD（NASDAQ） | ★★★★ | GPU（MI300）・CPU（EPYC）。NVIDIAへの唯一の対抗馬 | ウォッチ |
+| **Intel** | INTC（NASDAQ） | ★★★ | CPU→AIアクセラレーターへの転換中。ファウンドリ事業再建中 | ウォッチ（再建中） |
+
+---
+
+## 株価パフォーマンス（過去1年）
+
+```{python}
+#| echo: false
+#| label: semi-performance
+#| fig-width: 11
+#| fig-height: 6
+
+import yfinance as yf
+import pandas as pd
+import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
+import warnings, logging
+warnings.filterwarnings("ignore")
+logging.getLogger("yfinance").setLevel(logging.CRITICAL)
+
+from matplotlib import rcParams
+rcParams['font.family'] = 'sans-serif'
+rcParams['font.sans-serif'] = ['MS Gothic', 'Meiryo', 'Yu Gothic', 'DejaVu Sans']
+rcParams['axes.unicode_minus'] = False
+
+STOCKS = {
+    "NVDA": ("#E53935", 2.0),
+    "AVGO": ("#1565C0", 2.0),
+    "ASML": ("#6A1B9A", 1.8),
+    "TSM":  ("#00838F", 1.8),
+    "AMAT": ("#F57F17", 1.5),
+    "LRCX": ("#00695C", 1.5),
+    "KLAC": ("#795548", 1.5),
+    "AMD":  ("#AD1457", 1.5),
+    "ARM":  ("#37474F", 1.5),
+    "CDNS": ("#558B2F", 1.5),
+}
+
+fig, ax = plt.subplots(figsize=(11, 6))
+
+for ticker, (color, lw) in STOCKS.items():
+    try:
+        hist = yf.Ticker(ticker).history(period="1y")["Close"]
+        if len(hist) < 10:
+            continue
+        hist.index = pd.to_datetime(hist.index).tz_localize(None)
+        normed = hist / hist.iloc[0] * 100
+        final = normed.iloc[-1]
+        ax.plot(normed.index, normed.values,
+                label=f"{ticker}  ({final/100-1:+.0%})",
+                color=color, linewidth=lw, alpha=0.9)
+        ax.annotate(f"  {final/100-1:+.0%}",
+                    xy=(normed.index[-1], final),
+                    fontsize=7, color=color, va="center")
+    except Exception:
+        pass
+
+ax.axhline(100, color="gray", linestyle=":", linewidth=0.8, alpha=0.4)
+ax.set_ylabel("パフォーマンス（1年前=100）", fontsize=9)
+ax.set_title("半導体エコシステム 株価パフォーマンス（過去1年）", fontsize=11, fontweight="bold")
+ax.legend(fontsize=7.5, loc="upper left", ncol=2, framealpha=0.85)
+ax.xaxis.set_major_formatter(mdates.DateFormatter("%y/%m"))
+ax.xaxis.set_major_locator(mdates.MonthLocator(interval=2))
+ax.tick_params(axis="x", rotation=30, labelsize=8)
+ax.tick_params(axis="y", labelsize=8)
+ax.grid(True, alpha=0.2)
+plt.tight_layout()
+plt.show()
+```
+
+## Forward PER比較
+
+```{python}
+#| echo: false
+#| label: semi-per
+#| fig-width: 10
+#| fig-height: 5
+
+import yfinance as yf
+import matplotlib.pyplot as plt
+import warnings, logging
+warnings.filterwarnings("ignore")
+logging.getLogger("yfinance").setLevel(logging.CRITICAL)
+
+from matplotlib import rcParams
+rcParams['font.family'] = 'sans-serif'
+rcParams['font.sans-serif'] = ['MS Gothic', 'Meiryo', 'Yu Gothic', 'DejaVu Sans']
+rcParams['axes.unicode_minus'] = False
+
+TICKERS = ["NVDA", "AVGO", "ASML", "TSM", "AMAT", "LRCX", "KLAC", "AMD", "ARM", "CDNS", "SNPS"]
+COLORS  = ["#E53935","#1565C0","#6A1B9A","#00838F","#F57F17","#00695C","#795548","#AD1457","#37474F","#558B2F","#BF360C"]
+
+rows = []
+for t, c in zip(TICKERS, COLORS):
+    try:
+        info = yf.Ticker(t).info
+        pe = info.get("forwardPE") or info.get("trailingPE")
+        mc = info.get("marketCap", 0) / 1e9
+        if pe and 0 < pe < 800:
+            rows.append((f"{t} (~${mc:.0f}B)", pe, c))
+    except Exception:
+        pass
+
+rows.sort(key=lambda x: x[1])
+labels = [r[0] for r in rows]
+vals   = [r[1] for r in rows]
+colors = [r[2] for r in rows]
+
+fig, ax = plt.subplots(figsize=(10, 5))
+ax.barh(labels, vals, color=colors, alpha=0.85, height=0.65)
+for i, (label, val) in enumerate(zip(labels, vals)):
+    ax.text(val + 1, i, f"{val:.0f}x", va="center", fontsize=8)
+ax.axvline(25, color="#E53935", linestyle="--", linewidth=0.9, alpha=0.5, label="25x（市場平均）")
+ax.axvline(50, color="#FF9800", linestyle="--", linewidth=0.9, alpha=0.5, label="50x（高成長）")
+ax.set_xlabel("Forward PER（倍）", fontsize=9)
+ax.set_title("半導体エコシステム銘柄 Forward PER比較", fontsize=11, fontweight="bold")
+ax.legend(fontsize=8)
+ax.grid(True, axis="x", alpha=0.2)
+ax.tick_params(labelsize=8)
+plt.tight_layout()
+plt.show()
+```
+
+---
+
+## 投資まとめ
+
+半導体エコシステムはAI特需の最上流に位置するが、多くの銘柄はすでに高PERに達している。
+
+**ポイント別整理：**
+
+- **NVDA・AVGO**：既に市場が発見済み。高PERだが成長率が正当化する水準か常に確認が必要
+- **ASML**：EUVの世界独占。ただし輸出規制（中国向け）リスクがバリュエーションを抑制
+- **AMAT・LRCX・KLAC**：製造装置3強。HBMおよび先進パッケージングの設備投資拡大で直接受益
+- **ARM**：ロイヤルティモデルの純粋な受益者。AIチップへのARM採用が拡大中
+
+> **現在のポジション：** 半導体エコシステム全体はウォッチ。既存のFCX（銅）・Harmonic・FANUCで間接的に参加中。直接投資はMU（メモリ）を計画中。

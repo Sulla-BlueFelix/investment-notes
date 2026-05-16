@@ -1,0 +1,12 @@
+{
+  "hash": "149a1c38e572d58f6d956ef82d91de7b",
+  "result": {
+    "engine": "jupyter",
+    "markdown": "---\ntitle: \"フォトニクス・光インターコネクト：電気配線の限界を突破する光の革命\"\n---\n\n> AIクラスターのスループットは、チップの計算速度ではなくチップ間の「帯域幅」で決まる。銅線の電気信号は10メートルで限界を迎えるが、光は減衰なく伝搬する。これは物理の問題であり、フォトニクスへの移行は不可逆だ。\n\n## なぜ今、フォトニクスが投資テーマになるのか\n\nNVIDIAのGB200 NVL72（72基のB200 GPUを統合したスーパーポッド）は、GPU間で毎秒270TB超のデータをやり取りする。この帯域幅を銅線で確保しようとすれば、ケーブルの重量・電力消費・発熱が爆発的に増大し、データセンターの物理的制約を超えてしまう。\n\n光トランシーバー（光信号を電気信号に相互変換するモジュール）と共同パッケージング光学（CPO: Co-Packaged Optics）は、この問題の根本解決策だ。NVIDIAはCoherent・Lumentumに計**40億ドル**を出資し、次世代光インターコネクト技術の囲い込みに動いた。この巨額出資は「光インターコネクトが次の主戦場」であることを市場に宣言したに等しい。\n\n| 指標 | 数値 |\n|---|---|\n| 光トランシーバー市場（2025年） | ~$12B |\n| 光トランシーバー市場（2030年予測） | ~$25〜35B（CAGR 15〜20%） |\n| CPO市場（2025年） | ~$0.8B |\n| CPO市場（2030年予測） | ~$8〜12B（CAGR 50%超） |\n| NVIDIAのCoherent・Lumentum出資額 | 計約40億ドル |\n\n---\n\n## 技術レイヤー\n\n| レイヤー | 内容 | 主なプレイヤー |\n|---|---|---|\n| **光トランシーバー** | 電気↔光変換モジュール（現在の主戦場） | COHR、LITE |\n| **CPO（共同パッケージング）** | スイッチチップに光学素子を直接実装（次世代） | COHR、LITE |\n| **レーザー光源** | EML/VCSEL等の光生成素子 | COHR、LITE |\n| **光集積回路（PIC）** | シリコンフォトニクス・InP PIC | POET Technologies |\n\n---\n\n## 主要銘柄マップ\n\n| 銘柄 | ティッカー | 業界パワー | 概要 | ステータス |\n|---|---|---|---|---|\n| **Coherent** | COHR（NYSE） | ★★★★★ | 光トランシーバー世界トップ3。NVIDIAから直接出資。CPO開発最前線 | **購入予定（~$400）** |\n| **Lumentum** | LITE（NASDAQ） | ★★★★ | レーザーコンポーネント・光トランシーバー。NVIDIAから直接出資 | ウォッチ（割高） |\n| POET Technologies | POETF（OTC） | ★★★ | 光集積回路のピュアプレイ。小型・投機的 | ウォッチのみ |\n\n---\n\n## 株価パフォーマンス（過去1年）\n\n::: {#cell-photonics-performance .cell fig-height='4.5' fig-width='10' execution_count=1}\n\n::: {.cell-output .cell-output-display}\n![](photonics_files/figure-html/photonics-performance-output-1.png){#photonics-performance width=943 height=422}\n:::\n:::\n\n\n## バリュエーション比較\n\n::: {#cell-photonics-valuation .cell fig-height='3.5' fig-width='9' execution_count=2}\n\n::: {.cell-output .cell-output-display}\n![](photonics_files/figure-html/photonics-valuation-output-1.png){#photonics-valuation width=853 height=323}\n:::\n:::\n\n\n---\n\n## 投資まとめ\n\nNVIDIAが両社に出資した事実が「フォトニクス必須化」の証明だが、2社の性格は異なる。\n\n**COHRを選ぶ理由：**\n- 垂直統合された製造能力（レーザー→トランシーバー→CPO）\n- NVIDIAとの最深部での協力関係\n- LITEより相対的に低PER\n\n**LITEをウォッチに留める理由：**\n- 現時点でPERがCOHRより割高\n- 業界パワーは同等だが、価格に割高プレミアムが乗っている\n\n> **結論：** COHR集中投資（~$400）。CPO移行が加速する2026〜2027年が本格的なカタリスト。LITEはウォッチ。\n\n",
+    "supporting": [
+      "photonics_files"
+    ],
+    "filters": [],
+    "includes": {}
+  }
+}

@@ -1,0 +1,167 @@
+---
+title: "フォトニクス・光インターコネクト：電気配線の限界を突破する光の革命"
+---
+
+> AIクラスターのスループットは、チップの計算速度ではなくチップ間の「帯域幅」で決まる。銅線の電気信号は10メートルで限界を迎えるが、光は減衰なく伝搬する。これは物理の問題であり、フォトニクスへの移行は不可逆だ。
+
+## なぜ今、フォトニクスが投資テーマになるのか
+
+NVIDIAのGB200 NVL72（72基のB200 GPUを統合したスーパーポッド）は、GPU間で毎秒270TB超のデータをやり取りする。この帯域幅を銅線で確保しようとすれば、ケーブルの重量・電力消費・発熱が爆発的に増大し、データセンターの物理的制約を超えてしまう。
+
+光トランシーバー（光信号を電気信号に相互変換するモジュール）と共同パッケージング光学（CPO: Co-Packaged Optics）は、この問題の根本解決策だ。NVIDIAはCoherent・Lumentumに計**40億ドル**を出資し、次世代光インターコネクト技術の囲い込みに動いた。この巨額出資は「光インターコネクトが次の主戦場」であることを市場に宣言したに等しい。
+
+| 指標 | 数値 |
+|---|---|
+| 光トランシーバー市場（2025年） | ~$12B |
+| 光トランシーバー市場（2030年予測） | ~$25〜35B（CAGR 15〜20%） |
+| CPO市場（2025年） | ~$0.8B |
+| CPO市場（2030年予測） | ~$8〜12B（CAGR 50%超） |
+| NVIDIAのCoherent・Lumentum出資額 | 計約40億ドル |
+
+---
+
+## 技術レイヤー
+
+| レイヤー | 内容 | 主なプレイヤー |
+|---|---|---|
+| **光トランシーバー** | 電気↔光変換モジュール（現在の主戦場） | COHR、LITE |
+| **CPO（共同パッケージング）** | スイッチチップに光学素子を直接実装（次世代） | COHR、LITE |
+| **レーザー光源** | EML/VCSEL等の光生成素子 | COHR、LITE |
+| **光集積回路（PIC）** | シリコンフォトニクス・InP PIC | POET Technologies |
+
+---
+
+## 主要銘柄マップ
+
+| 銘柄 | ティッカー | 業界パワー | 概要 | ステータス |
+|---|---|---|---|---|
+| **Coherent** | COHR（NYSE） | ★★★★★ | 光トランシーバー世界トップ3。NVIDIAから直接出資。CPO開発最前線 | **購入予定（~$400）** |
+| **Lumentum** | LITE（NASDAQ） | ★★★★ | レーザーコンポーネント・光トランシーバー。NVIDIAから直接出資 | ウォッチ（割高） |
+| POET Technologies | POETF（OTC） | ★★★ | 光集積回路のピュアプレイ。小型・投機的 | ウォッチのみ |
+
+---
+
+## 株価パフォーマンス（過去1年）
+
+```{python}
+#| echo: false
+#| label: photonics-performance
+#| fig-width: 10
+#| fig-height: 4.5
+
+import yfinance as yf
+import pandas as pd
+import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
+import warnings, logging
+warnings.filterwarnings("ignore")
+logging.getLogger("yfinance").setLevel(logging.CRITICAL)
+
+from matplotlib import rcParams
+rcParams['font.family'] = 'sans-serif'
+rcParams['font.sans-serif'] = ['MS Gothic', 'Meiryo', 'Yu Gothic', 'DejaVu Sans']
+rcParams['axes.unicode_minus'] = False
+
+STOCKS = {
+    "COHR（Coherent）": ("COHR", "#E53935"),
+    "LITE（Lumentum）": ("LITE", "#1565C0"),
+}
+
+fig, ax = plt.subplots(figsize=(10, 4.5))
+
+for label, (ticker, color) in STOCKS.items():
+    try:
+        hist = yf.Ticker(ticker).history(period="1y")["Close"]
+        if len(hist) < 10:
+            continue
+        hist.index = pd.to_datetime(hist.index).tz_localize(None)
+        normed = hist / hist.iloc[0] * 100
+        final = normed.iloc[-1]
+        ax.plot(normed.index, normed.values,
+                label=f"{label}  ({final/100-1:+.0%})",
+                color=color, linewidth=2)
+        ax.annotate(f"  {final/100-1:+.0%}",
+                    xy=(normed.index[-1], final),
+                    fontsize=8, color=color, va="center")
+    except Exception:
+        pass
+
+ax.axhline(100, color="gray", linestyle=":", linewidth=0.8, alpha=0.5)
+ax.set_ylabel("パフォーマンス（1年前=100）", fontsize=9)
+ax.set_title("フォトニクス銘柄 株価パフォーマンス（過去1年）", fontsize=11, fontweight="bold")
+ax.legend(fontsize=9, loc="upper left")
+ax.xaxis.set_major_formatter(mdates.DateFormatter("%y/%m"))
+ax.xaxis.set_major_locator(mdates.MonthLocator(interval=2))
+ax.tick_params(axis="x", rotation=30, labelsize=8)
+ax.tick_params(axis="y", labelsize=8)
+ax.grid(True, alpha=0.2)
+plt.tight_layout()
+plt.show()
+```
+
+## バリュエーション比較
+
+```{python}
+#| echo: false
+#| label: photonics-valuation
+#| fig-width: 9
+#| fig-height: 3.5
+
+import yfinance as yf
+import matplotlib.pyplot as plt
+import warnings, logging
+warnings.filterwarnings("ignore")
+logging.getLogger("yfinance").setLevel(logging.CRITICAL)
+
+from matplotlib import rcParams
+rcParams['font.family'] = 'sans-serif'
+rcParams['font.sans-serif'] = ['MS Gothic', 'Meiryo', 'Yu Gothic', 'DejaVu Sans']
+rcParams['axes.unicode_minus'] = False
+
+tickers = {"COHR": "#E53935", "LITE": "#1565C0"}
+labels, vals, colors = [], [], []
+
+for t, c in tickers.items():
+    try:
+        info = yf.Ticker(t).info
+        pe = info.get("forwardPE") or info.get("trailingPE")
+        mc = info.get("marketCap", 0) / 1e9
+        if pe and 0 < pe < 500:
+            labels.append(f"{t}\n~${mc:.0f}B")
+            vals.append(pe)
+            colors.append(c)
+    except Exception:
+        pass
+
+fig, ax = plt.subplots(figsize=(9, 3.5))
+bars = ax.bar(labels, vals, color=colors, alpha=0.85, width=0.5)
+for bar, val in zip(bars, vals):
+    ax.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 1,
+            f"{val:.0f}x", ha="center", va="bottom", fontsize=11, fontweight="bold")
+ax.axhline(25, color="#E53935", linestyle="--", linewidth=0.9, alpha=0.6, label="25x（市場平均）")
+ax.axhline(50, color="#FF9800", linestyle="--", linewidth=0.9, alpha=0.6, label="50x（高成長プレミアム）")
+ax.set_ylabel("Forward PER（倍）", fontsize=9)
+ax.set_title("フォトニクス銘柄 バリュエーション比較", fontsize=11, fontweight="bold")
+ax.legend(fontsize=8)
+ax.grid(True, axis="y", alpha=0.2)
+ax.tick_params(labelsize=9)
+plt.tight_layout()
+plt.show()
+```
+
+---
+
+## 投資まとめ
+
+NVIDIAが両社に出資した事実が「フォトニクス必須化」の証明だが、2社の性格は異なる。
+
+**COHRを選ぶ理由：**
+- 垂直統合された製造能力（レーザー→トランシーバー→CPO）
+- NVIDIAとの最深部での協力関係
+- LITEより相対的に低PER
+
+**LITEをウォッチに留める理由：**
+- 現時点でPERがCOHRより割高
+- 業界パワーは同等だが、価格に割高プレミアムが乗っている
+
+> **結論：** COHR集中投資（~$400）。CPO移行が加速する2026〜2027年が本格的なカタリスト。LITEはウォッチ。

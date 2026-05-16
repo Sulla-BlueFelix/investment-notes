@@ -1,0 +1,181 @@
+---
+title: "電力インフラ：AIの電力爆食を支える「新しい石油」"
+---
+
+> データセンター1棟の電力消費は、数万世帯分の電力に相当する。ビッグテックは土地と電力の確保から始める。グリッドが追いつかない。変圧器の納期は3年。これは需要の問題ではなく、物理インフラの問題だ。
+
+## なぜ電力インフラが投資テーマになるのか
+
+GPT-4のトレーニングには約50GWh、Gemini Ultraには推定100GWh超の電力が消費された。AIチップの推論需要が拡大するにつれ、データセンターの電力需要は指数的に増大している。
+
+Goldman Sachsによれば、米国のデータセンター電力需要は2023年の17GWから**2030年には47GW**に達する見通しだ。これは米国の現在の総電力需要の約4〜5%に相当する。
+
+**構造的な問題：**
+
+- 超大型変圧器（EHV変圧器）の平均納期は2019年の**12〜16週間から2026年には160週間超（約3年）**に長期化
+- 米国送電インフラの40%は40年以上経過した老朽設備
+- 系統連系申請（インターコネクション申請）の平均待機期間は現在**5年超**
+- このグリッド制約が、SMR（小型モジュール炉）等による自家発電需要を生んでいる
+
+---
+
+## バリューチェーン
+
+| フェーズ | 内容 | 主な上場プレイヤー |
+|---|---|---|
+| **変圧器・配電機器** | EHV変圧器・スイッチギア・配電パネル | ETN、GEV |
+| **電気工事・建設** | 送電線設置・DC建設施工・MEP工事 | PWR、MYRG |
+| **電力管理システム** | UPS・電源管理・監視制御 | ETN、EMR |
+| **バックアップ電源** | 大型ディーゼル発電機・フライホイール | GNRC |
+
+---
+
+## 主要銘柄マップ
+
+### コア投資候補（業界パワー優先）
+
+| 銘柄 | ティッカー | 業界パワー | 概要 | ステータス |
+|---|---|---|---|---|
+| **Eaton** | ETN（NYSE） | ★★★★★ | 電力管理・変圧器・配電機器の世界最大手。DC向け電源インフラ全般を網羅 | **コア候補** |
+| **Quanta Services** | PWR（NYSE） | ★★★★★ | 北米最大の電気工事会社。送電線敷設・DC建設施工を独占的に受注 | **コア候補** |
+| **GE Vernova** | GEV（NYSE） | ★★★★ | GEからスピンアウトしたエネルギー事業体。グリッド機器・風力発電 | ウォッチ |
+| **Emerson Electric** | EMR（NYSE） | ★★★★ | 工場自動化・電力管理システム。データセンター向けPDU | ウォッチ |
+
+### ウォッチ
+
+| 銘柄 | ティッカー | 概要 |
+|---|---|---|
+| MYR Group | MYRG（NASDAQ） | 専門電気工事会社。DC建設施工に特化した中型株 |
+| Generac | GNRC（NYSE） | 大型バックアップ発電機。DC向けUPSシステム |
+
+---
+
+## 株価パフォーマンス（過去1年）
+
+```{python}
+#| echo: false
+#| label: power-performance
+#| fig-width: 10
+#| fig-height: 5
+
+import yfinance as yf
+import pandas as pd
+import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
+import warnings, logging
+warnings.filterwarnings("ignore")
+logging.getLogger("yfinance").setLevel(logging.CRITICAL)
+
+from matplotlib import rcParams
+rcParams['font.family'] = 'sans-serif'
+rcParams['font.sans-serif'] = ['MS Gothic', 'Meiryo', 'Yu Gothic', 'DejaVu Sans']
+rcParams['axes.unicode_minus'] = False
+
+STOCKS = {
+    "ETN（Eaton）":         ("ETN",  "#E53935", 2.0),
+    "PWR（Quanta）":        ("PWR",  "#1565C0", 2.0),
+    "GEV（GE Vernova）":    ("GEV",  "#6A1B9A", 1.5),
+    "EMR（Emerson）":       ("EMR",  "#00838F", 1.5),
+    "MYRG（MYR Group）":    ("MYRG", "#F57F17", 1.2),
+}
+
+fig, ax = plt.subplots(figsize=(10, 5))
+
+for label, (ticker, color, lw) in STOCKS.items():
+    try:
+        hist = yf.Ticker(ticker).history(period="1y")["Close"]
+        if len(hist) < 10:
+            continue
+        hist.index = pd.to_datetime(hist.index).tz_localize(None)
+        normed = hist / hist.iloc[0] * 100
+        final = normed.iloc[-1]
+        ax.plot(normed.index, normed.values,
+                label=f"{label}  ({final/100-1:+.0%})",
+                color=color, linewidth=lw, alpha=0.9)
+        ax.annotate(f"  {final/100-1:+.0%}",
+                    xy=(normed.index[-1], final),
+                    fontsize=7.5, color=color, va="center")
+    except Exception:
+        pass
+
+ax.axhline(100, color="gray", linestyle=":", linewidth=0.8, alpha=0.4)
+ax.set_ylabel("パフォーマンス（1年前=100）", fontsize=9)
+ax.set_title("電力インフラ銘柄 株価パフォーマンス（過去1年）", fontsize=11, fontweight="bold")
+ax.legend(fontsize=8.5, loc="upper left", framealpha=0.85)
+ax.xaxis.set_major_formatter(mdates.DateFormatter("%y/%m"))
+ax.xaxis.set_major_locator(mdates.MonthLocator(interval=2))
+ax.tick_params(axis="x", rotation=30, labelsize=8)
+ax.tick_params(axis="y", labelsize=8)
+ax.grid(True, alpha=0.2)
+plt.tight_layout()
+plt.show()
+```
+
+## Forward PER比較
+
+```{python}
+#| echo: false
+#| label: power-per
+#| fig-width: 9
+#| fig-height: 4
+
+import yfinance as yf
+import matplotlib.pyplot as plt
+import warnings, logging
+warnings.filterwarnings("ignore")
+logging.getLogger("yfinance").setLevel(logging.CRITICAL)
+
+from matplotlib import rcParams
+rcParams['font.family'] = 'sans-serif'
+rcParams['font.sans-serif'] = ['MS Gothic', 'Meiryo', 'Yu Gothic', 'DejaVu Sans']
+rcParams['axes.unicode_minus'] = False
+
+TICKERS = {"ETN": "#E53935", "PWR": "#1565C0", "GEV": "#6A1B9A", "EMR": "#00838F", "MYRG": "#F57F17"}
+rows = []
+
+for t, c in TICKERS.items():
+    try:
+        info = yf.Ticker(t).info
+        pe = info.get("forwardPE") or info.get("trailingPE")
+        mc = info.get("marketCap", 0) / 1e9
+        if pe and 0 < pe < 500:
+            rows.append((f"{t}\n(~${mc:.0f}B)", pe, c))
+    except Exception:
+        pass
+
+rows.sort(key=lambda x: x[1])
+labels = [r[0] for r in rows]
+vals   = [r[1] for r in rows]
+colors = [r[2] for r in rows]
+
+fig, ax = plt.subplots(figsize=(9, 4))
+ax.barh(labels, vals, color=colors, alpha=0.85, height=0.6)
+for i, val in enumerate(vals):
+    ax.text(val + 0.5, i, f"{val:.0f}x", va="center", fontsize=9)
+ax.axvline(25, color="#E53935", linestyle="--", linewidth=0.9, alpha=0.5, label="25x（市場平均）")
+ax.axvline(40, color="#FF9800", linestyle="--", linewidth=0.9, alpha=0.5, label="40x（高成長プレミアム）")
+ax.set_xlabel("Forward PER（倍）", fontsize=9)
+ax.set_title("電力インフラ銘柄 Forward PER比較", fontsize=11, fontweight="bold")
+ax.legend(fontsize=8)
+ax.grid(True, axis="x", alpha=0.2)
+ax.tick_params(labelsize=8)
+plt.tight_layout()
+plt.show()
+```
+
+---
+
+## 投資まとめ
+
+電力インフラはAIデータセンター需要の「物理的制約の急所」であり、需要の非弾力性（AI投資計画が中断されても電力インフラは止まらない）が強みだ。
+
+**ETN vs PWR の選択軸：**
+
+| | Eaton（ETN） | Quanta Services（PWR） |
+|---|---|---|
+| ビジネス | 製品製造（変圧器・配電機器） | サービス（電気工事・建設） |
+| マージン | 高利益率（製品） | 安定収益（長期工事契約） |
+| AI感応度 | DC電源機器需要直結 | DC建設・送電線工事 |
+| 特徴 | 変圧器3年待ち＝プライシングパワー | バックログが積み上がり視界良好 |
+
+> **結論：** ETN・PWRともにコア候補。変圧器のボトルネックとグリッド拡張の長期テーマで2028年まで安定した成長余地がある。液冷（VRT・ETN重複）と合わせてポートフォリオ全体のバランスを考えて選択。

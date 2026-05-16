@@ -1,0 +1,102 @@
+---
+title: "DC REIT：データセンター不動産の長期オーナー"
+---
+
+> AIデータセンターのGPUは陳腐化するが、その「場所」は残る。立地・電力・冷却インフラを所有するREITは、AI需要がどこへ向かっても定期収入を得続ける「不動産の大家」だ。
+
+## DC REITの特性
+
+データセンターREIT（Real Estate Investment Trust）は、データセンターの建物・土地・電力インフラを所有し、クラウドプロバイダーや企業に賃貸するビジネスモデルだ。REITは法的に収益の90%以上を配当として還元する義務があるため、**高配当+AI成長**の組み合わせが特徴。
+
+**DC REITが強い理由：**
+
+- クラウド3強（AWS・Azure・GCP）との長期賃貸契約（10〜15年）が収益の安定性を確保
+- DC適地（電力・冷却・低レイテンシ）は限られており、新規参入が困難
+- AIによるクラウド需要増 → 入居率・賃料単価が上昇
+
+**リスク：**
+
+- 金利上昇局面でREITの配当利回りの相対的魅力が低下
+- ビッグテックの自社DC建設拡大が賃貸需要を一部代替
+
+---
+
+## 主要銘柄マップ
+
+| 銘柄 | ティッカー | 業界パワー | 概要 | 配当利回り目安 | ステータス |
+|---|---|---|---|---|---|
+| **Equinix** | EQIX（NASDAQ） | ★★★★★ | 世界最大のDC REIT。60ヶ国250拠点。プレミアム立地の事実上の独占 | ~2% | ウォッチ |
+| **Digital Realty** | DLR（NYSE） | ★★★★ | 世界2位のDC REIT。ハイパースケーラー向け大型DC特化 | ~3% | ウォッチ |
+| **Iron Mountain** | IRM（NYSE） | ★★★ | 文書保管から転換中。DC事業が急成長 | ~3〜4% | ウォッチ |
+
+---
+
+## 株価パフォーマンス（過去1年）
+
+```{python}
+#| echo: false
+#| label: reit-performance
+#| fig-width: 10
+#| fig-height: 4.5
+
+import yfinance as yf
+import pandas as pd
+import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
+import warnings, logging
+warnings.filterwarnings("ignore")
+logging.getLogger("yfinance").setLevel(logging.CRITICAL)
+
+from matplotlib import rcParams
+rcParams['font.family'] = 'sans-serif'
+rcParams['font.sans-serif'] = ['MS Gothic', 'Meiryo', 'Yu Gothic', 'DejaVu Sans']
+rcParams['axes.unicode_minus'] = False
+
+STOCKS = {
+    "EQIX（Equinix）":       ("EQIX", "#E53935", 2.0),
+    "DLR（Digital Realty）": ("DLR",  "#1565C0", 2.0),
+    "IRM（Iron Mountain）":  ("IRM",  "#6A1B9A", 1.5),
+}
+
+fig, ax = plt.subplots(figsize=(10, 4.5))
+
+for label, (ticker, color, lw) in STOCKS.items():
+    try:
+        hist = yf.Ticker(ticker).history(period="1y")["Close"]
+        if len(hist) < 10:
+            continue
+        hist.index = pd.to_datetime(hist.index).tz_localize(None)
+        normed = hist / hist.iloc[0] * 100
+        final = normed.iloc[-1]
+        ax.plot(normed.index, normed.values,
+                label=f"{label}  ({final/100-1:+.0%})",
+                color=color, linewidth=lw, alpha=0.9)
+        ax.annotate(f"  {final/100-1:+.0%}",
+                    xy=(normed.index[-1], final),
+                    fontsize=8, color=color, va="center")
+    except Exception:
+        pass
+
+ax.axhline(100, color="gray", linestyle=":", linewidth=0.8, alpha=0.4)
+ax.set_ylabel("パフォーマンス（1年前=100）", fontsize=9)
+ax.set_title("DC REIT銘柄 株価パフォーマンス（過去1年）",
+             fontsize=11, fontweight="bold")
+ax.legend(fontsize=9, loc="upper left", framealpha=0.85)
+ax.xaxis.set_major_formatter(mdates.DateFormatter("%y/%m"))
+ax.xaxis.set_major_locator(mdates.MonthLocator(interval=2))
+ax.tick_params(axis="x", rotation=30, labelsize=8)
+ax.tick_params(axis="y", labelsize=8)
+ax.grid(True, alpha=0.2)
+plt.tight_layout()
+plt.show()
+```
+
+---
+
+## 投資まとめ
+
+DC REITはAIインフラ投資の「安全弁」的な位置づけだ。高リスク・高リターン銘柄（RKLB・LUNR等）のボラティリティを抑えたい局面での補完的保有として機能する。
+
+現在の投資方針（攻め重視・50万円で3倍狙い）では優先度は低いが、資金規模が拡大した場合に**EQIX**が第一候補。
+
+> **現状：** 低優先度のウォッチリスト。資金・リスク許容度の拡大後に改めて検討。

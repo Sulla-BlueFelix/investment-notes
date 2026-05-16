@@ -1,0 +1,141 @@
+---
+title: "フィジカルAI・ロボティクス：AIが「体」を持つ時代"
+---
+
+> ソフトウェアとしてのAIは画面の中にある。フィジカルAIは工場の床、手術室、道路の上にある。NVIDIAのジェンセン・フアンが「次の巨大市場はロボティクス」と繰り返し強調するとき、彼はハードウェアの世界全体を指している。
+
+## なぜ今、フィジカルAIが投資テーマになるのか
+
+生成AIが言語・画像を扱うソフトウェア領域を制覇しつつある中、次のフロンティアは**物理世界との相互作用**だ。ヒューマノイドロボット・自動運転・産業用ロボットの高度化、そしてその学習基盤となる「センサーデータ」の重要性が急上昇している。
+
+NVIDIAはIsaac SimとOmniverse platformで、仮想空間でロボットを訓練して現実に転送する「シミュレーション→リアル転送（Sim2Real）」を推進している。これにより、実機のトレーニングコストが劇的に低下し、ヒューマノイドの商業展開が加速する。
+
+**市場規模：**
+
+| セグメント | 2025年 | 2030年予測 | CAGR |
+|---|---|---|---|
+| ヒューマノイドロボット | ~$1B | ~$15〜30B | 70%超 |
+| 産業用ロボット | ~$25B | ~$55B | 12〜15% |
+| 自動運転（L4/L5） | ~$10B | ~$80B | 40〜50% |
+| 精密減速機（ロボット関節） | ~$4B | ~$12B | 15〜20% |
+
+---
+
+## フィジカルAIのバリューチェーン
+
+| レイヤー | 内容 | 主な銘柄 |
+|---|---|---|
+| **センサー** | カメラ・LiDAR・ToFセンサー | Sony（6758.T） |
+| **コントローラー** | 産業用サーボドライブ・モーション制御 | Yaskawa（6506.T）、FANUC（6954.T） |
+| **精密機構** | 関節用精密減速機（Harmonic Drive等） | Harmonic Drive（6324.T） |
+| **AI学習基盤** | Sim2Realプラットフォーム | NVDA |
+| **インテグレーター** | ロボット+AIシステムの統合 | TSLA（Optimus）、GOOGL（DeepMind） |
+
+---
+
+## 主要銘柄マップ
+
+### 日本株（センサー・精密機構で世界独占）
+
+| 銘柄 | ティッカー | 業界パワー | 概要 | ステータス |
+|---|---|---|---|---|
+| **ソニーグループ** | 6758.T（東証） | ★★★★★ | CMOSイメージセンサー世界シェア約50%。スマホ・ロボット・自動運転すべての目 | **検討中（本命）** |
+| **ハーモニック・ドライブ** | 6324.T（東証） | ★★★★★ | 精密波動減速機（Strain Wave Gear）の世界独占。ヒューマノイド関節の事実上の標準 | **保有中** |
+| **安川電機** | 6506.T（東証） | ★★★★ | 産業用ロボット・サーボモーター世界4強。MOTOMAN製品群がモータースポンサー | ウォッチ |
+| **FANUC** | 6954.T（東証） | ★★★★★ | CNCシステム・産業用ロボット世界トップ。NVIDIA・Google協業発表で注目集中 | **保有中** |
+
+### 米国株
+
+| 銘柄 | ティッカー | 業界パワー | 概要 | ステータス |
+|---|---|---|---|---|
+| **Tesla** | TSLA（NASDAQ） | ★★★★ | OptmusヒューマノイドのSim2Real先駆者。FSD自動運転データ最大保有者 | ウォッチ |
+| **Intuitive Surgical** | ISRG（NASDAQ） | ★★★★★ | 手術支援ロボットの世界独占（da Vinci）。AIによる手術精度向上で参入障壁強化中 | ウォッチ |
+
+---
+
+## 株価パフォーマンス（過去1年）
+
+```{python}
+#| echo: false
+#| label: physical-ai-performance
+#| fig-width: 11
+#| fig-height: 5.5
+
+import yfinance as yf
+import pandas as pd
+import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
+import warnings, logging
+warnings.filterwarnings("ignore")
+logging.getLogger("yfinance").setLevel(logging.CRITICAL)
+
+from matplotlib import rcParams
+rcParams['font.family'] = 'sans-serif'
+rcParams['font.sans-serif'] = ['MS Gothic', 'Meiryo', 'Yu Gothic', 'DejaVu Sans']
+rcParams['axes.unicode_minus'] = False
+
+STOCKS = {
+    "Sony（6758.T）":           ("6758.T", "#E53935", 2.0),
+    "Harmonic（6324.T）":       ("6324.T", "#1565C0", 2.0),
+    "FANUC（6954.T）":          ("6954.T", "#6A1B9A", 1.8),
+    "Yaskawa（6506.T）":        ("6506.T", "#00838F", 1.5),
+    "Tesla（TSLA）":            ("TSLA",   "#F57F17", 1.5),
+    "Intuitive（ISRG）":        ("ISRG",   "#00695C", 1.5),
+}
+
+fig, ax = plt.subplots(figsize=(11, 5.5))
+
+for label, (ticker, color, lw) in STOCKS.items():
+    try:
+        hist = yf.Ticker(ticker).history(period="1y")["Close"]
+        if len(hist) < 10:
+            continue
+        hist.index = pd.to_datetime(hist.index).tz_localize(None)
+        normed = hist / hist.iloc[0] * 100
+        final = normed.iloc[-1]
+        ax.plot(normed.index, normed.values,
+                label=f"{label}  ({final/100-1:+.0%})",
+                color=color, linewidth=lw, alpha=0.9)
+        ax.annotate(f"  {final/100-1:+.0%}",
+                    xy=(normed.index[-1], final),
+                    fontsize=7.5, color=color, va="center")
+    except Exception:
+        pass
+
+ax.axhline(100, color="gray", linestyle=":", linewidth=0.8, alpha=0.4)
+ax.set_ylabel("パフォーマンス（1年前=100）\n※日本株は円建て", fontsize=9)
+ax.set_title("フィジカルAI・ロボティクス銘柄 株価パフォーマンス（過去1年）",
+             fontsize=11, fontweight="bold")
+ax.legend(fontsize=8.5, loc="upper left", framealpha=0.85)
+ax.xaxis.set_major_formatter(mdates.DateFormatter("%y/%m"))
+ax.xaxis.set_major_locator(mdates.MonthLocator(interval=2))
+ax.tick_params(axis="x", rotation=30, labelsize=8)
+ax.tick_params(axis="y", labelsize=8)
+ax.grid(True, alpha=0.2)
+plt.tight_layout()
+plt.show()
+```
+
+> **注：** 日本株（6758.T・6324.T・6954.T・6506.T）は円建て騰落率。USD換算なし。
+
+---
+
+## ソニー（6758.T）：なぜ本命か
+
+ソニーをフィジカルAIの本命とする理由は1つに集約される：**CMOSイメージセンサー世界シェア約50%**。
+
+ロボット・自動運転・工場監視カメラ・ドローンの「目」はすべてCMOSセンサーで作られており、その約半数がソニー製だ。フィジカルAIが普及すればするほど、ソニーのセンサー出荷量が増える。しかもカメラ以外の収益柱（PlayStation・エンタメ・半導体受託）が足元を支えており、PERは**同等成長企業と比較して明確に割安**。
+
+> **分析ノート：** `analysis/physical_ai.ipynb` に5銘柄の定量分析あり。
+
+---
+
+## 投資まとめ
+
+| 銘柄 | 選択理由 | バケット |
+|---|---|---|
+| Sony（6758.T） | センサー独占×割安PER。本命 | 運用枠 |
+| Harmonic Drive（6324.T） | ヒューマノイド関節の世界標準。好決算後の押し目で購入済み | リスク枠 |
+| FANUC（6954.T） | NVIDIA・Google協業モメンタム。購入済み | 運用枠 |
+
+> ヒューマノイドが量産フェーズに入る2026〜2027年が最初のリターン検証点。Harmonic Driveは1台あたり複数個の減速機を使用するため、出荷台数に直結する。

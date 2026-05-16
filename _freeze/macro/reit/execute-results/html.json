@@ -1,0 +1,12 @@
+{
+  "hash": "c2b719717126747db1436b9c1578c08a",
+  "result": {
+    "engine": "jupyter",
+    "markdown": "---\ntitle: \"DC REIT：データセンター不動産の長期オーナー\"\n---\n\n> AIデータセンターのGPUは陳腐化するが、その「場所」は残る。立地・電力・冷却インフラを所有するREITは、AI需要がどこへ向かっても定期収入を得続ける「不動産の大家」だ。\n\n## DC REITの特性\n\nデータセンターREIT（Real Estate Investment Trust）は、データセンターの建物・土地・電力インフラを所有し、クラウドプロバイダーや企業に賃貸するビジネスモデルだ。REITは法的に収益の90%以上を配当として還元する義務があるため、**高配当+AI成長**の組み合わせが特徴。\n\n**DC REITが強い理由：**\n\n- クラウド3強（AWS・Azure・GCP）との長期賃貸契約（10〜15年）が収益の安定性を確保\n- DC適地（電力・冷却・低レイテンシ）は限られており、新規参入が困難\n- AIによるクラウド需要増 → 入居率・賃料単価が上昇\n\n**リスク：**\n\n- 金利上昇局面でREITの配当利回りの相対的魅力が低下\n- ビッグテックの自社DC建設拡大が賃貸需要を一部代替\n\n---\n\n## 主要銘柄マップ\n\n| 銘柄 | ティッカー | 業界パワー | 概要 | 配当利回り目安 | ステータス |\n|---|---|---|---|---|---|\n| **Equinix** | EQIX（NASDAQ） | ★★★★★ | 世界最大のDC REIT。60ヶ国250拠点。プレミアム立地の事実上の独占 | ~2% | ウォッチ |\n| **Digital Realty** | DLR（NYSE） | ★★★★ | 世界2位のDC REIT。ハイパースケーラー向け大型DC特化 | ~3% | ウォッチ |\n| **Iron Mountain** | IRM（NYSE） | ★★★ | 文書保管から転換中。DC事業が急成長 | ~3〜4% | ウォッチ |\n\n---\n\n## 株価パフォーマンス（過去1年）\n\n::: {#cell-reit-performance .cell fig-height='4.5' fig-width='10' execution_count=1}\n\n::: {.cell-output .cell-output-display}\n![](reit_files/figure-html/reit-performance-output-1.png){#reit-performance width=949 height=422}\n:::\n:::\n\n\n---\n\n## 投資まとめ\n\nDC REITはAIインフラ投資の「安全弁」的な位置づけだ。高リスク・高リターン銘柄（RKLB・LUNR等）のボラティリティを抑えたい局面での補完的保有として機能する。\n\n現在の投資方針（攻め重視・50万円で3倍狙い）では優先度は低いが、資金規模が拡大した場合に**EQIX**が第一候補。\n\n> **現状：** 低優先度のウォッチリスト。資金・リスク許容度の拡大後に改めて検討。\n\n",
+    "supporting": [
+      "reit_files"
+    ],
+    "filters": [],
+    "includes": {}
+  }
+}
