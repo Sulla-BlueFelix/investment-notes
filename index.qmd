@@ -2,17 +2,28 @@
 title: "Investment Notes"
 ---
 
-マクロトレンドを軸に、テクノロジーセクターを中心とした投資分析のメモ。
+AIインフラを中心に、半導体・電力・冷却・フォトニクス・フィジカルAIなどの投資テーマを整理する公開ノート。
+
+::: {.callout-note}
+このサイトは個人の調査メモであり、投資助言ではありません。日々の売買判断や未整理の検討ログは非公開のObsidianに置き、ここには清書したテーマ分析と定量検証だけを掲載します。
+:::
+
+**最終更新:** 2026-06-23  
+**データについて:** 株価・PER等は取得時点の値です。最新の投資判断では、必ず直近価格・決算・ニュース・需給を再確認します。
 
 ## 最近の分析
 
-- [POET Technologies](stocks/POET/index.qmd) — フォトニクス集積回路の本命か
+- [AIデータセンター・バリューチェーン全体像](macro/index.qmd) — 電力、冷却、半導体、素材まで含めた構造整理
+- [半導体エコシステム](macro/semiconductor.qmd) — AIチップを生むサプライチェーン
+- [液冷・冷却](macro/liquid-cooling.qmd) — 高密度AIラックの制約
+- [POET Technologies](stocks/POET/index.qmd) — フォトニクス集積回路の個別銘柄メモ
 
 ## セクション
 
 | | |
 |---|---|
-| [銘柄ユニバース](watchlist.qmd) | セクター別注目銘柄一覧・ステータス管理 |
+| [銘柄ユニバース](watchlist.qmd) | AIインフラ関連の注目銘柄カタログ |
 | [Macro](macro/index.qmd) | AIインフラ・バリューチェーン別テーマ分析 |
-| [Stocks](stocks/index.qmd) | 個別銘柄の定性・定量分析 |
-
+| [Stocks](stocks/index.qmd) | 個別銘柄プロフィール |
+| [Daily](daily/index.qmd) | 翌営業日の注目事項 |
+| [YouTube](youtube/index.qmd) | 解説動画向けの構成メモ |

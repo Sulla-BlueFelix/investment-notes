@@ -11,6 +11,10 @@ website:
         href: macro/index.qmd
       - text: Stocks
         href: stocks/index.qmd
+      - text: Daily
+        href: daily/index.qmd
+      - text: YouTube
+        href: youtube/index.qmd
 
 execute:
   freeze: auto
