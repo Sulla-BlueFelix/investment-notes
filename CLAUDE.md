@@ -124,6 +124,14 @@
 | 米国主要銘柄（大型株） | MCP (financial-datasets) | S&P500・NASDAQ100構成銘柄など。フリー枠で取得可能 |
 | 米国ニッチ株（小型・中型） | yfinance | POET・RKLBなど |
 
+### テーマ別市場スナップショット
+
+- 夜間学習や新テーマ調査では `scripts/theme_snapshot.py` を使い、テーマ内の銘柄が高値圏か押し目かを確認する
+- 例: `uv run python scripts/theme_snapshot.py --preset ai_memory`
+- 例: `uv run python scripts/theme_snapshot.py --preset data_center_water`
+- 例: `uv run python scripts/theme_snapshot.py --preset ai_infra`
+- 価格表は売買判断の入口であり、結論ではない。必ずテーマ仮説、決算、公式情報、反証条件と合わせる
+
 ## Python環境
 
 - **パッケージ管理**: `uv`（`pyproject.toml` + `uv.lock`でバージョン固定）
