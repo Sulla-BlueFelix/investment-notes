@@ -5,6 +5,7 @@ Usage:
   uv run python scripts/theme_snapshot.py --preset ai_memory
   uv run python scripts/theme_snapshot.py --preset japan_memory
   uv run python scripts/theme_snapshot.py --preset hyperscaler_capex
+  uv run python scripts/theme_snapshot.py --preset custom_ai_silicon
   uv run python scripts/theme_snapshot.py --tickers MU,NVDA,AVGO
 """
 
@@ -103,6 +104,28 @@ PRESETS: dict[str, dict[str, str]] = {
         "POET": "POET / optical interposer",
         "GLW": "Corning / fiber glass",
         "NVDA": "NVIDIA / networking platform",
+    },
+    "custom_ai_silicon": {
+        "NVDA": "NVIDIA / GPU CUDA platform",
+        "AVGO": "Broadcom / custom XPU Ethernet",
+        "MRVL": "Marvell / custom silicon connectivity",
+        "AMD": "AMD / GPU alternative",
+        "GOOGL": "Alphabet / TPU buyer-builder",
+        "AMZN": "Amazon / Trainium buyer-builder",
+        "MSFT": "Microsoft / Maia buyer-builder",
+        "META": "Meta / MTIA buyer-builder",
+        "TSM": "TSMC / foundry",
+        "ASML": "ASML / EUV",
+        "SNPS": "Synopsys / EDA",
+        "CDNS": "Cadence / EDA",
+        "ARM": "Arm / IP",
+        "ANET": "Arista / Ethernet switching",
+        "CRDO": "Credo / connectivity",
+        "ALAB": "Astera / PCIe CXL connectivity",
+        "COHR": "Coherent / optics",
+        "LITE": "Lumentum / optics",
+        "SOXX": "Semiconductor ETF",
+        "SMH": "Semiconductor ETF",
     },
 }
 

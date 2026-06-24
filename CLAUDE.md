@@ -44,6 +44,7 @@
 - 2026-06-25時点で、AIインフラ学習テーマとして `テーマ/HBM_メモリサイクル.md` と `テーマ/データセンター水制約.md` を追加済み。Micron決算やGoogle水制約のような新情報は、ただの要約ではなく、制約・受益者・監視指標・反証条件へ変換して扱う
 - 2026-06-25時点で、メモリ決算を日本株へ翻訳するために `テーマ/Phase5_チップ・メモリ.md` と `銘柄/Kioxia（285A）.md` を追加済み。Micronの神決算をKioxiaへ直結させず、HBM/DRAM、NAND/SSD、HDD/ストレージ、装置/CAPEX、小型連想へ分解して判断する
 - 2026-06-25時点で、AIインフラ需要の支払者を見るために `テーマ/ハイパースケーラーAI_CAPEX支払い能力.md` を追加済み。AI半導体・メモリ・電力・冷却・光通信を触る時は、MSFT/GOOGL/AMZN/META/ORCLのCAPEX、営業CF、FCF、RPO/backlog、AI ROIコメントを確認する
+- 2026-06-25時点で、独自AIチップを読むために `テーマ/カスタムAI_ASIC・推論コスト.md` を追加済み。TPU/Trainium/Maia/MTIA/AVGO/MRVLは「NVIDIA終了」ではなく、推論コスト、performance/watt、performance/dollar、TCO、供給制約への対応として見る
 - しぐまAIはLLMを予言者として扱わない。Obsidian/CLAUDE.mdを明示的な帰納バイアスとして読み、事実/推論/仮説/反証条件/価格ライン/サイズ/期限に分けて出力する
 - LLM活用では、会社名・テーマ語・有名人・AI/NVIDIA/半導体などの強いトークンによるバイアスを疑い、最新株価・決算日・イベント・ニュースは必ず最新データで確認する
 - 重要な売買判断では、Bull/Bear/定量リスク/イベント/執行の役割に分けた「しぐまAI投資委員会」形式で、漏れ防止と反証条件の確認を行う
@@ -112,9 +113,10 @@
 
 ## リサーチ方針
 
-- MCP・APIを使うもの（financial-datasets等）以外のリサーチは、必ず外部AIが担当する
-- ClaudeがWebサイトを独自に調査・検索することはNG（WebSearchツール等の使用禁止）
-- 定性情報（企業概要・競合分析・ニュース等）は外部AIから提供されたものをベースに使用する
+- 最新株価、決算、政治イベント、公式IR、規制、会社発表など時間変化する情報は、利用可能なWeb/API/CLIで必ず最新確認する
+- 長文資料・書籍・note・解説記事は、公開されている書誌情報、目次、著者インタビュー、書評、合法的な抜粋、公式資料、一次情報へ積極的にアクセスする
+- 著作権を理由に「絶対にアクセスしない」運用にはしない。ただし本文代替になる丸写し保存は避け、投資判断に使える知識・仮説・反証条件へ再構成する
+- 定性情報（企業概要・競合分析・ニュース等）は、可能な限り公式IR・一次情報を優先し、SNSや外部意見は需給/仮説シグナルとして割り引く
 
 ## データソース戦略
 
@@ -135,6 +137,7 @@
 - 例: `uv run python scripts/theme_snapshot.py --preset ai_infra`
 - 例: `uv run python scripts/theme_snapshot.py --preset ai_networking`
 - 例: `uv run python scripts/theme_snapshot.py --preset hyperscaler_capex`
+- 例: `uv run python scripts/theme_snapshot.py --preset custom_ai_silicon`
 - 価格表は売買判断の入口であり、結論ではない。必ずテーマ仮説、決算、公式情報、反証条件と合わせる
 
 ## Python環境
