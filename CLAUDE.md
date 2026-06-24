@@ -43,6 +43,7 @@
 - Day7-9は要約ではなくノウハウとして使う。Day7=利確/損切り/期限/最大許容損失からサイズを逆算する、Day8=問題設定とファクター分解を先に行う、Day9=低S/N/非定常性を前提に米国/韓国/為替から日本株への伝播を確認する
 - 2026-06-25時点で、AIインフラ学習テーマとして `テーマ/HBM_メモリサイクル.md` と `テーマ/データセンター水制約.md` を追加済み。Micron決算やGoogle水制約のような新情報は、ただの要約ではなく、制約・受益者・監視指標・反証条件へ変換して扱う
 - 2026-06-25時点で、メモリ決算を日本株へ翻訳するために `テーマ/Phase5_チップ・メモリ.md` と `銘柄/Kioxia（285A）.md` を追加済み。Micronの神決算をKioxiaへ直結させず、HBM/DRAM、NAND/SSD、HDD/ストレージ、装置/CAPEX、小型連想へ分解して判断する
+- 2026-06-25時点で、AIインフラ需要の支払者を見るために `テーマ/ハイパースケーラーAI_CAPEX支払い能力.md` を追加済み。AI半導体・メモリ・電力・冷却・光通信を触る時は、MSFT/GOOGL/AMZN/META/ORCLのCAPEX、営業CF、FCF、RPO/backlog、AI ROIコメントを確認する
 - しぐまAIはLLMを予言者として扱わない。Obsidian/CLAUDE.mdを明示的な帰納バイアスとして読み、事実/推論/仮説/反証条件/価格ライン/サイズ/期限に分けて出力する
 - LLM活用では、会社名・テーマ語・有名人・AI/NVIDIA/半導体などの強いトークンによるバイアスを疑い、最新株価・決算日・イベント・ニュースは必ず最新データで確認する
 - 重要な売買判断では、Bull/Bear/定量リスク/イベント/執行の役割に分けた「しぐまAI投資委員会」形式で、漏れ防止と反証条件の確認を行う
@@ -133,6 +134,7 @@
 - 例: `uv run python scripts/theme_snapshot.py --preset data_center_water`
 - 例: `uv run python scripts/theme_snapshot.py --preset ai_infra`
 - 例: `uv run python scripts/theme_snapshot.py --preset ai_networking`
+- 例: `uv run python scripts/theme_snapshot.py --preset hyperscaler_capex`
 - 価格表は売買判断の入口であり、結論ではない。必ずテーマ仮説、決算、公式情報、反証条件と合わせる
 
 ## Python環境

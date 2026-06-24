@@ -4,6 +4,7 @@
 Usage:
   uv run python scripts/theme_snapshot.py --preset ai_memory
   uv run python scripts/theme_snapshot.py --preset japan_memory
+  uv run python scripts/theme_snapshot.py --preset hyperscaler_capex
   uv run python scripts/theme_snapshot.py --tickers MU,NVDA,AVGO
 """
 
@@ -72,6 +73,22 @@ PRESETS: dict[str, dict[str, str]] = {
         "AMKR": "Amkor / advanced packaging",
         "SOXX": "Semiconductor ETF",
         "SMH": "Semiconductor ETF",
+    },
+    "hyperscaler_capex": {
+        "MSFT": "Microsoft / Azure OpenAI",
+        "GOOGL": "Alphabet / Google Cloud TPU",
+        "AMZN": "Amazon / AWS Trainium",
+        "META": "Meta / AI ads infra",
+        "ORCL": "Oracle / OCI AI infra",
+        "NVDA": "NVIDIA / GPU supplier",
+        "AVGO": "Broadcom / custom ASIC networking",
+        "MU": "Micron / memory supplier",
+        "VRT": "Vertiv / power cooling",
+        "ETN": "Eaton / electrical infra",
+        "GEV": "GE Vernova / grid power",
+        "COHR": "Coherent / optics",
+        "LITE": "Lumentum / optics",
+        "DLR": "Digital Realty / data center REIT",
     },
     "ai_networking": {
         "AVGO": "Broadcom / Ethernet ASIC CPO",
