@@ -42,6 +42,7 @@
 - 特に Day3 ラベリング/メタラベリング、Day4 バックテスト/CPCV、Day6 CTA/ボラターゲット、Day7 ケリー基準・Optimal f・効用関数によるサイズ決定、Day8 帰納バイアス・日本株ファクター・LLMの推論/バイアス、Day9 低S/N比・非定常性・米国から日本株へのファクター伝播・ポストLLM投資運用は実戦に優先適用する
 - Day7-9は要約ではなくノウハウとして使う。Day7=利確/損切り/期限/最大許容損失からサイズを逆算する、Day8=問題設定とファクター分解を先に行う、Day9=低S/N/非定常性を前提に米国/韓国/為替から日本株への伝播を確認する
 - 2026-06-25時点で、AIインフラ学習テーマとして `テーマ/HBM_メモリサイクル.md` と `テーマ/データセンター水制約.md` を追加済み。Micron決算やGoogle水制約のような新情報は、ただの要約ではなく、制約・受益者・監視指標・反証条件へ変換して扱う
+- 2026-06-25時点で、メモリ決算を日本株へ翻訳するために `テーマ/Phase5_チップ・メモリ.md` と `銘柄/Kioxia（285A）.md` を追加済み。Micronの神決算をKioxiaへ直結させず、HBM/DRAM、NAND/SSD、HDD/ストレージ、装置/CAPEX、小型連想へ分解して判断する
 - しぐまAIはLLMを予言者として扱わない。Obsidian/CLAUDE.mdを明示的な帰納バイアスとして読み、事実/推論/仮説/反証条件/価格ライン/サイズ/期限に分けて出力する
 - LLM活用では、会社名・テーマ語・有名人・AI/NVIDIA/半導体などの強いトークンによるバイアスを疑い、最新株価・決算日・イベント・ニュースは必ず最新データで確認する
 - 重要な売買判断では、Bull/Bear/定量リスク/イベント/執行の役割に分けた「しぐまAI投資委員会」形式で、漏れ防止と反証条件の確認を行う
@@ -128,6 +129,7 @@
 
 - 夜間学習や新テーマ調査では `scripts/theme_snapshot.py` を使い、テーマ内の銘柄が高値圏か押し目かを確認する
 - 例: `uv run python scripts/theme_snapshot.py --preset ai_memory`
+- 例: `uv run python scripts/theme_snapshot.py --preset japan_memory`
 - 例: `uv run python scripts/theme_snapshot.py --preset data_center_water`
 - 例: `uv run python scripts/theme_snapshot.py --preset ai_infra`
 - 例: `uv run python scripts/theme_snapshot.py --preset ai_networking`

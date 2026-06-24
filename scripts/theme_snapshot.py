@@ -3,6 +3,7 @@
 
 Usage:
   uv run python scripts/theme_snapshot.py --preset ai_memory
+  uv run python scripts/theme_snapshot.py --preset japan_memory
   uv run python scripts/theme_snapshot.py --tickers MU,NVDA,AVGO
 """
 
@@ -27,6 +28,26 @@ PRESETS: dict[str, dict[str, str]] = {
         "285A.T": "Kioxia JP",
         "005930.KS": "Samsung Electronics",
         "000660.KS": "SK Hynix",
+    },
+    "japan_memory": {
+        "285A.T": "Kioxia / NAND SSD",
+        "6146.T": "Disco / dicing grinding packaging",
+        "6857.T": "Advantest / memory logic test",
+        "8035.T": "Tokyo Electron / WFE",
+        "7735.T": "Screen / WFE cleaning",
+        "6920.T": "Lasertec / inspection",
+        "6525.T": "Kokusai Electric / deposition",
+        "3436.T": "Sumco / silicon wafer",
+        "4063.T": "Shin-Etsu / wafer materials",
+        "4062.T": "Ibiden / package substrate",
+        "6315.T": "Towa / molding packaging",
+        "6779.T": "Nihon Dempa / timing component",
+        "5803.T": "Fujikura / fiber cable power",
+        "MU": "Micron / HBM DRAM NAND",
+        "WDC": "Western Digital / NAND storage",
+        "STX": "Seagate / HDD storage",
+        "SOXX": "Semiconductor ETF",
+        "SMH": "Semiconductor ETF",
     },
     "data_center_water": {
         "XYL": "Xylem / water infra",
@@ -112,7 +133,7 @@ def fetch_snapshot(ticker: str, label: str) -> Snapshot | None:
     )
 
 
-def format_markdown(rows: list[Snapshot], title: str) -> str:
+def format_markdown(rows: list[Snapshot], title: str, missing: list[str]) -> str:
     lines = [
         f"# Theme Snapshot: {title}",
         "",
@@ -127,6 +148,15 @@ def format_markdown(rows: list[Snapshot], title: str) -> str:
             f"{r.ticker} | {r.label} | {r.last:.2f} | {r.day_pct:.2f} | "
             f"{r.one_month_pct:.1f} | {r.three_month_pct:.1f} | "
             f"{r.from_52w_high_pct:.1f} | {r.low_52w:.2f} | {r.high_52w:.2f} |"
+        )
+    if missing:
+        lines.extend(
+            [
+                "",
+                "## Missing",
+                "",
+                "No price data was returned for: " + ", ".join(missing),
+            ]
         )
     return "\n".join(lines)
 
@@ -148,12 +178,15 @@ def main() -> None:
         title = args.preset
 
     rows = []
+    missing = []
     for ticker, label in universe.items():
         row = fetch_snapshot(ticker, label)
         if row:
             rows.append(row)
+        else:
+            missing.append(ticker)
 
-    print(format_markdown(rows, title))
+    print(format_markdown(rows, title, missing))
 
 
 if __name__ == "__main__":
