@@ -130,6 +130,7 @@
 - 例: `uv run python scripts/theme_snapshot.py --preset ai_memory`
 - 例: `uv run python scripts/theme_snapshot.py --preset data_center_water`
 - 例: `uv run python scripts/theme_snapshot.py --preset ai_infra`
+- 例: `uv run python scripts/theme_snapshot.py --preset ai_networking`
 - 価格表は売買判断の入口であり、結論ではない。必ずテーマ仮説、決算、公式情報、反証条件と合わせる
 
 ## Python環境

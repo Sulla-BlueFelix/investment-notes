@@ -52,6 +52,20 @@ PRESETS: dict[str, dict[str, str]] = {
         "SOXX": "Semiconductor ETF",
         "SMH": "Semiconductor ETF",
     },
+    "ai_networking": {
+        "AVGO": "Broadcom / Ethernet ASIC CPO",
+        "MRVL": "Marvell / custom silicon optical DSP",
+        "ANET": "Arista / AI Ethernet switching",
+        "COHR": "Coherent / optics lasers",
+        "LITE": "Lumentum / optics lasers",
+        "CRDO": "Credo / AEC SerDes",
+        "ALAB": "Astera Labs / PCIe CXL connectivity",
+        "FN": "Fabrinet / optical manufacturing",
+        "CLS": "Celestica / AI network hardware",
+        "POET": "POET / optical interposer",
+        "GLW": "Corning / fiber glass",
+        "NVDA": "NVIDIA / networking platform",
+    },
 }
 
 
