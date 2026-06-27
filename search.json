@@ -84,536 +84,221 @@
     "text": "今後の展望（定性分析）\n\nなぜ今、注目されるのか\nAI時代のデータセンターにおいて、GPU間・チップ間の光インターコネクトは次の主戦場になりつつある。現在の電気接続では帯域・消費電力の限界が見え始めており、Co-Packaged Optics（CPO）への移行が業界トレンドとして加速している。\nPOETの Optical Interposer は、このCPOトレンドに直撃するポジショニングにある。従来の光トランシーバーはボードに外付けだったが、POETのアプローチはチップと光学素子を同一パッケージに収める——これにより消費電力・レイテンシ・コストの三重改善が理論上可能。\n\n\nQualcomm出資の噂について\n2026年5月、Qualcommが POET に出資する可能性があるとの噂が市場に広まり、株価が一時 +25% 急騰。 現時点では未確認情報であり、公式発表はない。ただし、もし事実であれば：\n\n技術検証: 大手半導体メーカーがPOETの技術を認めたことを意味する\n商業化加速: Qualcommの製品ラインへの採用・共同開発の可能性\n資金調達: キャッシュバーンが続く中での資本注入\n\nこの噂の真偽と続報が、短期的な株価の最大のカタリストになる。\n\n\n投資テーゼのサマリー\nBull ケース： CPOの標準技術としてPOET Optical Interposerが採用される。データセンター向け光エンジン・トランシーバー市場（数百億ドル規模）の一角を取れれば、現在の時価総額は正当化される。Qualcomm等の戦略投資が実現すれば加速。\nBear ケース： 技術的差別化が維持できず、Intel、Broadcom、Marvell等の大手に市場を奪われる。資金調達が続く中での希薄化リスク。商業化が遅れると、キャッシュバーン($33-35M/年)が経営を圧迫。\n\n\n主要リスク\n\n\n\n\n\n\n\nリスク\n内容\n\n\n\n\n資金リスク\n売上ほぼゼロで年$33-35Mのバーン。増資・希薄化リスクが継続\n\n\n競合リスク\nIntel CPO、Ayar Labs、Ranovus等の競合も同空間に参入中\n\n\n実行リスク\n量産化・歩留まり改善は半導体開発において最大の関門\n\n\nインサイダーリスク\n経営陣保有0.08%。株主目線の経営が担保されにくい\n\n\n噂リスク\nQualcomm出資が不発に終わった場合の反動下落\n\n\n\n\n最終更新: 2026-05-12 | データソース: yfinance (Yahoo Finance)"
   },
   {
-    "objectID": "analysis/sony.html",
-    "href": "analysis/sony.html",
-    "title": "ソニーグループ（6758.T）分析：センサー事業のPER再評価とフィジカルAI",
+    "objectID": "analysis/ai_infra_screen.html",
+    "href": "analysis/ai_infra_screen.html",
+    "title": "AIインフラ・ウォッチリスト スクリーニング",
     "section": "",
-    "text": "目的： ソニーのI&SS（イメージング＆センシング・ソリューション）事業が、コングロマリット平均PERに埋もれている「評価の歪み」を定量的に検証し、SOTP（Sum of the Parts）バリュエーションで妥当株価を試算する。\n主要な結論（先出し） - I&SS は売上の17%・利益の25%を稼ぐ超高収益エンジン。営業増益 +37%（FY2025） - 現在のPER約22倍はゲーム・音楽込みの平均。センサーだけをAI半導体（PER50倍）で再評価すると目標株価 約4,870円（+31%） - I&SS が+37%成長を2年継続 × PER50倍なら 約7,200円（+95%） - TSMC合弁 × イメージセンサー世界シェア43%という「堀の深さ」がフィジカルAI時代の本命\nimport yfinance as yf\nimport pandas as pd\nimport numpy as np\nimport matplotlib.pyplot as plt\nimport matplotlib.patches as mpatches\nimport warnings, logging\n\nwarnings.filterwarnings('ignore')\nlogging.getLogger('yfinance').setLevel(logging.CRITICAL)\n\nfrom matplotlib import rcParams\nrcParams['font.family'] = 'sans-serif'\nrcParams['font.sans-serif'] = ['MS Gothic', 'Meiryo', 'Yu Gothic', 'DejaVu Sans']\nrcParams['axes.unicode_minus'] = False\n\nfx = yf.Ticker('USDJPY=X').history(period='1d')\nUSDJPY = float(fx['Close'].iloc[-1]) if not fx.empty else 155.0\nprint(f'USDJPY: {USDJPY:.2f}')\n\n# FY2025決算実績（億円）\nSONY_PRICE     = 3700      # 現在株価（円）\nSONY_MCAP      = 226000    # 時価総額（億円）= 22.6兆円\nSONY_SHARES    = SONY_MCAP / SONY_PRICE  # 億株\n\nTOTAL_REV      = 124796    # 売上高（億円）\nTOTAL_OP       = 14475     # 営業利益（億円）\nTOTAL_NI       = 10309     # 純利益・継続事業（億円）\n\nISS_REV        = 21515     # I&SS 売上高（億円）\nISS_OP         = 3573      # I&SS 営業利益（億円）\nISS_OP_PREV    = 2607      # I&SS 前年営業利益（億円、+37%計算用）\n\nISS_SHARE_OP   = ISS_OP / TOTAL_OP      # 25%弱\nISS_NI         = TOTAL_NI * ISS_SHARE_OP  # 純利益への近似配分\nOTHER_NI       = TOTAL_NI - ISS_NI\n\nprint(f'\\n--- FY2025 基本数値 ---')\nprint(f'発行済株式数：{SONY_SHARES:.2f}億株')\nprint(f'I&SS 営業利益シェア：{ISS_SHARE_OP*100:.1f}%')\nprint(f'I&SS 推定純利益：{ISS_NI:.0f}億円')\nprint(f'その他推定純利益：{OTHER_NI:.0f}億円')\nprint(f'現在PER（全体）：{SONY_MCAP/TOTAL_NI:.1f}x')\n\nUSDJPY: 157.78\n\n--- FY2025 基本数値 ---\n発行済株式数：61.08億株\nI&SS 営業利益シェア：24.7%\nI&SS 推定純利益：2545億円\nその他推定純利益：7764億円\n現在PER（全体）：21.9x"
+    "text": "作成: 2026-06-28 / しぐまAI\n目的: [[モデルポートフォリオ案]]・[[運用ダッシュボード]]を数字で裏付ける。AIインフラ全層の主要銘柄を、 質（利益率・モート）× 押し目（52週高値からの距離）× バリュエーション（予想PER）× 相関（集中リスク）でスクリーニングし、 「質が高く、押していて、混んでいない」候補を機械的に surface する。\n週次で再実行してダッシュボードを更新する想定。カーネルは investment-notes。\n注意: 予想PERが低い＝割安とは限らない（メモリ等シクリカルはピーク益で低PERになる＝割安の罠）。質×押し目スコアと合わせて読む。\nimport yfinance as yf\nimport pandas as pd\n\npd.set_option(\"display.width\", 200)\npd.set_option(\"display.max_columns\", 20)\nfx = yf.Ticker(\"USDJPY=X\").history(period=\"1d\")[\"Close\"].iloc[-1]\nprint(\"USDJPY =\", round(fx, 2))\n# AIインフラ・ウォッチリスト（theme, tier付き）\nuniverse = {\n    \"NVDA\": (\"NVIDIA\", \"compute\", \"core\"),\n    \"ASML\": (\"ASML\", \"compute\", \"core\"),\n    \"TSM\": (\"TSMC\", \"compute\", \"core\"),\n    \"MU\": (\"Micron\", \"memory\", \"core\"),\n    \"CEG\": (\"Constellation\", \"power\", \"core\"),\n    \"GEV\": (\"GE Vernova\", \"power\", \"core\"),\n    \"ETN\": (\"Eaton\", \"power\", \"core\"),\n    \"VST\": (\"Vistra\", \"power\", \"alpha\"),\n    \"TLN\": (\"Talen\", \"power\", \"alpha\"),\n    \"VRT\": (\"Vertiv\", \"cooling\", \"core\"),\n    \"MOD\": (\"Modine\", \"cooling\", \"alpha\"),\n    \"AVGO\": (\"Broadcom\", \"network\", \"core\"),\n    \"COHR\": (\"Coherent\", \"network\", \"alpha\"),\n    \"LITE\": (\"Lumentum\", \"network\", \"alpha\"),\n    \"MRVL\": (\"Marvell\", \"network\", \"risk\"),\n    \"AMKR\": (\"Amkor\", \"packaging\", \"alpha\"),\n    \"6981.T\": (\"Murata\", \"mlcc\", \"core\"),\n    \"6976.T\": (\"Taiyo Yuden\", \"mlcc\", \"alpha\"),\n}\ndef momentum(c):\n    last = float(c.iloc[-1])\n    off_high = (last / float(c.max()) - 1) * 100\n    m1 = (last / float(c.iloc[-22]) - 1) * 100 if len(c) &gt; 22 else None\n    m3 = (last / float(c.iloc[-66]) - 1) * 100 if len(c) &gt; 66 else None\n    return last, off_high, m1, m3\n\nrows = []\nfor tk, (label, theme, tier) in universe.items():\n    t = yf.Ticker(tk)\n    c = t.history(period=\"1y\", auto_adjust=False)[\"Close\"].dropna()\n    if len(c) &lt; 2:\n        continue\n    last, off_high, m1, m3 = momentum(c)\n    info = t.info\n    mc = info.get(\"marketCap\")\n    mc_usd = (mc / fx if tk.endswith(\".T\") else mc) / 1e9 if mc else None\n    margin = info.get(\"profitMargins\")\n    rows.append({\n        \"ticker\": tk, \"label\": label, \"theme\": theme, \"tier\": tier,\n        \"off_52wH%\": round(off_high, 1),\n        \"1m%\": round(m1, 1) if m1 else None,\n        \"3m%\": round(m3, 1) if m3 else None,\n        \"fwdPE\": round(info.get(\"forwardPE\"), 1) if info.get(\"forwardPE\") else None,\n        \"margin%\": round(margin * 100, 1) if margin else None,\n        \"mc$B\": round(mc_usd, 1) if mc_usd else None,\n    })\ndf = pd.DataFrame(rows)\ndf"
   },
   {
-    "objectID": "analysis/sony.html#会社全体の業績概要fy2025",
-    "href": "analysis/sony.html#会社全体の業績概要fy2025",
-    "title": "ソニーグループ（6758.T）分析：センサー事業のPER再評価とフィジカルAI",
-    "section": "1. 会社全体の業績概要（FY2025）",
-    "text": "1. 会社全体の業績概要（FY2025）\n\n# セグメント別データ（FY2025決算）\nsegments = {\n    'G&NS（ゲーム）':       {'rev': 46698, 'op': 3843,  'op_prev': 3168},\n    '音楽':                 {'rev': 17270, 'op': 4002,  'op_prev': 3424},\n    '映画':                 {'rev': 14591, 'op': 1318,  'op_prev': 1266},\n    'ET&S（エレクトロニクス）': {'rev': 24765, 'op': 1458,  'op_prev': 1369},\n    'I&SS（センサー）':      {'rev': 21515, 'op': 3573,  'op_prev': 2607},\n    '金融':                 {'rev': 16200, 'op':  917,  'op_prev':  899},\n}\n\nrows = []\nfor seg, d in segments.items():\n    op_margin = d['op'] / d['rev'] * 100\n    op_growth = (d['op'] / d['op_prev'] - 1) * 100\n    rev_share = d['rev'] / TOTAL_REV * 100\n    op_share  = d['op']  / TOTAL_OP  * 100\n    rows.append({\n        'セグメント':    seg,\n        '売上（億円）':  f\"{d['rev']:,}\",\n        '売上シェア':    f\"{rev_share:.1f}%\",\n        '営業利益（億円）': f\"{d['op']:,}\",\n        '利益シェア':    f\"{op_share:.1f}%\",\n        '営業利益率':    f\"{op_margin:.1f}%\",\n        '利益成長率':    f\"{op_growth:+.0f}%\",\n    })\n\ndf_seg = pd.DataFrame(rows).set_index('セグメント')\nprint('ソニー セグメント別業績（FY2025）')\ndf_seg\n\nソニー セグメント別業績（FY2025）\n\n\n\n\n\n\n\n\n\n売上（億円）\n売上シェア\n営業利益（億円）\n利益シェア\n営業利益率\n利益成長率\n\n\nセグメント\n\n\n\n\n\n\n\n\n\n\nG&NS（ゲーム）\n46,698\n37.4%\n3,843\n26.5%\n8.2%\n+21%\n\n\n音楽\n17,270\n13.8%\n4,002\n27.6%\n23.2%\n+17%\n\n\n映画\n14,591\n11.7%\n1,318\n9.1%\n9.0%\n+4%\n\n\nET&S（エレクトロニクス）\n24,765\n19.8%\n1,458\n10.1%\n5.9%\n+7%\n\n\nI&SS（センサー）\n21,515\n17.2%\n3,573\n24.7%\n16.6%\n+37%\n\n\n金融\n16,200\n13.0%\n917\n6.3%\n5.7%\n+2%\n\n\n\n\n\n\n\n\n# セグメント別 利益シェア・利益率 可視化\nfig, axes = plt.subplots(1, 2, figsize=(12, 5))\n\nseg_names  = list(segments.keys())\nop_vals    = [segments[s]['op'] for s in seg_names]\nop_margins = [segments[s]['op'] / segments[s]['rev'] * 100 for s in seg_names]\ncolors     = ['#2196F3','#9C27B0','#FF9800','#607D8B','#E53935','#4CAF50']\nhighlight  = ['#E53935' if 'I&SS' in s else c for s, c in zip(seg_names, colors)]\n\nax = axes[0]\nbars = ax.bar(range(len(seg_names)), op_vals, color=highlight, alpha=0.85)\nax.set_xticks(range(len(seg_names)))\nax.set_xticklabels([s.replace('（', '\\n（') for s in seg_names], fontsize=8)\nax.set_ylabel('営業利益（億円）', fontsize=9)\nax.set_title('セグメント別 営業利益（FY2025）', fontsize=11, fontweight='bold')\nfor bar, val in zip(bars, op_vals):\n    ax.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 50,\n            f'{val:,}', ha='center', va='bottom', fontsize=8)\nax.grid(True, alpha=0.25, axis='y')\n\nax2 = axes[1]\nbars2 = ax2.bar(range(len(seg_names)), op_margins, color=highlight, alpha=0.85)\nax2.set_xticks(range(len(seg_names)))\nax2.set_xticklabels([s.replace('（', '\\n（') for s in seg_names], fontsize=8)\nax2.set_ylabel('営業利益率（%）', fontsize=9)\nax2.set_title('セグメント別 営業利益率（FY2025）', fontsize=11, fontweight='bold')\nfor bar, val in zip(bars2, op_margins):\n    ax2.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 0.3,\n             f'{val:.1f}%', ha='center', va='bottom', fontsize=8)\nax2.grid(True, alpha=0.25, axis='y')\n\nfig.suptitle('赤 = I&SS（センサー）', fontsize=9, color='#E53935')\nplt.tight_layout()\nplt.show()"
+    "objectID": "analysis/ai_infra_screen.html#質-押し目スクリーン",
+    "href": "analysis/ai_infra_screen.html#質-押し目スクリーン",
+    "title": "AIインフラ・ウォッチリスト スクリーニング",
+    "section": "「質 × 押し目」スクリーン",
+    "text": "「質 × 押し目」スクリーン\nquality_dip = margin% × (52週高値からの下落率) / 100。利益率（質・モートの代理）が高く、かつ大きく押している銘柄ほど高スコア。 シクリカル（メモリ）はピーク益で低PER・高marginになりがち→低PERを割安と即断しない。\n\ndf[\"quality_dip\"] = (df[\"margin%\"].fillna(0)) * (-df[\"off_52wH%\"]) / 100\ndf.sort_values(\"quality_dip\", ascending=False).reset_index(drop=True)"
   },
   {
-    "objectID": "analysis/sony.html#sotp-バリュエーションperの逆数を線形分解する",
-    "href": "analysis/sony.html#sotp-バリュエーションperの逆数を線形分解する",
-    "title": "ソニーグループ（6758.T）分析：センサー事業のPER再評価とフィジカルAI",
-    "section": "2. SOTP バリュエーション：PERの逆数を線形分解する",
-    "text": "2. SOTP バリュエーション：PERの逆数を線形分解する\n益回り（1/PER）を各セグメントの純利益寄与に分解する。\n\\[\n\\frac{1}{\\text{PER}_{\\text{全体}}} = \\frac{E_{\\text{sensor}}}{\\text{Mcap}} + \\frac{E_{\\text{other}}}{\\text{Mcap}}\n\\]\nセンサー項に PER50倍（AI半導体プレミアム）を適用し、その他は現状 PER で据え置いた合計を妥当時価総額とする。\n\nCURRENT_PER = SONY_MCAP / TOTAL_NI\n\nscenarios_per = [\n    ('現状維持',       CURRENT_PER, CURRENT_PER),\n    ('センサーPER30',  30,          CURRENT_PER),\n    ('センサーPER40',  40,          CURRENT_PER),\n    ('センサーPER50',  50,          CURRENT_PER),\n    ('センサーPER60',  60,          CURRENT_PER),\n    ('全体PER30',      30,          30),\n]\n\nrows = []\nfor name, per_iss, per_other in scenarios_per:\n    mcap_iss   = ISS_NI   * per_iss\n    mcap_other = OTHER_NI * per_other\n    mcap_total = mcap_iss + mcap_other\n    price      = mcap_total / SONY_SHARES\n    upside     = (price / SONY_PRICE - 1) * 100\n    rows.append({\n        'シナリオ':         name,\n        'センサーPER':      f'{per_iss:.0f}x',\n        'その他PER':        f'{per_other:.0f}x',\n        'センサー価値（兆円）': f'{mcap_iss/10000:.2f}',\n        'その他価値（兆円）': f'{mcap_other/10000:.2f}',\n        '合計時価総額（兆円）': f'{mcap_total/10000:.2f}',\n        '目標株価（円）':    f'{price:,.0f}',\n        'アップサイド':     f'{upside:+.1f}%',\n    })\n\ndf_sotp = pd.DataFrame(rows).set_index('シナリオ')\nprint(f'現在株価：{SONY_PRICE:,}円 / 現在時価総額：{SONY_MCAP/10000:.1f}兆円 / 現在PER：{CURRENT_PER:.1f}x')\nprint()\ndf_sotp\n\n現在株価：3,700円 / 現在時価総額：22.6兆円 / 現在PER：21.9x\n\n\n\n\n\n\n\n\n\n\nセンサーPER\nその他PER\nセンサー価値（兆円）\nその他価値（兆円）\n合計時価総額（兆円）\n目標株価（円）\nアップサイド\n\n\nシナリオ\n\n\n\n\n\n\n\n\n\n\n\n現状維持\n22x\n22x\n5.58\n17.02\n22.60\n3,700\n+0.0%\n\n\nセンサーPER30\n30x\n22x\n7.63\n17.02\n24.66\n4,037\n+9.1%\n\n\nセンサーPER40\n40x\n22x\n10.18\n17.02\n27.20\n4,453\n+20.4%\n\n\nセンサーPER50\n50x\n22x\n12.72\n17.02\n29.74\n4,870\n+31.6%\n\n\nセンサーPER60\n60x\n22x\n15.27\n17.02\n32.29\n5,286\n+42.9%\n\n\n全体PER30\n30x\n30x\n7.63\n23.29\n30.93\n5,063\n+36.8%\n\n\n\n\n\n\n\n\n# SOTP 棒グラフ可視化\nper_list   = [20, 25, 30, 35, 40, 45, 50, 55, 60]\nprices_sotp = []\nfor per_iss in per_list:\n    mcap = ISS_NI * per_iss + OTHER_NI * CURRENT_PER\n    prices_sotp.append(mcap / SONY_SHARES)\n\nfig, ax = plt.subplots(figsize=(10, 5))\nbar_colors = ['#E53935' if p &gt;= 4870 else '#90A4AE' for p in prices_sotp]\nbars = ax.bar([f'PER{p}x' for p in per_list], prices_sotp, color=bar_colors, alpha=0.85)\nax.axhline(SONY_PRICE, color='black', linestyle='--', linewidth=1.5, label=f'現在株価 {SONY_PRICE:,}円')\nax.axhline(SONY_PRICE * 1.5, color='#FF9800', linestyle=':', linewidth=1.2, label=f'+50% ({SONY_PRICE*1.5:,.0f}円)')\nax.axhline(SONY_PRICE * 2,   color='#4CAF50', linestyle=':', linewidth=1.2, label=f'+100% ({SONY_PRICE*2:,.0f}円)')\n\nfor bar, price in zip(bars, prices_sotp):\n    ax.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 30,\n            f'{price:,.0f}', ha='center', va='bottom', fontsize=8)\n\nax.set_xlabel('センサー（I&SS）に適用するPER', fontsize=9)\nax.set_ylabel('SOTP 目標株価（円）', fontsize=9)\nax.set_title('SOTP バリュエーション：センサーPER別 目標株価\\n（その他セグメントは現状PER 21.9x 据え置き）',\n             fontsize=11, fontweight='bold')\nax.legend(fontsize=8)\nax.grid(True, alpha=0.25, axis='y')\nplt.tight_layout()\nplt.show()"
+    "objectID": "analysis/ai_infra_screen.html#相関集中リスク",
+    "href": "analysis/ai_infra_screen.html#相関集中リスク",
+    "title": "AIインフラ・ウォッチリスト スクリーニング",
+    "section": "相関（集中リスク）",
+    "text": "相関（集中リスク）\n相関0.7超は実質1銘柄。合計サイズで損失管理する（[[投資ルール]]）。\n\ncore = [\"NVDA\", \"AVGO\", \"MU\", \"CEG\", \"GEV\", \"VRT\", \"COHR\", \"LITE\", \"ASML\", \"TSM\"]\npx = yf.download(core, period=\"3mo\", interval=\"1d\", progress=False)[\"Close\"]\npx.pct_change().dropna().corr().round(2)"
   },
   {
-    "objectID": "analysis/sony.html#利益成長-per再評価2ステージ試算",
-    "href": "analysis/sony.html#利益成長-per再評価2ステージ試算",
-    "title": "ソニーグループ（6758.T）分析：センサー事業のPER再評価とフィジカルAI",
-    "section": "3. 利益成長 × PER再評価：2ステージ試算",
-    "text": "3. 利益成長 × PER再評価：2ステージ試算\nSOTP は「今の利益、PERだけ変化」の静的分析。 I&SS が成長を続けた場合（2026〜2027）の利益増加 × PER再評価を組み合わせる。\n\n# I&SS 営業利益の成長シナリオ（FY2025実績ベース）\ngrowth_scenarios = {\n    'Bear（+10%/yr）':    0.10,\n    'Base（+20%/yr）':    0.20,\n    'Bull（+37%/yr）':    0.37,   # FY2025実績と同水準\n    'Extreme（+50%/yr）': 0.50,\n}\n\nper_targets = [30, 40, 50]\n\n# I&SS 純利益は営業利益と同比率で成長すると近似\n# その他の純利益は横ばいと保守的に仮定\n\nprint('2027年目標株価シミュレーション（I&SS成長 × PER再評価）')\nprint(f'現在株価：{SONY_PRICE:,}円')\nprint()\n\nrows = []\nfor g_name, g_rate in growth_scenarios.items():\n    iss_ni_2027 = ISS_NI * (1 + g_rate) ** 2\n    for per_iss in per_targets:\n        mcap = iss_ni_2027 * per_iss + OTHER_NI * CURRENT_PER\n        price = mcap / SONY_SHARES\n        upside = (price / SONY_PRICE - 1) * 100\n        rows.append({\n            'I&SS成長率':        g_name,\n            'FY2027 I&SS純利益（億円）': f'{iss_ni_2027:,.0f}',\n            f'PER{per_iss}x目標株価': f'{price:,.0f}円 ({upside:+.0f}%)',\n        })\n\ndf_growth = pd.DataFrame(rows)\ndf_growth = df_growth.pivot(index='I&SS成長率', columns=[], values=df_growth.columns[1:])\n\n# 整形して表示\nresult_rows = []\nfor g_name, g_rate in growth_scenarios.items():\n    iss_ni_2027 = ISS_NI * (1 + g_rate) ** 2\n    row = {'I&SS成長率': g_name, 'FY2027 I&SS純利益（億円）': f'{iss_ni_2027:,.0f}'}\n    for per_iss in per_targets:\n        mcap  = iss_ni_2027 * per_iss + OTHER_NI * CURRENT_PER\n        price = mcap / SONY_SHARES\n        upside = (price / SONY_PRICE - 1) * 100\n        row[f'センサーPER{per_iss}x'] = f'{price:,.0f}円 ({upside:+.0f}%)'\n    result_rows.append(row)\n\ndf_result = pd.DataFrame(result_rows).set_index('I&SS成長率')\ndf_result\n\n2027年目標株価シミュレーション（I&SS成長 × PER再評価）\n現在株価：3,700円\n\n\n\n\n\n\n\n\n\n\nFY2027 I&SS純利益（億円）\nセンサーPER30x\nセンサーPER40x\nセンサーPER50x\n\n\nI&SS成長率\n\n\n\n\n\n\n\n\nBear（+10%/yr）\n3,079\n4,299円 (+16%)\n4,803円 (+30%)\n5,307円 (+43%)\n\n\nBase（+20%/yr）\n3,664\n4,586円 (+24%)\n5,186円 (+40%)\n5,786円 (+56%)\n\n\nBull（+37%/yr）\n4,776\n5,132円 (+39%)\n5,914円 (+60%)\n6,696円 (+81%)\n\n\nExtreme（+50%/yr）\n5,726\n5,599円 (+51%)\n6,536円 (+77%)\n7,473円 (+102%)\n\n\n\n\n\n\n\n\n# ヒートマップ：成長率 × センサーPER → 目標株価倍率\ng_rates   = [0.10, 0.20, 0.37, 0.50]\ng_labels  = ['Bear\\n+10%/yr', 'Base\\n+20%/yr', 'Bull\\n+37%/yr', 'Extreme\\n+50%/yr']\nper_range = list(range(20, 65, 5))\n\nmatrix = np.zeros((len(g_rates), len(per_range)))\nfor i, g in enumerate(g_rates):\n    iss_ni_2027 = ISS_NI * (1 + g) ** 2\n    for j, per_iss in enumerate(per_range):\n        mcap  = iss_ni_2027 * per_iss + OTHER_NI * CURRENT_PER\n        price = mcap / SONY_SHARES\n        matrix[i, j] = price / SONY_PRICE\n\nfig, ax = plt.subplots(figsize=(12, 4))\nim = ax.imshow(matrix, cmap='RdYlGn', aspect='auto', vmin=0.8, vmax=2.5)\n\nax.set_xticks(range(len(per_range)))\nax.set_xticklabels([f'{p}x' for p in per_range], fontsize=8)\nax.set_yticks(range(len(g_labels)))\nax.set_yticklabels(g_labels, fontsize=9)\nax.set_xlabel('センサー（I&SS）適用PER', fontsize=9)\nax.set_title('2027年目標株価倍率ヒートマップ（現在株価比）', fontsize=11, fontweight='bold')\n\nfor i in range(len(g_rates)):\n    for j in range(len(per_range)):\n        val = matrix[i, j]\n        ax.text(j, i, f'{val:.1f}x', ha='center', va='center',\n                fontsize=7.5, color='black' if 0.9 &lt; val &lt; 2.0 else 'white',\n                fontweight='bold' if val &gt;= 1.5 else 'normal')\n\nplt.colorbar(im, ax=ax, label='現在株価に対する倍率')\nplt.tight_layout()\nplt.show()\nprint('緑の領域（1.5x以上）が2028年目標ゾーン')\n\n\n\n\n\n\n\n\n緑の領域（1.5x以上）が2028年目標ゾーン"
+    "objectID": "analysis/ai_infra_screen.html#読み方メモ2026-06-28時点の所見",
+    "href": "analysis/ai_infra_screen.html#読み方メモ2026-06-28時点の所見",
+    "title": "AIインフラ・ウォッチリスト スクリーニング",
+    "section": "読み方メモ（2026-06-28時点の所見）",
+    "text": "読み方メモ（2026-06-28時点の所見）\n\nNVDA: 予想PER ~15 × 利益率63% × -18%押し = 質の押し目筆頭。AI計算の独占モートが市場並み倍率。\nAVGO: -24%押し × 利益率39% × PER19 = 2027見通し据え置きの失望で過剰反応の可能性。\nCEG: -35%押し × PER20 = AI電力の本命が深く押す（実キャッシュフロー、[[AI電力_原子力・SMR・ガス]]）。\nMU: PER7.6 × margin56%だが-6.7%しか押していない = ピーク益の低PER。割安の罠に注意（シクリカル）。\nTLN: margin約ゼロ = 電力でも財務の質は劣る。CEG優位。\n相関: フォトニクス(COHR/LITE)とAI半導体は高相関。電力(CEG/GEV)は相対的に非相関＝分散効果（[[AIインフラ_どこに賭けるか]]）。\n関連: [[モデルポートフォリオ案]] / [[運用ダッシュボード]] / [[AIトレードのプレモータム]]。"
   },
   {
-    "objectID": "analysis/sony.html#イメージセンサー世界市場シェアと競合比較",
-    "href": "analysis/sony.html#イメージセンサー世界市場シェアと競合比較",
-    "title": "ソニーグループ（6758.T）分析：センサー事業のPER再評価とフィジカルAI",
-    "section": "4. イメージセンサー世界市場シェアと競合比較",
-    "text": "4. イメージセンサー世界市場シェアと競合比較\n\n# 世界イメージセンサー市場シェア（2025年）\nshare_data = {\n    'ソニー': 43.4,\n    'Samsung': 20.2,\n    'OmniVision': 10.8,\n    'ON Semi': 5.1,\n    'その他': 20.5,\n}\n\nfig, axes = plt.subplots(1, 2, figsize=(12, 5))\n\n# 左：パイチャート\nax = axes[0]\ncolors_pie = ['#E53935', '#2196F3', '#FF9800', '#4CAF50', '#9E9E9E']\nexplode = [0.05 if k == 'ソニー' else 0 for k in share_data]\nwedges, texts, autotexts = ax.pie(\n    list(share_data.values()),\n    labels=list(share_data.keys()),\n    colors=colors_pie,\n    explode=explode,\n    autopct='%1.1f%%',\n    startangle=90,\n    textprops={'fontsize': 9}\n)\nax.set_title('世界イメージセンサー市場シェア（2025年）', fontsize=11, fontweight='bold')\n\n# 右：競合との財務比較（上場会社のみ）\ncomp_data = {\n    'ソニー\\nI&SS':    {'op_margin': 16.6, 'growth': 37, 'color': '#E53935'},\n    'Samsung\\nLSI':   {'op_margin':  8.2, 'growth': 12, 'color': '#2196F3'},\n    'ON Semi':        {'op_margin': 28.5, 'growth': -5, 'color': '#4CAF50'},\n    'OmniVision\\n非上場': {'op_margin': None, 'growth': None, 'color': '#9E9E9E'},\n}\n\nax2 = axes[1]\ncomp_names = [k for k, v in comp_data.items() if v['op_margin'] is not None]\nmargins    = [comp_data[k]['op_margin'] for k in comp_names]\ngrowths    = [comp_data[k]['growth']    for k in comp_names]\ncomp_colors = [comp_data[k]['color']   for k in comp_names]\n\nx = np.arange(len(comp_names))\nw = 0.35\nbars1 = ax2.bar(x - w/2, margins, w, label='営業利益率（%）', color=comp_colors, alpha=0.8)\nbars2 = ax2.bar(x + w/2, growths, w, label='利益成長率（%）', color=comp_colors, alpha=0.4)\n\nax2.axhline(0, color='black', linewidth=0.8)\nax2.set_xticks(x)\nax2.set_xticklabels(comp_names, fontsize=8)\nax2.set_ylabel('%', fontsize=9)\nax2.set_title('センサー競合：営業利益率 vs 利益成長率', fontsize=11, fontweight='bold')\nax2.legend(fontsize=8)\nax2.grid(True, alpha=0.25, axis='y')\n\nplt.tight_layout()\nplt.show()\nprint('Samsung LSI = Samsungの半導体・センサー部門（推定値）')\n\n\n\n\n\n\n\n\nSamsung LSI = Samsungの半導体・センサー部門（推定値）"
-  },
-  {
-    "objectID": "analysis/sony.html#株価推移と株主還元自社株買い効果",
-    "href": "analysis/sony.html#株価推移と株主還元自社株買い効果",
-    "title": "ソニーグループ（6758.T）分析：センサー事業のPER再評価とフィジカルAI",
-    "section": "5. 株価推移と株主還元（自社株買い効果）",
-    "text": "5. 株価推移と株主還元（自社株買い効果）\n\nimport matplotlib.dates as mdates\n\nsony = yf.Ticker('6758.T').history(period='3y')\nsony.index = pd.to_datetime(sony.index).tz_localize(None)\n\n# 比較：NVIDIA（AI半導体の代表）、Nikkei225（相場環境）\nnvda  = yf.Ticker('NVDA').history(period='3y')\nnvda.index = pd.to_datetime(nvda.index).tz_localize(None)\n\nfig, ax = plt.subplots(figsize=(11, 5))\n\nfor ticker_data, name, color, lw in [\n    (sony, 'ソニー (6758.T)', '#E53935', 2.2),\n    (nvda, 'NVIDIA (NVDA)',   '#76B900', 1.6),\n]:\n    norm = ticker_data['Close'] / ticker_data['Close'].iloc[0] * 100\n    ax.plot(norm.index, norm.values, label=name, color=color, linewidth=lw)\n\n# 自社株買い発表日をアノテーション\nbuyback_date = pd.Timestamp('2025-05-13')\nax.axvline(buyback_date, color='#E53935', linestyle=':', alpha=0.7)\nax.text(buyback_date, ax.get_ylim()[0] + 5 if ax.get_ylim()[0] &gt; 0 else 20,\n        '5,000億円\\n自社株買い発表', fontsize=7.5, color='#E53935', ha='left')\n\nax.axhline(100, color='gray', linestyle=':', linewidth=0.7, alpha=0.5)\nax.set_ylabel('株価（基準=100）', fontsize=9)\nax.set_title('ソニー vs NVIDIA：株価パフォーマンス（過去3年）', fontsize=11, fontweight='bold')\nax.legend(fontsize=9)\nax.xaxis.set_major_formatter(mdates.DateFormatter('%y/%m'))\nax.xaxis.set_major_locator(mdates.MonthLocator(interval=4))\nax.tick_params(axis='x', rotation=30, labelsize=8)\nax.grid(True, alpha=0.2)\nplt.tight_layout()\nplt.show()\n\n\n\n\n\n\n\n\n\n# 自社株買い・消却によるEPS押し上げ効果\nBUYBACK_SHARES  = 23000   # 万株（上限2.3億株 = 23,000万株）\nCANCEL_SHARES   = 18449   # 万株（2026年5月29日消却予定）\nTOTAL_REDUCTION = BUYBACK_SHARES + CANCEL_SHARES  # 万株\n\nshares_now    = SONY_SHARES * 100   # 万株\nshares_after  = shares_now - TOTAL_REDUCTION\neps_now       = TOTAL_NI * 1e8 / (shares_now * 1e4)   # 円/株\neps_after     = TOTAL_NI * 1e8 / (shares_after * 1e4) # 円/株\neps_lift      = (eps_after / eps_now - 1) * 100\n\nprint('株主還元（自社株買い・消却）によるEPS押し上げ効果')\nprint(f'現在発行済株式数：{shares_now:,.0f}万株')\nprint(f'自社株買い（上限）：{BUYBACK_SHARES:,}万株')\nprint(f'消却予定株数：{CANCEL_SHARES:,}万株')\nprint(f'株数削減合計：{TOTAL_REDUCTION:,}万株（{TOTAL_REDUCTION/shares_now*100:.1f}%）')\nprint(f'\\n削減前EPS：{eps_now:,.1f}円/株')\nprint(f'削減後EPS：{eps_after:,.1f}円/株')\nprint(f'EPS押し上げ効果：+{eps_lift:.1f}%')\nprint(f'\\n→ 利益ゼロ成長でも EPS は自然に +{eps_lift:.1f}% 成長する')\n\n株主還元（自社株買い・消却）によるEPS押し上げ効果\n現在発行済株式数：6,108万株\n自社株買い（上限）：23,000万株\n消却予定株数：18,449万株\n株数削減合計：41,449万株（678.6%）\n\n削減前EPS：16,877.6円/株\n削減後EPS：-2,917.0円/株\nEPS押し上げ効果：+-117.3%\n\n→ 利益ゼロ成長でも EPS は自然に +-117.3% 成長する"
-  },
-  {
-    "objectID": "analysis/sony.html#投資結論",
-    "href": "analysis/sony.html#投資結論",
-    "title": "ソニーグループ（6758.T）分析：センサー事業のPER再評価とフィジカルAI",
-    "section": "6. 投資結論",
-    "text": "6. 投資結論\n\nソニーグループ（6758.T）\n推奨：運用枠（40万円枠）の主力候補\n\n\n\n\n\n\n\n観点\n内容\n\n\n\n\nバリュエーション\nPER約22倍はコングロマリット平均。I&SS単体をAI半導体PER50倍で再評価すると +31%（4,870円）\n\n\n成長率\nI&SS 営業利益 +37%（FY2025）。2年継続 × PER50倍なら 7,200円（+95%）\n\n\nモートの深さ\n世界イメージセンサーシェア43%。Samsung にダブルスコア。積層型CMOS + オンダイAIで技術差継続\n\n\nTSMC合弁\n「ソニーの画素技術 × TSMCのロジック微細化」でフィジカルAI（ロボット・自動運転）向けを制圧する布陣\n\n\n株主還元\n5,000億円自社株買い + 1.8億株消却 → 利益ゼロ成長でも EPS が約6%自動成長\n\n\n\nリスク - 市場が I&SS を「AI半導体」として再評価するカタリストが明確に来るまで、PER は家電・エンタメ水準に留まる可能性 - スマホ市場の飽和（Apple 向け依存）。自動運転・ロボティクス向けの売上貢献が顕在化するのは2026年以降 - 円高リスク（海外売上が多いため）\nエントリー方針 - 3,700円付近で初期ポジション構築（運用枠から） - カタリスト：TSMC合弁の量産開始発表、Optimus/自動運転向け採用発表 → 確認後に買い増し - 目標：4,870〜7,200円（1〜3年）"
-  },
-  {
-    "objectID": "analysis/physical_ai.html",
-    "href": "analysis/physical_ai.html",
-    "title": "フィジカルAI関連銘柄 横並び比較",
+    "objectID": "analysis/copper.html",
+    "href": "analysis/copper.html",
+    "title": "銅セクター分析：FCX / SCCO / 住友金属鉱山",
     "section": "",
-    "text": "対象5銘柄（東証上場） - ソニーグループ（6758）：CMOSイメージセンサー世界1位、Nihon AI Kiban参画 - キーエンス（6861）：FAセンサー・マシンビジョン、営業利益率約50% - ファナック（6954）：産業用ロボット・CNC世界トップ - ナブテスコ（6268）：中大型ロボット関節用精密減速機、世界シェアトップ - ハーモニック・ドライブ（6324）：ヒューマノイド関節用波動歯車装置\n評価軸：フィジカルAI純度 / 最大手か / チョークポイント / バリュエーション\nimport yfinance as yf\nimport pandas as pd\nimport numpy as np\nimport matplotlib.pyplot as plt\nimport matplotlib.dates as mdates\nimport warnings, logging\n\nwarnings.filterwarnings('ignore')\nlogging.getLogger('yfinance').setLevel(logging.CRITICAL)\n\nfrom matplotlib import rcParams\nrcParams['font.family'] = 'sans-serif'\nrcParams['font.sans-serif'] = ['MS Gothic', 'Meiryo', 'Yu Gothic', 'DejaVu Sans']\nrcParams['axes.unicode_minus'] = False\n\nfx = yf.Ticker('USDJPY=X').history(period='1d')\nUSDJPY = float(fx['Close'].iloc[-1]) if not fx.empty else 155.0\nprint(f'USDJPY: {USDJPY:.2f}')\n\nTICKERS = {\n    '6758.T': 'ソニーグループ',\n    '6861.T': 'キーエンス',\n    '6954.T': 'ファナック',\n    '6268.T': 'ナブテスコ',\n    '6324.T': 'ハーモニック・ドライブ',\n}\n\nCOLORS = {\n    '6758.T': '#E53935',\n    '6861.T': '#1E88E5',\n    '6954.T': '#43A047',\n    '6268.T': '#FB8C00',\n    '6324.T': '#8E24AA',\n}\n\nUSDJPY: 157.77"
+    "text": "目的： AIデータセンター特需を背景とした銅セクターへの投資判断を、定量・定性の両面から分析する。\n主要な結論（先出し） - FCX：低PER出発点 × リーチング技術 × 2030年期待織り込みで3倍の経路あり → 主力候補 - SCCO：高品質だが高バリュエーション。Bull以下では2x届かず - 住友金属鉱山：ニッケル価格崩壊で銅プレイとして機能していない → 保留\nimport yfinance as yf\nimport pandas as pd\nimport numpy as np\nimport matplotlib.pyplot as plt\nimport matplotlib.dates as mdates\nfrom scipy import stats\nimport warnings, logging\n\nwarnings.filterwarnings('ignore')\nlogging.getLogger('yfinance').setLevel(logging.CRITICAL)\n\n# 日本語フォント（Windows）\nfrom matplotlib import rcParams\nrcParams['font.family'] = 'sans-serif'\nrcParams['font.sans-serif'] = ['MS Gothic', 'Meiryo', 'Yu Gothic', 'DejaVu Sans']\nrcParams['axes.unicode_minus'] = False\n\n# USDJPY レート\nfx = yf.Ticker('USDJPY=X').history(period='1d')\nUSDJPY = float(fx['Close'].iloc[-1]) if not fx.empty else 150.0\nprint(f'USDJPY: {USDJPY:.2f}')\n\nTICKERS = {\n    'FCX':    'Freeport-McMoRan',\n    'SCCO':   'Southern Copper',\n    '5713.T': '住友金属鉱山',\n}\n\nUSDJPY: 157.73"
   },
   {
-    "objectID": "analysis/physical_ai.html#基本財務データ",
-    "href": "analysis/physical_ai.html#基本財務データ",
-    "title": "フィジカルAI関連銘柄 横並び比較",
+    "objectID": "analysis/copper.html#基本財務データ",
+    "href": "analysis/copper.html#基本財務データ",
+    "title": "銅セクター分析：FCX / SCCO / 住友金属鉱山",
     "section": "1. 基本財務データ",
-    "text": "1. 基本財務データ\n\nrows = []\ninfo_cache = {}\n\nfor ticker, name in TICKERS.items():\n    info = yf.Ticker(ticker).info\n    info_cache[ticker] = info\n\n    price  = info.get('currentPrice') or info.get('regularMarketPrice', 0)\n    mcap   = info.get('marketCap', None)\n    pe_tr  = info.get('trailingPE', None)\n    pe_fw  = info.get('forwardPE', None)\n    om     = info.get('operatingMargins', None)\n    rev    = info.get('totalRevenue', None)\n    rev_g  = info.get('revenueGrowth', None)\n    eps_tr = info.get('trailingEps', None)\n\n    rows.append({\n        '銘柄':        f'{name}\\n({ticker.replace(\".T\",\"\")})',\n        '株価（円）':   f'{price:,.0f}',\n        '時価総額':    f'~¥{mcap/1e12:.1f}兆 (~${mcap/USDJPY/1e9:.0f}B)' if mcap else 'N/A',\n        'Trailing EPS': f'¥{eps_tr:,.0f}' if eps_tr else 'N/A',\n        'Trailing PER': f'{pe_tr:.1f}x' if pe_tr else 'N/A',\n        'Forward PER':  f'{pe_fw:.1f}x' if pe_fw else 'N/A',\n        '営業利益率':   f'{om*100:.1f}%' if om else 'N/A',\n        '売上成長率':   f'{rev_g*100:+.1f}%' if rev_g else 'N/A',\n    })\n\ndf_basic = pd.DataFrame(rows).set_index('銘柄')\nprint('5銘柄 基本財務データ')\ndf_basic\n\n5銘柄 基本財務データ\n\n\n\n\n\n\n\n\n\n株価（円）\n時価総額\nTrailing EPS\nTrailing PER\nForward PER\n営業利益率\n売上成長率\n\n\n銘柄\n\n\n\n\n\n\n\n\n\n\n\nソニーグループ\\n(6758)\n3,660\n~¥21.6兆 (~$137B)\n¥171\n21.4x\n20.0x\n7.6%\n+15.4%\n\n\nキーエンス\\n(6861)\n79,440\n~¥19.3兆 (~$122B)\n¥1,839\n43.2x\n42.5x\n53.6%\n+17.9%\n\n\nファナック\\n(6954)\n7,680\n~¥7.2兆 (~$45B)\n¥178\n43.1x\n44.4x\n23.9%\n+10.6%\n\n\nナブテスコ\\n(6268)\n5,737\n~¥0.7兆 (~$4B)\n¥124\n46.2x\n53.2x\n9.9%\n+1.6%\n\n\nハーモニック・ドライブ\\n(6324)\n6,970\n~¥0.7兆 (~$4B)\n¥49\n142.7x\n92.1x\n5.1%\nN/A"
+    "text": "1. 基本財務データ\n\nrows = []\nfor ticker, name in TICKERS.items():\n    info = yf.Ticker(ticker).info\n    price = info.get('currentPrice') or info.get('regularMarketPrice', 0)\n    eps   = info.get('trailingEps', None)\n    pe    = info.get('trailingPE', None)\n    fpe   = info.get('forwardPE', None)\n    mcap  = info.get('marketCap', None)\n    om    = info.get('operatingMargins', None)\n\n    is_jpy = ticker.endswith('.T')\n    if is_jpy:\n        price_str = f'¥{price:,.0f} (~${price/USDJPY:.1f})'\n        mcap_str  = f'~${mcap/USDJPY/1e9:.0f}B' if mcap else 'N/A'\n    else:\n        price_str = f'${price:.2f}'\n        mcap_str  = f'~${mcap/1e9:.0f}B' if mcap else 'N/A'\n\n    rows.append({\n        '銘柄':       f'{name} ({ticker})',\n        '現在株価':   price_str,\n        '時価総額':   mcap_str,\n        'Trailing EPS': f'${eps:.2f}' if eps and not is_jpy else (f'¥{eps:.0f}' if eps else 'N/A'),\n        'Trailing PER': f'{pe:.1f}x' if pe else 'N/A',\n        'Forward PER':  f'{fpe:.1f}x' if fpe else 'N/A',\n        '営業利益率':  f'{om*100:.1f}%' if om else 'N/A',\n    })\n\ndf_basic = pd.DataFrame(rows).set_index('銘柄')\ndf_basic\n\n\n\n\n\n\n\n\n現在株価\n時価総額\nTrailing EPS\nTrailing PER\nForward PER\n営業利益率\n\n\n銘柄\n\n\n\n\n\n\n\n\n\n\nFreeport-McMoRan (FCX)\n$66.03\n~$95B\n$1.89\n34.9x\n17.8x\n29.6%\n\n\nSouthern Copper (SCCO)\n$191.75\n~$160B\n$5.96\n32.2x\n28.4x\n58.3%\n\n\n住友金属鉱山 (5713.T)\n¥10,925 (~$69.3)\n~$19B\n¥650\n16.8x\n26.9x\n13.2%"
   },
   {
-    "objectID": "analysis/physical_ai.html#株価パフォーマンス比較過去3年",
-    "href": "analysis/physical_ai.html#株価パフォーマンス比較過去3年",
-    "title": "フィジカルAI関連銘柄 横並び比較",
-    "section": "2. 株価パフォーマンス比較（過去3年）",
-    "text": "2. 株価パフォーマンス比較（過去3年）\n\nhist = {}\nfor ticker in TICKERS:\n    df = yf.Ticker(ticker).history(period='3y')\n    if not df.empty:\n        s = df['Close'].copy()\n        s.index = pd.to_datetime(s.index).tz_localize(None)\n        hist[ticker] = s\n\nfig, ax = plt.subplots(figsize=(11, 5))\n\nfor ticker, name in TICKERS.items():\n    if ticker in hist:\n        s = hist[ticker]\n        norm = s / s.iloc[0] * 100\n        ax.plot(norm.index, norm.values, label=name, color=COLORS[ticker], linewidth=1.8)\n        # 末尾にラベル\n        ax.annotate(f'{name}\\n{norm.iloc[-1]:.0f}',\n                    xy=(norm.index[-1], norm.iloc[-1]),\n                    xytext=(5, 0), textcoords='offset points',\n                    fontsize=7, color=COLORS[ticker], va='center')\n\nax.axhline(100, color='gray', linestyle=':', linewidth=0.8, alpha=0.6)\nax.set_ylabel('株価（基準=100）', fontsize=9)\nax.set_title('フィジカルAI関連5銘柄 株価パフォーマンス（過去3年）', fontsize=11, fontweight='bold')\nax.xaxis.set_major_formatter(mdates.DateFormatter('%y/%m'))\nax.xaxis.set_major_locator(mdates.MonthLocator(interval=4))\nax.tick_params(axis='x', rotation=30, labelsize=8)\nax.grid(True, alpha=0.2)\nax.legend(fontsize=8, loc='upper left')\nplt.tight_layout()\nplt.show()\n\n\n\n\n\n\n\n\n\n# 期間別リターン\nperiods = {'1ヶ月': '1mo', '3ヶ月': '3mo', '1年': '1y', '3年': '3y'}\nret_rows = []\n\nfor ticker, name in TICKERS.items():\n    row = {'銘柄': name}\n    for label, period in periods.items():\n        df = yf.Ticker(ticker).history(period=period)\n        if not df.empty:\n            ret = (df['Close'].iloc[-1] / df['Close'].iloc[0] - 1) * 100\n            row[label] = f'{ret:+.1f}%'\n        else:\n            row[label] = 'N/A'\n    ret_rows.append(row)\n\ndf_ret = pd.DataFrame(ret_rows).set_index('銘柄')\nprint('期間別リターン')\ndf_ret\n\n期間別リターン\n\n\n\n\n\n\n\n\n\n1ヶ月\n3ヶ月\n1年\n3年\n\n\n銘柄\n\n\n\n\n\n\n\n\nソニーグループ\n+12.6%\n+3.4%\n+0.9%\n+45.0%\n\n\nキーエンス\n+25.1%\n+43.6%\n+24.8%\n+22.4%\n\n\nファナック\n+24.2%\n+20.3%\n+96.9%\n+78.5%\n\n\nナブテスコ\n+23.1%\n+28.6%\n+134.0%\n+96.1%\n\n\nハーモニック・ドライブ\n+67.7%\n+92.8%\n+84.6%\n+61.0%"
+    "objectID": "analysis/copper.html#銅価格トレンドと-comex-lme-乖離",
+    "href": "analysis/copper.html#銅価格トレンドと-comex-lme-乖離",
+    "title": "銅セクター分析：FCX / SCCO / 住友金属鉱山",
+    "section": "2. 銅価格トレンドと COMEX / LME 乖離",
+    "text": "2. 銅価格トレンドと COMEX / LME 乖離\n重要な文脈： 現在のCOMEX（HG=F）は米国の銅輸入関税25%を見越した前倒し需要でLMEより大幅高。 - FCX（米国内生産あり）はCOMEX価格の恩恵を受けるが、国際生産（約70%）はLMEベース。 - シナリオ分析はLMEベースの機関予測を使用する。\n\nhg = yf.Ticker('HG=F').history(period='2y')\nhg.index = pd.to_datetime(hg.index).tz_localize(None)\n\n# 年次平均\nannual_avg = hg['Close'].resample('YS').mean()\nprint('COMEX 年次平均 ($/lb):')\nfor yr, p in annual_avg.items():\n    print(f'  {yr.year}: ${p:.2f}/lb = ${p*2204.62:,.0f}/mt')\n\ncurrent_lb = float(hg['Close'].iloc[-1])\nprint(f'\\n現在 (COMEX): ${current_lb:.2f}/lb = ${current_lb*2204.62:,.0f}/mt')\nprint(f'推定 LME:     ~$4.31/lb = ~$9,500/mt')\nprint(f'COMEX-LME乖離: ${current_lb-4.31:.2f}/lb ({(current_lb/4.31-1)*100:.0f}%)')\n\nfig, ax = plt.subplots(figsize=(10, 4))\nax.plot(hg.index, hg['Close'], color='#795548', linewidth=1.8)\nax.fill_between(hg.index, hg['Close'], alpha=0.15, color='#795548')\nax.set_ylabel('$/lb (COMEX)', fontsize=9)\nax.set_title('銅先物価格推移（COMEX HG=F、過去2年）', fontsize=11, fontweight='bold')\nax.xaxis.set_major_formatter(mdates.DateFormatter('%y/%m'))\nax.xaxis.set_major_locator(mdates.MonthLocator(interval=3))\nax.tick_params(axis='x', rotation=30, labelsize=8)\nax.grid(True, alpha=0.25)\nplt.tight_layout()\nplt.show()\n\nCOMEX 年次平均 ($/lb):\n  2024: $4.32/lb = $9,522/mt\n  2025: $4.82/lb = $10,637/mt\n  2026: $5.85/lb = $12,897/mt\n\n現在 (COMEX): $6.66/lb = $14,674/mt\n推定 LME:     ~$4.31/lb = ~$9,500/mt\nCOMEX-LME乖離: $2.35/lb (54%)"
   },
   {
-    "objectID": "analysis/physical_ai.html#バリュエーション比較per-営業利益率",
-    "href": "analysis/physical_ai.html#バリュエーション比較per-営業利益率",
-    "title": "フィジカルAI関連銘柄 横並び比較",
-    "section": "3. バリュエーション比較：PER × 営業利益率",
-    "text": "3. バリュエーション比較：PER × 営業利益率\n\nfig, axes = plt.subplots(1, 2, figsize=(12, 5))\n\nnames_short = [TICKERS[t].replace('グループ', '').replace('ハーモニック・', 'H.') for t in TICKERS]\nticker_list = list(TICKERS.keys())\ncolor_list  = [COLORS[t] for t in ticker_list]\n\n# 左：Forward PER\nax = axes[0]\nfpe_vals = []\nfor t in ticker_list:\n    v = info_cache[t].get('forwardPE', None)\n    fpe_vals.append(v if v else 0)\n\nbars = ax.bar(names_short, fpe_vals, color=color_list, alpha=0.85)\nfor bar, val in zip(bars, fpe_vals):\n    if val:\n        ax.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 0.5,\n                f'{val:.1f}x', ha='center', va='bottom', fontsize=9, fontweight='bold')\nax.set_ylabel('Forward PER', fontsize=9)\nax.set_title('Forward PER 比較', fontsize=11, fontweight='bold')\nax.tick_params(axis='x', labelsize=8)\nax.grid(True, alpha=0.25, axis='y')\n\n# 右：営業利益率\nax2 = axes[1]\nom_vals = []\nfor t in ticker_list:\n    v = info_cache[t].get('operatingMargins', None)\n    om_vals.append(v * 100 if v else 0)\n\nbars2 = ax2.bar(names_short, om_vals, color=color_list, alpha=0.85)\nfor bar, val in zip(bars2, om_vals):\n    if val:\n        ax2.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 0.3,\n                 f'{val:.1f}%', ha='center', va='bottom', fontsize=9, fontweight='bold')\nax2.set_ylabel('営業利益率（%）', fontsize=9)\nax2.set_title('営業利益率 比較', fontsize=11, fontweight='bold')\nax2.tick_params(axis='x', labelsize=8)\nax2.grid(True, alpha=0.25, axis='y')\n\nplt.tight_layout()\nplt.show()"
+    "objectID": "analysis/copper.html#銅価格-vs-株価-相関チャート過去3年",
+    "href": "analysis/copper.html#銅価格-vs-株価-相関チャート過去3年",
+    "title": "銅セクター分析：FCX / SCCO / 住友金属鉱山",
+    "section": "3. 銅価格 vs 株価 相関チャート（過去3年）",
+    "text": "3. 銅価格 vs 株価 相関チャート（過去3年）\n\nhist_data = {}\nfor ticker in list(TICKERS.keys()) + ['HG=F']:\n    try:\n        df_h = yf.Ticker(ticker).history(period='3y')\n        if not df_h.empty:\n            s = df_h['Close'].copy()\n            s.index = pd.to_datetime(s.index).tz_localize(None)\n            hist_data[ticker] = s\n    except Exception:\n        pass\n\nif 'HG=F' in hist_data:\n    fig, ax1 = plt.subplots(figsize=(10, 5))\n    colors_c = {'FCX': '#2196F3', 'SCCO': '#4CAF50', '5713.T': '#FF9800'}\n\n    copper = hist_data['HG=F']\n    ax2 = ax1.twinx()\n    ax2.fill_between(copper.index, copper.values, alpha=0.10, color='gray')\n    ax2.plot(copper.index, copper.values, color='gray', linewidth=1.2,\n             linestyle='--', label='銅価格 ($/lb)', alpha=0.7)\n    ax2.set_ylabel('銅価格 ($/lb)', fontsize=8, color='gray')\n    ax2.tick_params(axis='y', labelcolor='gray', labelsize=7)\n\n    for ticker, name in TICKERS.items():\n        if ticker in hist_data:\n            s = hist_data[ticker]\n            norm = s / s.iloc[0] * 100\n            ax1.plot(norm.index, norm.values, label=name,\n                     color=colors_c.get(ticker, 'black'), linewidth=1.8)\n\n    ax1.axhline(100, color='gray', linestyle=':', linewidth=0.7, alpha=0.5)\n    ax1.set_ylabel('株価（基準=100）', fontsize=8)\n    ax1.legend(fontsize=8, loc='upper left')\n    ax2.legend(fontsize=8, loc='upper right')\n    ax1.xaxis.set_major_formatter(mdates.DateFormatter('%y/%m'))\n    ax1.xaxis.set_major_locator(mdates.MonthLocator(interval=4))\n    ax1.tick_params(axis='x', rotation=30, labelsize=7)\n    ax1.tick_params(axis='y', labelsize=7)\n    ax1.grid(True, alpha=0.2)\n    ax1.set_title('銅価格 vs 銅株パフォーマンス（過去3年）', fontsize=11, fontweight='bold')\n    plt.tight_layout()\n    plt.show()"
   },
   {
-    "objectID": "analysis/physical_ai.html#総合評価マトリクス",
-    "href": "analysis/physical_ai.html#総合評価マトリクス",
-    "title": "フィジカルAI関連銘柄 横並び比較",
-    "section": "4. 総合評価マトリクス",
-    "text": "4. 総合評価マトリクス\n定性評価（レポート記載内容ベース）を定量スコアに変換して5軸レーダーチャートで比較。\n\n\n\n評価軸\n定義\n\n\n\n\nフィジカルAI純度\n売上・事業のどれだけがフィジカルAIに直結するか\n\n\n最大手度\nその領域でのグローバル市場シェア・地位\n\n\nチョークポイント\n代替困難性・参入障壁の高さ\n\n\nバリュエーション妥当性\nPER・利益率から見た割安感（高いほど割安）\n\n\n成長カタリスト\n1〜3年でヒューマノイド量産の恩恵を受ける直接度\n\n\n\n\n# 定性スコア（5点満点、レポート記載内容ベース）\nscores = {\n    'ソニーグループ': {\n        'フィジカルAI純度':    4,  # I&SS 17%、ゲーム・音楽も大きい\n        '最大手度':           5,  # センサー世界シェア43%\n        'チョークポイント':    5,  # EVS・積層型CMOS、代替なし\n        'バリュエーション妥当性': 4,  # PER22倍、I&SSはまだ割安\n        '成長カタリスト':     5,  # Nihon AI Kiban・TSMC合弁・Ace\n    },\n    'キーエンス': {\n        'フィジカルAI純度':    4,  # FAセンサー・マシンビジョン専業\n        '最大手度':           5,  # 世界トップ、営業利益率50%\n        'チョークポイント':    5,  # ロボットの「目」を独占供給\n        'バリュエーション妥当性': 2,  # 高PER、割高感あり\n        '成長カタリスト':     4,  # ロボット普及で需要増は直接的\n    },\n    'ファナック': {\n        'フィジカルAI純度':    5,  # 産業ロボット・CNC専業\n        '最大手度':           5,  # 世界トップ\n        'チョークポイント':    4,  # FA自動化の中枢、競合はあり\n        'バリュエーション妥当性': 3,  # 中程度\n        '成長カタリスト':     3,  # 産業用中心、ヒューマノイド直結は薄い\n    },\n    'ナブテスコ': {\n        'フィジカルAI純度':    5,  # 精密減速機専業\n        '最大手度':           5,  # 中大型ロボット用で世界トップ\n        'チョークポイント':    5,  # 関節なしにロボットは動かない\n        'バリュエーション妥当性': 4,  # 比較的割安\n        '成長カタリスト':     4,  # ロボット量産で直接恩恵\n    },\n    'ハーモニック・ドライブ': {\n        'フィジカルAI純度':    5,  # ヒューマノイド関節専業\n        '最大手度':           5,  # 波動歯車で世界トップ\n        'チョークポイント':    5,  # ヒューマノイドに必須、代替困難\n        'バリュエーション妥当性': 3,  # 小型株、成長期待でやや高め\n        '成長カタリスト':     5,  # ヒューマノイド量産の最直接受益\n    },\n}\n\naxes_labels = ['フィジカルAI純度', '最大手度', 'チョークポイント', 'バリュエーション\\n妥当性', '成長カタリスト']\nN = len(axes_labels)\nangles = np.linspace(0, 2 * np.pi, N, endpoint=False).tolist()\nangles += angles[:1]\n\nfig, ax = plt.subplots(figsize=(8, 8), subplot_kw=dict(polar=True))\n\nfor name, sc in scores.items():\n    ticker = [t for t, n in TICKERS.items() if n == name][0]\n    values = [sc[l.replace('\\n', '')] for l in axes_labels]\n    values += values[:1]\n    ax.plot(angles, values, color=COLORS[ticker], linewidth=2, label=name)\n    ax.fill(angles, values, color=COLORS[ticker], alpha=0.08)\n\nax.set_xticks(angles[:-1])\nax.set_xticklabels(axes_labels, fontsize=10)\nax.set_ylim(0, 5)\nax.set_yticks([1, 2, 3, 4, 5])\nax.set_yticklabels(['1', '2', '3', '4', '5'], fontsize=7)\nax.set_title('フィジカルAI関連5銘柄 総合評価レーダーチャート', fontsize=12, fontweight='bold', pad=20)\nax.legend(loc='upper right', bbox_to_anchor=(1.35, 1.15), fontsize=9)\nax.grid(True, alpha=0.3)\nplt.tight_layout()\nplt.show()\n\n\n\n\n\n\n\n\n\n# 総合スコア表\nscore_rows = []\nfor name, sc in scores.items():\n    total = sum(sc.values())\n    row = {'銘柄': name}\n    row.update({k: f'{v}/5' for k, v in sc.items()})\n    row['合計'] = f'{total}/25'\n    score_rows.append(row)\n\ndf_score = pd.DataFrame(score_rows).set_index('銘柄')\ndf_score\n\n\n\n\n\n\n\n\nフィジカルAI純度\n最大手度\nチョークポイント\nバリュエーション妥当性\n成長カタリスト\n合計\n\n\n銘柄\n\n\n\n\n\n\n\n\n\n\nソニーグループ\n4/5\n5/5\n5/5\n4/5\n5/5\n23/25\n\n\nキーエンス\n4/5\n5/5\n5/5\n2/5\n4/5\n20/25\n\n\nファナック\n5/5\n5/5\n4/5\n3/5\n3/5\n20/25\n\n\nナブテスコ\n5/5\n5/5\n5/5\n4/5\n4/5\n23/25\n\n\nハーモニック・ドライブ\n5/5\n5/5\n5/5\n3/5\n5/5\n23/25"
+    "objectID": "analysis/copper.html#eps感応度分析",
+    "href": "analysis/copper.html#eps感応度分析",
+    "title": "銅セクター分析：FCX / SCCO / 住友金属鉱山",
+    "section": "4. EPS感応度分析",
+    "text": "4. EPS感応度分析\n銅価格 $0.10/lb 変化 → EPS 変化 を実データ回帰と公式値で導出。\n\n\n\n\n\n\n\n\n銘柄\n感応度\n根拠\n\n\n\n\nFCX\n$0.270/share per $0.10/lb\nFCX 2024年次報告書（10-K）公式開示\n\n\nSCCO\n$0.233/share per $0.10/lb\n2023〜2025年実データ回帰（R²=0.982）\n\n\n住友金属鉱山\n算出不可\nニッケル価格の影響が支配的で銅との相関が崩壊\n\n\n\n\n# 実証データ（年次 net income と COMEX 銅価格平均）\ncopper_annual = {2022: 4.00, 2023: 3.85, 2024: 4.22, 2025: 4.82}\n\nfcx_ni  = {2022: 3.468, 2023: 1.848, 2024: 1.889, 2025: 2.204}  # $B\nscco_ni = {2022: 2.639, 2023: 2.425, 2024: 3.377, 2025: 4.335}  # $B\nsmm_ni  = {2022: 281.0, 2023: 160.6, 2024: 58.6,  2025: 16.5}   # JPY B\n\nFCX_SHARES  = 1.44e9\nSCCO_SHARES = 0.83e9\n\n# SCCO 回帰（2022はモリブデン等の特殊要因でFCXが歪む → 2023-2025のみ）\nyrs = [2023, 2024, 2025]\ncu  = [copper_annual[y] for y in yrs]\nsc  = [scco_ni[y] for y in yrs]\nslope_s, _, r_s, _, _ = stats.linregress(cu, sc)\nscco_sens_empirical = (slope_s / 10) / SCCO_SHARES * 1e9\nprint(f'SCCO 実証感応度: ${scco_sens_empirical:.3f}/share per $0.10/lb (R²={r_s**2:.3f})')\n\n# 住友金属鉱山：銅価格上昇なのに純利益激減を確認\nprint('\\n住友金属鉱山 純利益トレンド（銅価格上昇にもかかわらず）:')\nfor yr in sorted(smm_ni):\n    print(f'  {yr}: 銅 ${copper_annual[yr]:.2f}/lb → 純利益 JPY {smm_ni[yr]:.0f}B')\nprint('  → ニッケル価格崩壊（$25,000→$13,000/mt）が銅利益を完全に打ち消し')\n\nSCCO 実証感応度: $0.233/share per $0.10/lb (R²=0.982)\n\n住友金属鉱山 純利益トレンド（銅価格上昇にもかかわらず）:\n  2022: 銅 $4.00/lb → 純利益 JPY 281B\n  2023: 銅 $3.85/lb → 純利益 JPY 161B\n  2024: 銅 $4.22/lb → 純利益 JPY 59B\n  2025: 銅 $4.82/lb → 純利益 JPY 16B\n  → ニッケル価格崩壊（$25,000→$13,000/mt）が銅利益を完全に打ち消し"
   },
   {
-    "objectID": "analysis/physical_ai.html#時価総額スケール比較",
-    "href": "analysis/physical_ai.html#時価総額スケール比較",
-    "title": "フィジカルAI関連銘柄 横並び比較",
-    "section": "5. 時価総額スケール比較",
-    "text": "5. 時価総額スケール比較\nハーモニック・ドライブのような小型株は、同じ需要増でもより大きな株価インパクトが出やすい。\n\nfig, ax = plt.subplots(figsize=(10, 4))\n\nmcap_vals = []\nname_list = []\nfor ticker, name in TICKERS.items():\n    mcap = info_cache[ticker].get('marketCap', 0)\n    mcap_vals.append(mcap / 1e12)  # 兆円\n    name_list.append(name.replace('グループ', '').replace('ハーモニック・', 'H.'))\n\nbars = ax.barh(name_list, mcap_vals, color=color_list, alpha=0.85)\nfor bar, val in zip(bars, mcap_vals):\n    ax.text(bar.get_width() + 0.3, bar.get_y() + bar.get_height()/2,\n            f'¥{val:.1f}兆 (~${val*1e12/USDJPY/1e9:.0f}B)',\n            va='center', fontsize=9)\n\nax.set_xlabel('時価総額（兆円）', fontsize=9)\nax.set_title('時価総額スケール比較（小型株ほどアップサイド大）', fontsize=11, fontweight='bold')\nax.grid(True, alpha=0.25, axis='x')\nplt.tight_layout()\nplt.show()"
+    "objectID": "analysis/copper.html#銅価格シナリオ別-eps株価試算",
+    "href": "analysis/copper.html#銅価格シナリオ別-eps株価試算",
+    "title": "銅セクター分析：FCX / SCCO / 住友金属鉱山",
+    "section": "5. 銅価格シナリオ別 EPS・株価試算",
+    "text": "5. 銅価格シナリオ別 EPS・株価試算\n前提： - 基準：2025年実績（FCX EPS $1.53、SCCO EPS $5.22、COMEX平均 $4.82/lb） - 感応度：FCX $0.270、SCCO \\(0.233（\\)/share per $0.10/lb） - シナリオはLMEベースの機関予測。COMEX現在は関税プレミアム込み。\n\nFCX_BASE_EPS  = 1.53\nSCCO_BASE_EPS = 5.22\nBASE_CU       = 4.82\nFCX_SENS      = 0.270\nSCCO_SENS     = 0.233\nFCX_PRICE     = 64.37\nSCCO_PRICE    = 185.23\n\nscenarios = [\n    ('Bear',         'WB $9,500/mt',           4.31),\n    ('Neutral',      'GS $10,750/mt',           4.88),\n    ('Supply Floor', '生産者管理 $12,000/mt',   5.44),\n    ('Bull',         'Citi $13,000/mt',          5.90),\n    ('Extreme',      'OG $15,000/mt',            6.80),\n    ('COMEX現在',    '関税込み $6.50/lb',        6.50),\n]\n\nrows = []\nfor name, note, cu in scenarios:\n    fe = FCX_BASE_EPS  + FCX_SENS  * (cu - BASE_CU) / 0.10\n    se = SCCO_BASE_EPS + SCCO_SENS * (cu - BASE_CU) / 0.10\n    rows.append({\n        'シナリオ':     f'{name}（{note}）',\n        '$/lb':         f'${cu:.2f}',\n        'FCX EPS':      f'${fe:.2f} ({fe/FCX_BASE_EPS:.1f}x)',\n        'FCX @P/E17':   f'${fe*17:.0f}',\n        'FCX @P/E22':   f'${fe*22:.0f}',\n        'FCX @P/E30':   f'${fe*30:.0f}',\n        'SCCO EPS':     f'${se:.2f} ({se/SCCO_BASE_EPS:.1f}x)',\n        'SCCO @P/E25':  f'${se*25:.0f}',\n        'SCCO @P/E30':  f'${se*30:.0f}',\n    })\n\ndf_sc = pd.DataFrame(rows).set_index('シナリオ')\nprint(f'FCX  3倍目標: ${FCX_PRICE*3:.0f}')\nprint(f'SCCO 3倍目標: ${SCCO_PRICE*3:.0f}')\nprint()\ndf_sc\n\nFCX  3倍目標: $193\nSCCO 3倍目標: $556\n\n\n\n\n\n\n\n\n\n\n$/lb\nFCX EPS\nFCX @P/E17\nFCX @P/E22\nFCX @P/E30\nSCCO EPS\nSCCO @P/E25\nSCCO @P/E30\n\n\nシナリオ\n\n\n\n\n\n\n\n\n\n\n\n\nBear（WB $9,500/mt）\n$4.31\n$0.15 (0.1x)\n$3\n$3\n$5\n$4.03 (0.8x)\n$101\n$121\n\n\nNeutral（GS $10,750/mt）\n$4.88\n$1.69 (1.1x)\n$29\n$37\n$51\n$5.36 (1.0x)\n$134\n$161\n\n\nSupply Floor（生産者管理 $12,000/mt）\n$5.44\n$3.20 (2.1x)\n$54\n$70\n$96\n$6.66 (1.3x)\n$167\n$200\n\n\nBull（Citi $13,000/mt）\n$5.90\n$4.45 (2.9x)\n$76\n$98\n$133\n$7.74 (1.5x)\n$193\n$232\n\n\nExtreme（OG $15,000/mt）\n$6.80\n$6.88 (4.5x)\n$117\n$151\n$206\n$9.83 (1.9x)\n$246\n$295\n\n\nCOMEX現在（関税込み $6.50/lb）\n$6.50\n$6.07 (4.0x)\n$103\n$133\n$182\n$9.13 (1.7x)\n$228\n$274"
   },
   {
-    "objectID": "analysis/physical_ai.html#投資判断サマリー",
-    "href": "analysis/physical_ai.html#投資判断サマリー",
-    "title": "フィジカルAI関連銘柄 横並び比較",
-    "section": "6. 投資判断サマリー",
-    "text": "6. 投資判断サマリー\n\n\n\n\n\n\n\n\n\n銘柄\n位置づけ\nバケット候補\n理由\n\n\n\n\nソニー（6758）\n本命・主力\n運用枠\nセンサー世界1位×政府支援×PER割安\n\n\nハーモニック・ドライブ（6324）\n高純度・小型\nリスク枠\nヒューマノイド量産の最直接受益、小型株ゆえの上振れ余地\n\n\nナブテスコ（6268）\nチョークポイント型\n運用枠候補\n中大型ロボット関節で世界トップ、安定感あり\n\n\nファナック（6954）\n安定大型\n運用枠候補\n産業ロボット世界トップだが、ヒューマノイド直結は薄め\n\n\nキーエンス（6861）\n超高品質・割高\n—\nモートは最強クラスだがバリュエーションが重い"
+    "objectID": "analysis/copper.html#年期待値の2028年への前倒し織り込み",
+    "href": "analysis/copper.html#年期待値の2028年への前倒し織り込み",
+    "title": "銅セクター分析：FCX / SCCO / 住友金属鉱山",
+    "section": "6. 2030年期待値の2028年への前倒し織り込み",
+    "text": "6. 2030年期待値の2028年への前倒し織り込み\n定量分析は「2028年の実現EPS × 現在のP/E」で止まるが、実際の市場は2028年時点で2030年の期待を織り込む。 AI市場が2030年までに5倍なら、銅需要（AI DC向け）も相応に拡大。2028年の株価には2030年EPS × 市場が評価するP/Eが乗ってくる。\n\n# 2030年のExtremeシナリオ（OG $15,000/mt = $6.80/lb）でのEPS\nfcx_2030e  = FCX_BASE_EPS  + FCX_SENS  * (6.80 - BASE_CU) / 0.10  # $6.88\nscco_2030e = SCCO_BASE_EPS + SCCO_SENS * (6.80 - BASE_CU) / 0.10  # $9.83\n\nprint('2030E EPS（Extreme銅シナリオ $6.80/lb）:')\nprint(f'  FCX:  ${fcx_2030e:.2f}/share')\nprint(f'  SCCO: ${scco_2030e:.2f}/share')\nprint()\nprint('2028年株価試算（市場が2030年EPSを2年先取りして評価）:')\nprint()\nprint(f'{\"P/E\":&gt;6} | {\"FCX株価\":&gt;10} | {\"FCX倍率\":&gt;8} | {\"SCCO株価\":&gt;10} | {\"SCCO倍率\":&gt;8}')\nprint('-' * 55)\nfor pe in [17, 22, 25, 30, 35]:\n    fp = fcx_2030e * pe\n    sp = scco_2030e * pe\n    print(f'{pe:&gt;5}x | ${fp:&gt;9.0f} | {fp/FCX_PRICE:&gt;7.1f}x | ${sp:&gt;9.0f} | {sp/SCCO_PRICE:&gt;7.1f}x')\n\nprint(f'\\n→ FCXはP/E 30xで {fcx_2030e*30/FCX_PRICE:.1f}x（3倍超）')\nprint(f'→ SCCOはP/E 55x超が必要（現実的でない）')\n\n2030E EPS（Extreme銅シナリオ $6.80/lb）:\n  FCX:  $6.88/share\n  SCCO: $9.83/share\n\n2028年株価試算（市場が2030年EPSを2年先取りして評価）:\n\n   P/E |      FCX株価 |    FCX倍率 |     SCCO株価 |   SCCO倍率\n-------------------------------------------------------\n   17x | $      117 |     1.8x | $      167 |     0.9x\n   22x | $      151 |     2.4x | $      216 |     1.2x\n   25x | $      172 |     2.7x | $      246 |     1.3x\n   30x | $      206 |     3.2x | $      295 |     1.6x\n   35x | $      241 |     3.7x | $      344 |     1.9x\n\n→ FCXはP/E 30xで 3.2x（3倍超）\n→ SCCOはP/E 55x超が必要（現実的でない）"
   },
   {
-    "objectID": "macro/power-infra.html",
-    "href": "macro/power-infra.html",
-    "title": "電力インフラ：AIの電力爆食を支える「新しい石油」",
+    "objectID": "analysis/copper.html#資金フロー銅の相対的な早さの確認",
+    "href": "analysis/copper.html#資金フロー銅の相対的な早さの確認",
+    "title": "銅セクター分析：FCX / SCCO / 住友金属鉱山",
+    "section": "7. 資金フロー：銅の相対的な「早さ」の確認",
+    "text": "7. 資金フロー：銅の相対的な「早さ」の確認\n\n# AIインフラ主要テーマの2年パフォーマンス比較（銅の相対位置確認）\ncompare_tickers = {\n    'VRT':  'Vertiv（液冷）',\n    'PWR':  'Quanta（電力工事）',\n    'NVDA': 'Nvidia（GPU）',\n    'FCX':  'Freeport（銅）',\n    'SCCO': 'Southern Copper（銅）',\n}\n\nperf = {}\nfor t, name in compare_tickers.items():\n    for period, label in [('2y','2年'), ('1y','1年'), ('3mo','3ヶ月'), ('1mo','1ヶ月')]:\n        h = yf.Ticker(t).history(period=period)\n        if not h.empty:\n            ret = (h['Close'].iloc[-1] / h['Close'].iloc[0] - 1) * 100\n            perf.setdefault(name, {})[label] = f'{ret:+.0f}%'\n\ndf_perf = pd.DataFrame(perf).T[['2年','1年','3ヶ月','1ヶ月']]\nprint('相対パフォーマンス（先行組 vs 銅）')\nprint(df_perf.to_string())\nprint('\\n→ VRT/PWRは2年で3〜4倍（終盤）、FCXは+27%（まだ来ていない）')\n\n相対パフォーマンス（先行組 vs 銅）\n                       2年     1年   3ヶ月   1ヶ月\nVertiv（液冷）          +288%  +248%  +57%  +22%\nQuanta（電力工事）        +189%  +123%  +46%  +29%\nNvidia（GPU）         +144%   +70%  +21%  +17%\nFreeport（銅）          +30%   +69%   +5%   -3%\nSouthern Copper（銅）   +78%  +118%   -2%   -1%\n\n→ VRT/PWRは2年で3〜4倍（終盤）、FCXは+27%（まだ来ていない）"
+  },
+  {
+    "objectID": "analysis/copper.html#fcx-リーチング技術追加生産インパクト試算",
+    "href": "analysis/copper.html#fcx-リーチング技術追加生産インパクト試算",
+    "title": "銅セクター分析：FCX / SCCO / 住友金属鉱山",
+    "section": "8. FCX リーチング技術：追加生産インパクト試算",
+    "text": "8. FCX リーチング技術：追加生産インパクト試算\nFCXの新バイオ浸出技術（既存の廃棄物堆積鉱から低コストで銅を回収）の生産量と財務インパクト。\n\n\n\n年\n追加生産量\n\n\n\n\n2023年実績\n144M lbs\n\n\n2024年実績\n214M lbs\n\n\n2025-2026目標\n300〜400M lbs/年\n\n\n2030目標\n800M lbs/年\n\n\n\nコスト：$1/lb以下（市場価格の1/4〜1/6）\n\n# 2030年に800M lbs の追加生産が実現した場合のEPS上乗せ試算\nleach_lbs      = 800e6          # 800M lbs\ncopper_scenarios_lb = {'Bear $4.31': 4.31, 'Base $4.88': 4.88,\n                        'Bull $5.90': 5.90, 'Extreme $6.80': 6.80}\ncost_per_lb    = 0.80           # リーチングコスト $0.80/lb（保守的）\ntax_rate       = 0.25\n\nprint('リーチング800M lbs 追加によるEPS上乗せ試算（2030年）')\nprint(f'{\"シナリオ\":&gt;20} | {\"追加純利益\":&gt;12} | {\"EPS上乗せ\":&gt;10}')\nprint('-' * 48)\nfor sc_name, price in copper_scenarios_lb.items():\n    margin     = price - cost_per_lb\n    net_income = leach_lbs * margin * (1 - tax_rate)\n    eps_add    = net_income / FCX_SHARES\n    print(f'{sc_name:&gt;20} | ${net_income/1e9:&gt;10.2f}B | +${eps_add:&gt;8.2f}/share')\n\nprint(f'\\n→ Bull以上のシナリオでは EPS が +$2.5〜4.0 追加で乗ってくる')\nprint(f'  この上乗せ分はEPS感応度の計算に含まれていない → 上振れ余地')\n\nリーチング800M lbs 追加によるEPS上乗せ試算（2030年）\n                シナリオ |        追加純利益 |     EPS上乗せ\n------------------------------------------------\n          Bear $4.31 | $      2.11B | +$    1.46/share\n          Base $4.88 | $      2.45B | +$    1.70/share\n          Bull $5.90 | $      3.06B | +$    2.13/share\n       Extreme $6.80 | $      3.60B | +$    2.50/share\n\n→ Bull以上のシナリオでは EPS が +$2.5〜4.0 追加で乗ってくる\n  この上乗せ分はEPS感応度の計算に含まれていない → 上振れ余地"
+  },
+  {
+    "objectID": "analysis/copper.html#投資結論",
+    "href": "analysis/copper.html#投資結論",
+    "title": "銅セクター分析：FCX / SCCO / 住友金属鉱山",
+    "section": "9. 投資結論",
+    "text": "9. 投資結論\n\nFCX（Freeport-McMoRan）\n\n推奨：運用枠（40万円の一部）で検討\nP/E 15〜17x の低い出発点 → 2030年期待値の前倒し織り込みでP/E 30x到達余地あり\nExtreme銅（$6.80/lb）× P/E 30x → 株価 $206（現在比 3.2x）\nリーチング技術（2030年 800M lbs）は EPS感応度の計算に含まれていない追加上乗せ\nAmazon/Rio Tinto「クリーン銅」契約はFCXへのBig Tech需要の前兆\n\n\n\nSCCO（Southern Copper）\n\n推奨：現時点では見送り\nP/E 27〜35x で既にフル評価。Bull以下では 2x に届かない\n3x達成にはP/E 55x超が必要（現実的でない）\n長期（2030年以降）の埋蔵量は世界最大だが、2028年タイムラインには機動力が低い\n\n\n\n住友金属鉱山（5713.T）\n\n推奨：保留\n銅価格上昇（$3.85→$4.82/lb）にもかかわらず純利益が ¥161B → ¥17B に激減\nニッケル価格崩壊（$25,000→$13,000/mt）とバッテリー材料事業の損失が支配的\nニッケル市場の回復が確認されるまで、銅プレイとしては機能しない"
+  },
+  {
+    "objectID": "watchlist.html",
+    "href": "watchlist.html",
+    "title": "銘柄ユニバース",
     "section": "",
-    "text": "データセンター1棟の電力消費は、数万世帯分の電力に相当する。ビッグテックは土地と電力の確保から始める。グリッドが追いつかない。変圧器の納期は3年。これは需要の問題ではなく、物理インフラの問題だ。"
+    "text": "AIインフラのバリューチェーンに関係する銘柄カタログ。ここでは個別の売買ステータスではなく、テーマ上の位置づけだけを整理する。"
   },
   {
-    "objectID": "macro/power-infra.html#なぜ電力インフラが投資テーマになるのか",
-    "href": "macro/power-infra.html#なぜ電力インフラが投資テーマになるのか",
-    "title": "電力インフラ：AIの電力爆食を支える「新しい石油」",
-    "section": "なぜ電力インフラが投資テーマになるのか",
-    "text": "なぜ電力インフラが投資テーマになるのか\nGPT-4のトレーニングには約50GWh、Gemini Ultraには推定100GWh超の電力が消費された。AIチップの推論需要が拡大するにつれ、データセンターの電力需要は指数的に増大している。\nGoldman Sachsによれば、米国のデータセンター電力需要は2023年の17GWから2030年には47GWに達する見通しだ。これは米国の現在の総電力需要の約4〜5%に相当する。\n構造的な問題：\n\n超大型変圧器（EHV変圧器）の平均納期は2019年の12〜16週間から2026年には160週間超（約3年）に長期化\n米国送電インフラの40%は40年以上経過した老朽設備\n系統連系申請（インターコネクション申請）の平均待機期間は現在5年超\nこのグリッド制約が、SMR（小型モジュール炉）等による自家発電需要を生んでいる"
+    "objectID": "watchlist.html#重点テーマ",
+    "href": "watchlist.html#重点テーマ",
+    "title": "銘柄ユニバース",
+    "section": "重点テーマ",
+    "text": "重点テーマ\n\n\n\n\n\n\n\n\nテーマ\n見る理由\n代表銘柄\n\n\n\n\nAIアクセラレーター / カスタムASIC\nAI計算需要の源泉\nNVIDIA, Broadcom, AMD, Marvell\n\n\nHBM / DRAM / NAND\nGPU性能を制約するメモリ帯域と容量\nMicron, SK Hynix, Samsung, キオクシア\n\n\nEUV / 半導体製造装置\n先端ロジックと先端DRAMの供給制約\nASML, 東京エレクトロン, Applied Materials, Lam Research, KLA\n\n\n半導体テスト / 検査\nAIチップ大型化・高価化で歩留まり管理が重要化\nアドバンテスト, Teradyne, Lasertec, KLA\n\n\n先端パッケージング\nGPUとHBMをつなぐCoWoS/2.5D/3D工程\nTSMC, Amkor, ASE, イビデン, 新光電工, ディスコ\n\n\nAIサーバー部品\n電源安定化・高密度実装の部品需要\n村田製作所, 太陽誘電, TDK\n\n\n電力・冷却\nAIデータセンターの物理制約\nVertiv, Eaton, GE Vernova, Quanta Services, フジクラ\n\n\n光通信 / フォトニクス\nGPUクラスタ間通信の帯域制約\nCoherent, Lumentum, POET Technologies\n\n\nフィジカルAI\nヒューマノイド・産業ロボットの次世代需要\nハーモニック・ドライブ, ファナック, 安川電機, キーエンス"
   },
   {
-    "objectID": "macro/power-infra.html#バリューチェーン",
-    "href": "macro/power-infra.html#バリューチェーン",
-    "title": "電力インフラ：AIの電力爆食を支える「新しい石油」",
-    "section": "バリューチェーン",
-    "text": "バリューチェーン\n\n\n\n\n\n\n\n\nフェーズ\n内容\n主な上場プレイヤー\n\n\n\n\n変圧器・配電機器\nEHV変圧器・スイッチギア・配電パネル\nETN、GEV\n\n\n電気工事・建設\n送電線設置・DC建設施工・MEP工事\nPWR、MYRG\n\n\n電力管理システム\nUPS・電源管理・監視制御\nETN、EMR\n\n\nバックアップ電源\n大型ディーゼル発電機・フライホイール\nGNRC"
+    "objectID": "watchlist.html#日本株の注目群",
+    "href": "watchlist.html#日本株の注目群",
+    "title": "銘柄ユニバース",
+    "section": "日本株の注目群",
+    "text": "日本株の注目群\n\n\n\n\n\n\n\n\n\n領域\n銘柄\nティッカー\nメモ\n\n\n\n\nテスト\nアドバンテスト\n6857.T\nAI半導体テスタの中核。大型株で資金の受け皿になりやすい\n\n\n製造装置\n東京エレクトロン\n8035.T\n前工程装置の日本代表。半導体設備投資サイクルに強く連動\n\n\n切断・研削\nディスコ\n6146.T\n先端パッケージング、薄化、ダイシングで重要\n\n\n検査\nLasertec\n6920.T\nEUVマスク検査など先端工程に関係\n\n\nMLCC\n村田製作所\n6981.T\nAIサーバー部品の王道。品質・シェア重視\n\n\nMLCC\n太陽誘電\n6976.T\nAIサーバー部品テーマへの感応度が高い\n\n\n光/通信部品\n日本電波工業\n6779.T\nAIデータセンター光通信連想。値動きは荒い\n\n\n光/電線\nフジクラ\n5803.T\nデータセンター通信・電力周辺テーマ\n\n\nフィジカルAI\nハーモニック・ドライブ\n6324.T\nロボット関節用減速機のチョークポイント\n\n\n先端パッケージ検査\nFIG\n4392.T\nAI半導体検査工程の材料株。公式事実と市場推論を分けて見る"
   },
   {
-    "objectID": "macro/power-infra.html#主要銘柄マップ",
-    "href": "macro/power-infra.html#主要銘柄マップ",
-    "title": "電力インフラ：AIの電力爆食を支える「新しい石油」",
+    "objectID": "watchlist.html#米国株adrの注目群",
+    "href": "watchlist.html#米国株adrの注目群",
+    "title": "銘柄ユニバース",
+    "section": "米国株・ADRの注目群",
+    "text": "米国株・ADRの注目群\n\n\n\n\n\n\n\n\n\n領域\n銘柄\nティッカー\nメモ\n\n\n\n\nGPU\nNVIDIA\nNVDA\nAIアクセラレーターの中心\n\n\nASIC/ネットワーク\nBroadcom\nAVGO\nカスタムAIチップとネットワークASIC\n\n\nメモリ\nMicron Technology\nMU\nHBM/DRAM/NAND。AIメモリ需給の代表\n\n\nEUV\nASML\nASML\nEUV露光装置の独占企業\n\n\nファウンドリ\nTSMC\nTSM\n先端ロジック製造の中心\n\n\n製造装置\nApplied Materials\nAMAT\n成膜・CMPなど装置総合\n\n\n製造装置\nLam Research\nLRCX\nエッチング・成膜\n\n\n検査\nKLA\nKLAC\n歩留まり管理・欠陥検査\n\n\n電力/冷却\nVertiv\nVRT\nAIデータセンター電力・冷却インフラ\n\n\n電力\nEaton\nETN\n配電・UPS・電力管理\n\n\n発電設備\nGE Vernova\nGEV\nガスタービン・電力インフラ\n\n\nフォトニクス\nCoherent\nCOHR\n光トランシーバー・レーザー\n\n\nフォトニクス\nLumentum\nLITE\n光部品・レーザー"
+  },
+  {
+    "objectID": "watchlist.html#使い方",
+    "href": "watchlist.html#使い方",
+    "title": "銘柄ユニバース",
+    "section": "使い方",
+    "text": "使い方\n\nまずテーマの強弱を見る。\n次に銘柄がバリューチェーンのどこにいるか確認する。\n最後に株価位置、出来高、決算日、材料の公式性を確認する。\n\n個別の売買判断や未整理の検討ログは公開せず、非公開のObsidianで管理する。"
+  },
+  {
+    "objectID": "macro/liquid-cooling.html",
+    "href": "macro/liquid-cooling.html",
+    "title": "液冷・冷却：AIラックの「熱の壁」を破る唯一の手段",
+    "section": "",
+    "text": "空冷の限界はラックあたり50kW。GB200 NVL72は130kW超を発熱する。物理法則が液冷への移行を強制した。Microsoftは2025年2月に全新規Azure AIインフラで液冷を義務化した。これは選択肢ではなく、インフラの前提だ。"
+  },
+  {
+    "objectID": "macro/liquid-cooling.html#なぜ今液冷が投資テーマになるのか",
+    "href": "macro/liquid-cooling.html#なぜ今液冷が投資テーマになるのか",
+    "title": "液冷・冷却：AIラックの「熱の壁」を破る唯一の手段",
+    "section": "なぜ今、液冷が投資テーマになるのか",
+    "text": "なぜ今、液冷が投資テーマになるのか\nAIチップの熱設計電力（TDP）は世代ごとに暴力的に上昇している。\n\n\n\nGPUアーキテクチャ\nTDP（チップ単体）\nラック全体\n\n\n\n\nHopper（H100）\n~700W\n~40kW\n\n\nBlackwell（B200）\n~1,000W\n~120〜130kW\n\n\nRubin（VR200、次世代）\n~2,300W（予測）\n200kW超（予測）\n\n\n\n空気の熱伝導率は水の1/25。130kWの熱を空気で捌くことは物理的に不可能であり、直接液冷（DLC）への移行は不可逆だ。\n世界の液冷市場は2025年時点の約32〜48億ドルから2033〜2036年には170〜270億ドル規模へ成長すると予測され、CAGRは17〜31%と極めて高い。"
+  },
+  {
+    "objectID": "macro/liquid-cooling.html#技術レイヤーとチョークポイント構造",
+    "href": "macro/liquid-cooling.html#技術レイヤーとチョークポイント構造",
+    "title": "液冷・冷却：AIラックの「熱の壁」を破る唯一の手段",
+    "section": "技術レイヤーとチョークポイント構造",
+    "text": "技術レイヤーとチョークポイント構造\n液冷バリューチェーンは4つのレイヤーに分断されており、各レイヤーに独自の参入障壁がある。\n\n\n\n\n\n\n\n\n\nレイヤー\n内容\n主な上場プレイヤー\nチョークポイント度\n\n\n\n\nシステム全体（CDU・ラック）\n冷却水分配装置・ラック統合・制御SW\nVRT、ETN、NVT、MOD\n★★★★\n\n\nUQD継手\n着脱時の無漏洩コネクタ\nPH（首位24.8%）、DOV/CPC（11.5%）\n★★★★★\n\n\n冷却液\n単相・二相誘電流体、水系\nXOM、SHEL、CC\n★★★\n\n\nTIM（熱伝導材料）\nチップ〜コールドプレート間の熱抵抗低減素材\n信越化学（4063.T）\n★★★★★\n\n\n\n\nUQDが最大のチョークポイントである理由\n液漏れ1滴で数億円のGPUラックが全損する。UQD自体のコストはラック全体の数%に過ぎないが、故障のリスクは破滅的。データセンター事業者は実績のない新参ベンダーを採用するインセンティブを持たない。リスクの非対称性が参入障壁を形成する構造だ。\n市場は完全に寡占化されており、上位5社（PH・Danfoss・Stäubli・CEJN・DOV/CPC）が市場の80%超を独占。UQD市場は2025年の3.9億ドルから2030年には7.5億ドルへCAGR 14.3%で成長予測。\n\n\n信越化学のTIMが代替不可能な理由\nAI最先端チップは1,000W/cm²超の熱流束密度を発生する。信越化学の「TC-PENシリーズ」は、繰り返しの熱サイクルでも硬化・ポンプアウト現象を起こさず、長期間にわたる低熱抵抗を維持する。NVIDIAのGB200以降の世代では、TIMの性能劣化が即座にGPUのサーマルスロットリングを引き起こすため、代替材料の採用は事実上不可能。"
+  },
+  {
+    "objectID": "macro/liquid-cooling.html#主要銘柄マップ",
+    "href": "macro/liquid-cooling.html#主要銘柄マップ",
+    "title": "液冷・冷却：AIラックの「熱の壁」を破る唯一の手段",
     "section": "主要銘柄マップ",
-    "text": "主要銘柄マップ\n\nコア投資候補（業界パワー優先）\n\n\n\n\n\n\n\n\n\n\n銘柄\nティッカー\n業界パワー\n概要\nステータス\n\n\n\n\nEaton\nETN（NYSE）\n★★★★★\n電力管理・変圧器・配電機器の世界最大手。DC向け電源インフラ全般を網羅\nコア候補\n\n\nQuanta Services\nPWR（NYSE）\n★★★★★\n北米最大の電気工事会社。送電線敷設・DC建設施工を独占的に受注\nコア候補\n\n\nGE Vernova\nGEV（NYSE）\n★★★★\nGEからスピンアウトしたエネルギー事業体。グリッド機器・風力発電\nウォッチ\n\n\nEmerson Electric\nEMR（NYSE）\n★★★★\n工場自動化・電力管理システム。データセンター向けPDU\nウォッチ\n\n\n\n\n\nウォッチ\n\n\n\n\n\n\n\n\n銘柄\nティッカー\n概要\n\n\n\n\nMYR Group\nMYRG（NASDAQ）\n専門電気工事会社。DC建設施工に特化した中型株\n\n\nGenerac\nGNRC（NYSE）\n大型バックアップ発電機。DC向けUPSシステム"
+    "text": "主要銘柄マップ\n\nコア投資候補（業界パワー優先）\n\n\n\n\n\n\n\n\n銘柄\n業界パワー\n概要\n\n\n\n\nVertiv（VRT）\n★★★★★\nNVIDIA公式RVL認定パートナー。バックログ$150B。液冷インフラの絶対王者。NVIDIAとGB200向け7MWリファレンスアーキテクチャを共同開発\n\n\nEaton（ETN）\n★★★★★\nNVIDIA RVL認定。電源（UPS・配電）＋液冷CDUの垂直統合で「Grid-to-Chip」を提供。液冷テーマと電力インフラテーマの両取りができる唯一の銘柄\n\n\nnVent Electric（NVT）\n★★★★☆\nNVIDIA RVLパートナー。売上+53%、バックログ$26B。ラック・PDU・液冷マニホールドの統合ソリューション\n\n\n\n\n\nチョークポイント保有者\n\n\n\n\n\n\n\n\n銘柄\nレイヤー\n概要\n\n\n\n\nParker Hannifin（PH）\nUQD\nUQD世界首位24.8%。本物のチョークポイント。ただし多角化企業のためDC純度は薄め\n\n\nDover（DOV）\nUQD\n子会社CPC（Colder Products）がUQD市場11.5%。PH同様に多角化企業\n\n\n信越化学工業（4063.T）\nTIM\nTIM分野で代替不可能な世界首位。DCへの純度は薄いが素材レイヤーのチョークポイント\n\n\n\n\n\nロマン枠（変革カタリスト型）\n\n\n\n\n\n\n\n銘柄\n概要\n\n\n\n\nModine Manufacturing（MOD）\nCDU特化の純粋プレイ。DC向け売上+78%（直近）。2026年Q4にPT部門（自動車向け）をGenthermへRMT方式でスピンオフ予定。完了後にDC冷却専業銘柄として機関投資家の再分類が起きる可能性。PEGレシオ2.0倍（VRT 3.7倍比で割安）。NVIDIA RVL未認定がリスク\n\n\n\n\n\nドキュメント記録のみ（現時点では投資対象外）\n\n\n\n\n\n\n\n銘柄\n概要\n\n\n\n\n日本電産 / Nidec（6594.T）\nGoogle OCP「Project Deschutes 5」で2MW超CDUを供給する唯一の日本ベンダー\n\n\n荏原製作所（6361.T）\n宇宙開発レベルのポンプ技術をDC液冷ポンプに応用。アジア太平洋向けに強み\n\n\n古河電工（5801.T）\nマイクロチャネル構造の銅製コールドプレートで400W/cm²処理実績\n\n\n三桜工業（6584.T）\nスーパーコンピュータ「富岳」採用の無漏洩配管技術を保有"
   },
   {
-    "objectID": "macro/power-infra.html#株価パフォーマンス過去1年",
-    "href": "macro/power-infra.html#株価パフォーマンス過去1年",
-    "title": "電力インフラ：AIの電力爆食を支える「新しい石油」",
-    "section": "株価パフォーマンス（過去1年）",
-    "text": "株価パフォーマンス（過去1年）"
-  },
-  {
-    "objectID": "macro/power-infra.html#forward-per比較",
-    "href": "macro/power-infra.html#forward-per比較",
-    "title": "電力インフラ：AIの電力爆食を支える「新しい石油」",
-    "section": "Forward PER比較",
-    "text": "Forward PER比較"
-  },
-  {
-    "objectID": "macro/power-infra.html#投資まとめ",
-    "href": "macro/power-infra.html#投資まとめ",
-    "title": "電力インフラ：AIの電力爆食を支える「新しい石油」",
-    "section": "投資まとめ",
-    "text": "投資まとめ\n電力インフラはAIデータセンター需要の「物理的制約の急所」であり、需要の非弾力性（AI投資計画が中断されても電力インフラは止まらない）が強みだ。\nETN vs PWR の選択軸：\n\n\n\n\n\n\n\n\n\nEaton（ETN）\nQuanta Services（PWR）\n\n\n\n\nビジネス\n製品製造（変圧器・配電機器）\nサービス（電気工事・建設）\n\n\nマージン\n高利益率（製品）\n安定収益（長期工事契約）\n\n\nAI感応度\nDC電源機器需要直結\nDC建設・送電線工事\n\n\n特徴\n変圧器3年待ち＝プライシングパワー\nバックログが積み上がり視界良好\n\n\n\n\n結論： ETN・PWRともにコア候補。変圧器のボトルネックとグリッド拡張の長期テーマで2028年まで安定した成長余地がある。液冷（VRT・ETN重複）と合わせてポートフォリオ全体のバランスを考えて選択。"
-  },
-  {
-    "objectID": "macro/photonics.html",
-    "href": "macro/photonics.html",
-    "title": "フォトニクス・光インターコネクト：電気配線の限界を突破する光の革命",
-    "section": "",
-    "text": "AIクラスターのスループットは、チップの計算速度ではなくチップ間の「帯域幅」で決まる。銅線の電気信号は10メートルで限界を迎えるが、光は減衰なく伝搬する。これは物理の問題であり、フォトニクスへの移行は不可逆だ。"
-  },
-  {
-    "objectID": "macro/photonics.html#なぜ今フォトニクスが投資テーマになるのか",
-    "href": "macro/photonics.html#なぜ今フォトニクスが投資テーマになるのか",
-    "title": "フォトニクス・光インターコネクト：電気配線の限界を突破する光の革命",
-    "section": "なぜ今、フォトニクスが投資テーマになるのか",
-    "text": "なぜ今、フォトニクスが投資テーマになるのか\nNVIDIAのGB200 NVL72（72基のB200 GPUを統合したスーパーポッド）は、GPU間で毎秒270TB超のデータをやり取りする。この帯域幅を銅線で確保しようとすれば、ケーブルの重量・電力消費・発熱が爆発的に増大し、データセンターの物理的制約を超えてしまう。\n光トランシーバー（光信号を電気信号に相互変換するモジュール）と共同パッケージング光学（CPO: Co-Packaged Optics）は、この問題の根本解決策だ。NVIDIAはCoherent・Lumentumに計40億ドルを出資し、次世代光インターコネクト技術の囲い込みに動いた。この巨額出資は「光インターコネクトが次の主戦場」であることを市場に宣言したに等しい。\n\n\n\n指標\n数値\n\n\n\n\n光トランシーバー市場（2025年）\n~$12B\n\n\n光トランシーバー市場（2030年予測）\n~$25〜35B（CAGR 15〜20%）\n\n\nCPO市場（2025年）\n~$0.8B\n\n\nCPO市場（2030年予測）\n~$8〜12B（CAGR 50%超）\n\n\nNVIDIAのCoherent・Lumentum出資額\n計約40億ドル"
-  },
-  {
-    "objectID": "macro/photonics.html#技術レイヤー",
-    "href": "macro/photonics.html#技術レイヤー",
-    "title": "フォトニクス・光インターコネクト：電気配線の限界を突破する光の革命",
-    "section": "技術レイヤー",
-    "text": "技術レイヤー\n\n\n\n\n\n\n\n\nレイヤー\n内容\n主なプレイヤー\n\n\n\n\n光トランシーバー\n電気↔︎光変換モジュール（現在の主戦場）\nCOHR、LITE\n\n\nCPO（共同パッケージング）\nスイッチチップに光学素子を直接実装（次世代）\nCOHR、LITE\n\n\nレーザー光源\nEML/VCSEL等の光生成素子\nCOHR、LITE\n\n\n光集積回路（PIC）\nシリコンフォトニクス・InP PIC\nPOET Technologies"
-  },
-  {
-    "objectID": "macro/photonics.html#主要銘柄マップ",
-    "href": "macro/photonics.html#主要銘柄マップ",
-    "title": "フォトニクス・光インターコネクト：電気配線の限界を突破する光の革命",
-    "section": "主要銘柄マップ",
-    "text": "主要銘柄マップ\n\n\n\n\n\n\n\n\n\n\n銘柄\nティッカー\n業界パワー\n概要\n分類\n\n\n\n\nCoherent\nCOHR（NYSE）\n★★★★★\n光トランシーバー世界トップ3。NVIDIAから直接出資。CPO開発最前線\n中核候補\n\n\nLumentum\nLITE（NASDAQ）\n★★★★\nレーザーコンポーネント・光トランシーバー。NVIDIAから直接出資\n中核候補\n\n\nPOET Technologies\nPOET（NASDAQ）\n★★★\n光集積回路のピュアプレイ。小型・投機的\n高リスク候補"
-  },
-  {
-    "objectID": "macro/photonics.html#株価パフォーマンス過去1年",
-    "href": "macro/photonics.html#株価パフォーマンス過去1年",
-    "title": "フォトニクス・光インターコネクト：電気配線の限界を突破する光の革命",
-    "section": "株価パフォーマンス（過去1年）",
-    "text": "株価パフォーマンス（過去1年）"
-  },
-  {
-    "objectID": "macro/photonics.html#バリュエーション比較",
-    "href": "macro/photonics.html#バリュエーション比較",
-    "title": "フォトニクス・光インターコネクト：電気配線の限界を突破する光の革命",
-    "section": "バリュエーション比較",
-    "text": "バリュエーション比較"
-  },
-  {
-    "objectID": "macro/photonics.html#投資まとめ",
-    "href": "macro/photonics.html#投資まとめ",
-    "title": "フォトニクス・光インターコネクト：電気配線の限界を突破する光の革命",
-    "section": "投資まとめ",
-    "text": "投資まとめ\nNVIDIAが両社に出資した事実が「フォトニクス必須化」の証明だが、2社の性格は異なる。\nCOHRを選ぶ理由： - 垂直統合された製造能力（レーザー→トランシーバー→CPO） - NVIDIAとの最深部での協力関係 - LITEより相対的に低PER\nLITEをウォッチに留める理由： - 現時点でPERがCOHRより割高 - 業界パワーは同等だが、価格に割高プレミアムが乗っている\n\n結論： COHR集中投資（~$400）。CPO移行が加速する2026〜2027年が本格的なカタリスト。LITEはウォッチ。"
-  },
-  {
-    "objectID": "macro/semiconductor.html",
-    "href": "macro/semiconductor.html",
-    "title": "半導体エコシステム：AIチップを生み出すサプライチェーンの全体像",
-    "section": "",
-    "text": "NVIDIAは設計するだけだ。製造はTSMC、露光装置はASML、EDA設計ツールはCadenceとSynopsys、それぞれが世界で他に代替不可能な独占的地位を持つ。GPUを1枚作るのに、地球規模のサプライチェーンが絡み合う。"
-  },
-  {
-    "objectID": "macro/semiconductor.html#なぜ半導体エコシステム全体が投資テーマになるのか",
-    "href": "macro/semiconductor.html#なぜ半導体エコシステム全体が投資テーマになるのか",
-    "title": "半導体エコシステム：AIチップを生み出すサプライチェーンの全体像",
-    "section": "なぜ半導体エコシステム全体が投資テーマになるのか",
-    "text": "なぜ半導体エコシステム全体が投資テーマになるのか\nNVIDIA・AMD・Broadcomといった「ファブレス」企業はチップを設計するだけで、製造は外部に委託する。この分業構造が生み出した産業チェーンでは、各工程に「世界シェア50〜90%を独占する」プレイヤーが存在する。AIチップへの需要増は、チップメーカーだけでなく、その上流にいる設計ツール・製造装置・テスト・パッケージング各社への受注を等しく爆発させる。\nAIチップの製造難易度は世代を経るごとに指数的に上昇しており、参入障壁も高まり続けている。TSMC N2（2nm）の歩留まりを支えるKLA・Lam・Applied Materialsの装置なくして、GB200は1枚も作れない。\n2026年時点で重要なのは、AI半導体を「GPU単体」ではなく、EUV露光、先端DRAM/HBM、テスト、先端パッケージングを含む供給制約の連鎖として見ること。前工程の微細化と後工程のパッケージングは分離した工程ではなく、AIチップの出荷量を同時に決めるボトルネックになっている。\n\n\n\n\n\n\nNote\n\n\n\n短期の株価判断では、テーマの正しさと買いタイミングを分ける必要がある。AI半導体の構造的需要は強い一方、急騰後の銘柄は決算前後や地合い悪化で大きく巻き戻すことがある。"
-  },
-  {
-    "objectID": "macro/semiconductor.html#年に見るべき論点",
-    "href": "macro/semiconductor.html#年に見るべき論点",
-    "title": "半導体エコシステム：AIチップを生み出すサプライチェーンの全体像",
-    "section": "2027〜2028年に見るべき論点",
-    "text": "2027〜2028年に見るべき論点\n\nLow NA EUVの需給逼迫\nHigh NA EUVは次世代技術として注目されやすいが、2027〜2028年の実需では既存のLow NA EUVの台数需要が重要になる可能性がある。先端ロジックだけでなく、HBM/DRAMの世代移行でもEUV工程の重要性が増すためだ。\n投資上は「High NAのニュース性」だけでなく、ASMLのLow NA受注、メモリ向けEUV需要、顧客別の設備投資計画を確認する。\n\n\n先端DRAM/HBM投資\nAI計算ではGPU性能だけでなく、メモリ帯域と容量が制約になる。HBM、先端DRAM、メモリ検査、パッケージング能力は、AI半導体の供給量を左右する。\n見るべき代表銘柄:\n\nMicron\nSK Hynix\nSamsung Electronics\nキオクシア\nアドバンテスト\nディスコ\n\n\n\n後工程のフロントエンド化\nCoWoS、2.5D/3D実装、HBMスタック、ハイブリッドボンディングなどの先端パッケージングは、もはや単なる後工程ではない。GPUとHBMを高帯域・低消費電力で接続する工程が、AIチップの性能と歩留まりを決める。\n見るべき代表銘柄:\n\nTSMC\nAmkor\nASE\nイビデン\n新光電工\nディスコ\nApplied Materials"
-  },
-  {
-    "objectID": "macro/semiconductor.html#半導体バリューチェーン",
-    "href": "macro/semiconductor.html#半導体バリューチェーン",
-    "title": "半導体エコシステム：AIチップを生み出すサプライチェーンの全体像",
-    "section": "半導体バリューチェーン",
-    "text": "半導体バリューチェーン\n\n\n\n\n\n\n\n\nフェーズ\n内容\n主な上場プレイヤー（米国・日本）\n\n\n\n\n①設計（EDA/IP）\nチップ設計ツール・IP回路ブロック\nCDNS、SNPS、ARM\n\n\n②露光（フォトリソグラフィ）\nEUV露光装置（ASML独占）、Low NA/High NA\nASML\n\n\n③薄膜・エッチング\nCVD・ALD・エッチング装置\nAMAT、LRCX\n\n\n④計測・検査\nプロセス管理・欠陥検査\nKLAC\n\n\n⑤先進パッケージング\nCoWoS・SoIC・HBMスタック・ハイブリッドボンディング\nAMKR、TSM、DISCO、IBIDEN\n\n\n⑥テスト\nウェーハ・完成品テスト、AI半導体検査\nATEYY、TER、COHU、FORM\n\n\n⑦チップ設計・販売\nGPU・CPU・カスタムASIC\nNVDA、AVGO、AMD、INTC"
-  },
-  {
-    "objectID": "macro/semiconductor.html#主要銘柄マップ",
-    "href": "macro/semiconductor.html#主要銘柄マップ",
-    "title": "半導体エコシステム：AIチップを生み出すサプライチェーンの全体像",
-    "section": "主要銘柄マップ",
-    "text": "主要銘柄マップ\n\n絶対的チョークポイント（世界シェア独占）\n\n\n\n\n\n\n\n\n\n\n銘柄\nティッカー\n業界パワー\n独占度\nステータス\n\n\n\n\nASML\nASML（NASDAQ）\n★★★★★\nEUV露光装置の世界独占（シェア100%）\nウォッチ（高PER）\n\n\nSynopsys\nSNPS（NASDAQ）\n★★★★★\nEDAツール世界2強の一角\nウォッチ\n\n\nCadence Design\nCDNS（NASDAQ）\n★★★★★\nEDAツール世界2強の一角\nウォッチ\n\n\nARM Holdings\nARM（NASDAQ）\n★★★★★\nスマートフォンCPU命令セットの世界事実独占。AIチップへの展開加速\nウォッチ\n\n\n\n\n\n製造・装置（設備投資の直接受益者）\n\n\n\n\n\n\n\n\n\n\n銘柄\nティッカー\n業界パワー\n概要\nステータス\n\n\n\n\nTSMC\nTSM（NYSE ADR）\n★★★★★\n先端半導体製造の世界独占（N3・N2の量産はTSMCのみ）\nウォッチ\n\n\nApplied Materials\nAMAT（NASDAQ）\n★★★★★\n半導体製造装置の世界最大手。薄膜・CMP装置\nウォッチ\n\n\nLam Research\nLRCX（NASDAQ）\n★★★★★\nエッチング・ALD装置。HANAフラッシュ・HBM製造に必須\nウォッチ\n\n\nKLA Corp\nKLAC（NASDAQ）\n★★★★★\nプロセス計測・欠陥検査装置。歩留まり管理の要\nウォッチ\n\n\n\n\n\nチップ設計・販売\n\n\n\n\n\n\n\n\n\n\n銘柄\nティッカー\n業界パワー\n概要\nステータス\n\n\n\n\nNVIDIA\nNVDA（NASDAQ）\n★★★★★\nAIアクセラレーターの世界標準。CUDAエコシステムが参入障壁\nウォッチ（割高）\n\n\nBroadcom\nAVGO（NASDAQ）\n★★★★★\nネットワーキングASIC・カスタムAIチップ（Google TPU等を受注）\nウォッチ\n\n\nAMD\nAMD（NASDAQ）\n★★★★\nGPU（MI300）・CPU（EPYC）。NVIDIAへの唯一の対抗馬\nウォッチ\n\n\nIntel\nINTC（NASDAQ）\n★★★\nCPU→AIアクセラレーターへの転換中。ファウンドリ事業再建中\nウォッチ（再建中）"
-  },
-  {
-    "objectID": "macro/semiconductor.html#株価パフォーマンス過去1年",
-    "href": "macro/semiconductor.html#株価パフォーマンス過去1年",
-    "title": "半導体エコシステム：AIチップを生み出すサプライチェーンの全体像",
-    "section": "株価パフォーマンス（過去1年）",
-    "text": "株価パフォーマンス（過去1年）"
-  },
-  {
-    "objectID": "macro/semiconductor.html#forward-per比較",
-    "href": "macro/semiconductor.html#forward-per比較",
-    "title": "半導体エコシステム：AIチップを生み出すサプライチェーンの全体像",
-    "section": "Forward PER比較",
-    "text": "Forward PER比較"
-  },
-  {
-    "objectID": "macro/semiconductor.html#投資まとめ",
-    "href": "macro/semiconductor.html#投資まとめ",
-    "title": "半導体エコシステム：AIチップを生み出すサプライチェーンの全体像",
-    "section": "投資まとめ",
-    "text": "投資まとめ\n半導体エコシステムはAI特需の最上流に位置するが、多くの銘柄はすでに高PERに達している。\nポイント別整理：\n\nNVDA・AVGO：既に市場が発見済み。高PERだが成長率が正当化する水準か常に確認が必要\nASML：EUVの世界独占。ただし輸出規制（中国向け）リスクがバリュエーションを抑制\nAMAT・LRCX・KLAC：製造装置3強。HBMおよび先進パッケージングの設備投資拡大で直接受益\nARM：ロイヤルティモデルの純粋な受益者。AIチップへのARM採用が拡大中\n\n\n現在のポジション： 半導体エコシステム全体はウォッチ。既存のFCX（銅）・Harmonic・FANUCで間接的に参加中。直接投資はMU（メモリ）を計画中。"
-  },
-  {
-    "objectID": "macro/smr.html",
-    "href": "macro/smr.html",
-    "title": "SMR・自家発電：グリッドに繋がらないデータセンターの電力源",
-    "section": "",
-    "text": "米国の系統連系申請の平均待機期間は5年を超えた。ビッグテックは待てない。答えは「グリッドに繋がない自家発電」だ。SMR（小型モジュール炉）とガスタービンがその主役になりつつある。"
-  },
-  {
-    "objectID": "macro/smr.html#なぜsmrが投資テーマになるのか",
-    "href": "macro/smr.html#なぜsmrが投資テーマになるのか",
-    "title": "SMR・自家発電：グリッドに繋がらないデータセンターの電力源",
-    "section": "なぜSMRが投資テーマになるのか",
-    "text": "なぜSMRが投資テーマになるのか\nAIデータセンターはMW単位で電力を消費する。グリッドからの接続を申請しても5年以上待たされる現状では、ビッグテックは自前の電源を求め始めている。\nビハインド・ザ・メーター（BTM）戦略：\nグリッドを経由せず、データセンター敷地内または隣接地に電源を設置するアプローチ。太陽光・ガスタービンに加え、カーボンニュートラルで24時間安定稼働できる「SMR」が最有力候補として急浮上している。\n\n\n\n電源オプション\n安定性\nCO₂\nコスト\n実用化時期\n\n\n\n\n天然ガスタービン\n◎\n×\n低\n今すぐ\n\n\n太陽光+蓄電池\n△（夜間・曇天）\n◎\n中\n今すぐ\n\n\nSMR（小型モジュール炉）\n◎\n◎\n高（初期）\n2028〜2030年\n\n\n水素タービン\n△（水素製造コスト）\n◎\n高\n2030年以降\n\n\n\n主要動向：\n\nMicrosoft：Three Mile Island原発を2028年まで再稼働（Constellation Energyと20年PPA契約）\nAmazon：Talen Energy原発をペンシルベニアで直接購入（$650M）\nGoogle：Kairos PowerのMSRと7基購入に向けたPPA締結\nNuScale（SMR）：商業1号機は難航中だが、技術評価は継続中"
-  },
-  {
-    "objectID": "macro/smr.html#主要銘柄マップ",
-    "href": "macro/smr.html#主要銘柄マップ",
-    "title": "SMR・自家発電：グリッドに繋がらないデータセンターの電力源",
-    "section": "主要銘柄マップ",
-    "text": "主要銘柄マップ\n\n原子力発電所オペレーター（即座の受益者）\n\n\n\n\n\n\n\n\n\n\n銘柄\nティッカー\n業界パワー\n概要\nステータス\n\n\n\n\nConstellation Energy\nCEG（NASDAQ）\n★★★★★\n米国最大の原子力発電事業者。Microsoftとの20年PPAが象徴的\nウォッチ\n\n\nVistra Corp\nVST（NYSE）\n★★★★\n原子力+ガス+蓄電池のハイブリッド電力会社\nウォッチ\n\n\n\n\n\nウラン採掘（核燃料供給チェーン）\n\n\n\n\n\n\n\n\n\n\n銘柄\nティッカー\n業界パワー\n概要\nステータス\n\n\n\n\nCameco\nCCJ（NYSE）\n★★★★★\n西側世界最大のウラン採掘会社。原発回帰でウラン需要増\nウォッチ\n\n\n\n\n\nSMR開発（長期・投機的）\n\n\n\n\n\n\n\n\n\n\n銘柄\nティッカー\n業界パワー\n概要\nステータス\n\n\n\n\nNuScale Power\nSMR（NYSE）\n★★★\n米国唯一のNRC設計認証取得SMR開発企業\nウォッチ（高リスク）\n\n\nBWX Technologies\nBWXT（NYSE）\n★★★★\n海軍原子炉・SMRコンポーネントの製造受託\nウォッチ"
-  },
-  {
-    "objectID": "macro/smr.html#株価パフォーマンス過去1年",
-    "href": "macro/smr.html#株価パフォーマンス過去1年",
-    "title": "SMR・自家発電：グリッドに繋がらないデータセンターの電力源",
-    "section": "株価パフォーマンス（過去1年）",
-    "text": "株価パフォーマンス（過去1年）"
-  },
-  {
-    "objectID": "macro/smr.html#投資まとめ",
-    "href": "macro/smr.html#投資まとめ",
-    "title": "SMR・自家発電：グリッドに繋がらないデータセンターの電力源",
-    "section": "投資まとめ",
-    "text": "投資まとめ\nSMRテーマで最もリスク/リターンのバランスが良いのはCEG（Constellation）だ。既存原発の稼働延長という「確実な収益」に加え、ビッグテックとの長期PPAが収益を下支えする。\nSMR（NuScale）への投資は高リスク： 1号機の完成遅延・資金調達リスクが残存しており、商業電力会社（CEG・VST）とは全く異なる投資プロファイルを持つ。\n\n現状： 全銘柄ウォッチ。グリッド制約が深刻化するニュースやビッグテックの新規PPA締結をトリガーに購入検討。"
-  },
-  {
-    "objectID": "macro/reit.html",
-    "href": "macro/reit.html",
-    "title": "DC REIT：データセンター不動産の長期オーナー",
-    "section": "",
-    "text": "AIデータセンターのGPUは陳腐化するが、その「場所」は残る。立地・電力・冷却インフラを所有するREITは、AI需要がどこへ向かっても定期収入を得続ける「不動産の大家」だ。"
-  },
-  {
-    "objectID": "macro/reit.html#dc-reitの特性",
-    "href": "macro/reit.html#dc-reitの特性",
-    "title": "DC REIT：データセンター不動産の長期オーナー",
-    "section": "DC REITの特性",
-    "text": "DC REITの特性\nデータセンターREIT（Real Estate Investment Trust）は、データセンターの建物・土地・電力インフラを所有し、クラウドプロバイダーや企業に賃貸するビジネスモデルだ。REITは法的に収益の90%以上を配当として還元する義務があるため、高配当+AI成長の組み合わせが特徴。\nDC REITが強い理由：\n\nクラウド3強（AWS・Azure・GCP）との長期賃貸契約（10〜15年）が収益の安定性を確保\nDC適地（電力・冷却・低レイテンシ）は限られており、新規参入が困難\nAIによるクラウド需要増 → 入居率・賃料単価が上昇\n\nリスク：\n\n金利上昇局面でREITの配当利回りの相対的魅力が低下\nビッグテックの自社DC建設拡大が賃貸需要を一部代替"
-  },
-  {
-    "objectID": "macro/reit.html#主要銘柄マップ",
-    "href": "macro/reit.html#主要銘柄マップ",
-    "title": "DC REIT：データセンター不動産の長期オーナー",
-    "section": "主要銘柄マップ",
-    "text": "主要銘柄マップ\n\n\n\n\n\n\n\n\n\n\n\n銘柄\nティッカー\n業界パワー\n概要\n配当利回り目安\nステータス\n\n\n\n\nEquinix\nEQIX（NASDAQ）\n★★★★★\n世界最大のDC REIT。60ヶ国250拠点。プレミアム立地の事実上の独占\n~2%\nウォッチ\n\n\nDigital Realty\nDLR（NYSE）\n★★★★\n世界2位のDC REIT。ハイパースケーラー向け大型DC特化\n~3%\nウォッチ\n\n\nIron Mountain\nIRM（NYSE）\n★★★\n文書保管から転換中。DC事業が急成長\n~3〜4%\nウォッチ"
-  },
-  {
-    "objectID": "macro/reit.html#株価パフォーマンス過去1年",
-    "href": "macro/reit.html#株価パフォーマンス過去1年",
-    "title": "DC REIT：データセンター不動産の長期オーナー",
-    "section": "株価パフォーマンス（過去1年）",
-    "text": "株価パフォーマンス（過去1年）"
-  },
-  {
-    "objectID": "macro/reit.html#投資まとめ",
-    "href": "macro/reit.html#投資まとめ",
-    "title": "DC REIT：データセンター不動産の長期オーナー",
-    "section": "投資まとめ",
-    "text": "投資まとめ\nDC REITはAIインフラ投資の「安全弁」的な位置づけだ。高リスク・高リターン銘柄（RKLB・LUNR等）のボラティリティを抑えたい局面での補完的保有として機能する。\n現在の投資方針（攻め重視・50万円で3倍狙い）では優先度は低いが、資金規模が拡大した場合にEQIXが第一候補。\n\n現状： 低優先度のウォッチリスト。資金・リスク許容度の拡大後に改めて検討。"
-  },
-  {
-    "objectID": "macro/space.html",
-    "href": "macro/space.html",
-    "title": "宇宙インフラ：SpaceX IPOが引き金を引くセクター再評価",
-    "section": "",
-    "text": "SpaceXは2026年6月にIPOを予定している。評価額$1.75〜2.0兆ドル、調達額最大$750億は史上最大のIPOだ。SpaceXを直接買えない資金が、類似・関連する上場銘柄に流れ込む構造はすでに始まっている。"
-  },
-  {
-    "objectID": "macro/space.html#なぜ今宇宙インフラが投資テーマになるのか",
-    "href": "macro/space.html#なぜ今宇宙インフラが投資テーマになるのか",
-    "title": "宇宙インフラ：SpaceX IPOが引き金を引くセクター再評価",
-    "section": "なぜ今、宇宙インフラが投資テーマになるのか",
-    "text": "なぜ今、宇宙インフラが投資テーマになるのか\n宇宙産業は「国家プロジェクト」から「民間インフラビジネス」へと不可逆的に転換した。その中心にいるSpaceXは非上場のまま$1.75兆の評価を得ており、機関・個人投資家は上場できないSpaceXの「代替需要」を公開市場で満たそうとしている。\nSpaceX IPOのインパクト：\n\n史上最大のIPO（サウジアラムコ$294億の2.5倍超）\nIPO後にSpaceXは流動性の高い「買収通貨（公開株式）」を手に入れ、M&Aを加速\nStarshipの量産が本格化すれば打ち上げコストが90%低下し、川下の衛星・データ企業の利益率が直接改善\nMorgan Stanleyは「Space 60」と呼ぶ関連銘柄リストで波及範囲を示している\n\n現在の市場の読み：「モートより物語」\n防衛プライム（NOC・LHX・KTOS）はDOGE（政府効率化省）による調達ボトルネックで売られている一方、宇宙の物語に近い銘柄（RKLB・LUNR・PL）は急上昇している。モメンタムトレードにおいて「乗り遅れた感」が最も強い時期が往々にして買い時となる。"
-  },
-  {
-    "objectID": "macro/space.html#spacexの波及マップ",
-    "href": "macro/space.html#spacexの波及マップ",
-    "title": "宇宙インフラ：SpaceX IPOが引き金を引くセクター再評価",
-    "section": "SpaceXの波及マップ",
-    "text": "SpaceXの波及マップ\nSpaceXの3つの事業柱ごとに、上場市場で資金が向かう銘柄を整理する。\n\n\n\n\n\n\n\nSpaceXの事業\n上場市場の代替・関連銘柄\n\n\n\n\nStarship・打ち上げ\nRKLB（唯一の公開打ち上げ会社）、LUNR（月面探索）\n\n\nStarlink（衛星インターネット）\nASTS（直接競合）、IRDM（周波数補完）、GSAT、VSAT\n\n\n宇宙データ・観測\nPL、BKSY（打ち上げコスト低下で利益率改善）"
-  },
-  {
-    "objectID": "macro/space.html#定量分析",
-    "href": "macro/space.html#定量分析",
-    "title": "宇宙インフラ：SpaceX IPOが引き金を引くセクター再評価",
+    "objectID": "macro/liquid-cooling.html#定量分析",
+    "href": "macro/liquid-cooling.html#定量分析",
+    "title": "液冷・冷却：AIラックの「熱の壁」を破る唯一の手段",
     "section": "定量分析",
-    "text": "定量分析\n\n株価パフォーマンス比較（過去6ヶ月）\n\n\n\n\n\n\n\n\n\n\n\nモメンタム比較（1ヶ月・3ヶ月・6ヶ月）\n\n\n\n\n\n\n\n\n\n\n\n時価総額比較"
+    "text": "定量分析\n\nバリュエーション・収益性サマリー\n\n\n\n\n\n\n\n \n \n時価総額\nForward PER\nEV/EBITDA\n営業利益率\n売上成長(YoY)\n\n\nカテゴリ\n銘柄\n \n \n \n \n \n\n\n\n\nコア（業界パワー）\nVertiv (VRT)\n~$140B\n43.0\n61.0\n16.4%\n30.1%\n\n\nEaton (ETN)\n~$160B\n26.0\n28.3\n16.1%\n16.8%\n\n\nnVent Electric (NVT)\n~$30B\n31.2\n32.1\n16.0%\n53.5%\n\n\nチョークポイント\nParker Hannifin (PH)\n~$110B\n25.9\n21.9\n21.5%\n10.6%\n\n\nDover (DOV)\n~$30B\n18.5\n16.4\n16.4%\n10.1%\n\n\n信越化学工業 (4063.T)\n~$80B\n21.8\n14.4\n21.4%\n1.3%\n\n\nロマン枠\nModine (MOD)\n~$15B\n39.6\n38.3\n11.9%\n30.5%\n\n\n\n\n\n\n\n株価パフォーマンス比較（過去1年）\n\n\n\n\n\n\n\n\n\n\n\nForward PER 比較（割高感の可視化）"
   },
   {
-    "objectID": "macro/space.html#銘柄分析",
-    "href": "macro/space.html#銘柄分析",
-    "title": "宇宙インフラ：SpaceX IPOが引き金を引くセクター再評価",
-    "section": "銘柄分析",
-    "text": "銘柄分析\n\nSpaceX物語と最も近い銘柄群\nRocket Lab（RKLB）　打ち上げ・衛星コンポーネントの垂直統合\n西側諸国で唯一のSpaceX代替。Electron（小型）での再使用化実績を持ち、中型ロケットNeutronを開発中。衛星バス・コンポーネント事業（Space Systems）が全売上の半分近くに成長しており、「ロケット会社」から「宇宙インフラ会社」への転換が進む。2026年Q1売上は$203M（YoY+64%）、受注残$22億。DoD（米国防総省）が意図的にSpaceXへの依存を分散させるため資金を投入しており、単なる民間企業以上の安全網がある。時価総額$72Bはすでに大型株の領域だが、SpaceX IPOの直接的な比較対象として資金が入り続ける構造。\nIntuitive Machines（LUNR）　月面着陸船・Artemis計画\nNASA Artemis計画の商業月面輸送（CLPS）プロバイダー。IM-1（2024年）で民間初の月面軟着陸を達成（転倒したが着陸は成功）、IM-2（2025年3月）は月面到達も転倒。IM-3（2026年後半予定）でリベンジを狙う。月面インフラ構築という壮大な物語を持ちながら、時価総額$5.4Bとまだ小さい。RKLBの13分の1の時価総額で同じ宇宙探索ストーリーを共有しており、上昇余地の非対称性が魅力。ただし着陸ミッションごとに株価がバイナリーに動くリスクがある。\n\n\n\n衛星インターネット・通信\nAST SpaceMobile（ASTS）　Starlink Direct-to-Cellの直接競合\n低軌道衛星から標準スマートフォンへの直接5G通信を目指す。AT&T・Verizon・楽天モバイル等との提携で$12億以上の契約収益を確保済み。インフラが完成すれば通信キャリアにとって不可欠なプラットフォームとなるポテンシャルを持つが、現在は粗利益率がマイナスで資本集約度が極めて高い。BlueBird衛星の展開に伴う技術的遅延リスクが常に存在する。\nIridium（IRDM）　周波数独占×GPS代替PNT\n66基のLEO衛星で極地含む全球カバレッジを提供する唯一の企業。最大のモートはLバンド・Sバンド周波数帯の独占。気象条件に左右されにくく小型アンテナで通信できる特性から、軍事・海事・IoTで代替不可能なインフラとなっている。Satelles買収によるGPS代替PNT（測位・航法・タイミング）サービスは、GPSジャミングが常態化する戦場において軍事的チョークポイントとなりつつある。現在のモメンタムは弱いが、周波数という物理的に複製不可能な資産の長期価値は変わらない。\n\n\n\n防衛・宇宙チョークポイント型（現在売られている）\nDOGEによる政府調達の人員削減（宇宙軍司令部から約10%削減）で短期的に売られているが、宇宙軍予算自体は+77%（$711億）と増加している。「資金はあるが執行できない」という一時的な官僚的ボトルネックが解消されれば反転する可能性がある。\n\n\n\n\n\n\n\n\n銘柄\nモート\n現状\n\n\n\n\nNOC\nSDA衛星150基以上のプライム。ロケット推進で競合も依存\n1M-19%。DOGE懸念で売られているが宇宙軍予算の最大受益者\n\n\nLHX\nAerojet Rocketdyne買収でロケットエンジン製造能力獲得\n1M-13%。「Andromeda」プログラム参画\n\n\nTDG\nFAA認証アフターマーケット部品を独占。EBITDA 54%\n6M-14%。宇宙純度は薄いが全セクター通じて最強モートの一つ\n\n\nHEI\nPMA認証代替部品でTDGを侵食するディスラプター\n航空宇宙アフターマーケットの双璧\n\n\nCW\n耐放射線エレクトロニクス。認証に24〜36ヶ月の参入障壁\n衛星が1基失敗するだけでミッション全損→誰も安物を使えない\n\n\nKTOS\nOpenSpaceで衛星地上局をSaaS化。ベンダーロックイン\n3M-43%と急落中。バリュエーション高すぎ（PER558倍）のリスク"
-  },
-  {
-    "objectID": "macro/space.html#投資判断サマリー",
-    "href": "macro/space.html#投資判断サマリー",
-    "title": "宇宙インフラ：SpaceX IPOが引き金を引くセクター再評価",
+    "objectID": "macro/liquid-cooling.html#投資判断サマリー",
+    "href": "macro/liquid-cooling.html#投資判断サマリー",
+    "title": "液冷・冷却：AIラックの「熱の壁」を破る唯一の手段",
     "section": "投資判断サマリー",
-    "text": "投資判断サマリー\n\n\n\n\n\n\n\n\n\n銘柄\n方針\nバケット\n根拠\n\n\n\n\nRKLB\n保有継続\n運用枠\nSpaceX IPOの直接代替。DoD育成銘柄。モメンタム継続中\n\n\nASTS\n保有継続（小額）\nリスク枠\nStarlink競合・ネット話題性。バイナリーリスクを認識した上で小額保有\n\n\nLUNR\n検討中\nリスク枠\n時価総額がRKLBの13分の1で同じ物語。IM-3ミッションが近づくにつれ資金流入期待\n\n\nIRDM\nウォッチ\n—\n周波数独占という本物のチョークポイント。モメンタムが弱い今が仕込み時の可能性\n\n\nPL\nウォッチ\n—\nStarship量産で打ち上げコスト低下→利益率直接改善。サブスク98%リテンション\n\n\nNOC・TDG\nウォッチ\n—\n最強モートだが現在売られている。DOGE懸念解消後の逆張り候補\n\n\nKTOS\nウォッチ\n—\nOpenSpaceは本物の堀だが、PER558倍×3M-43%はバリュエーションリスク大\n\n\n\n\nSpaceX IPOタイムライン： 2026年4月にSECへ非公開提出済み。6月8日週にロードショー開始予定。それまでの数週間が「IPO前のポジション構築」の最終機会となる可能性がある。"
+    "text": "投資判断サマリー\n\n\n\n\n\n\n\n\n\n銘柄\n方針\nバケット\n根拠\n\n\n\n\nVRT\n本命候補\n運用枠\n液冷王者×NVIDIA RVL×$150Bバックログ。業界パワー最強\n\n\nETN\n本命候補\n運用枠\nRVL認定×電力+液冷の垂直統合。電力インフラテーマとの相乗効果\n\n\nNVT\n次点\n運用枠\nRVL認定×バックログ$26B。VRT・ETNより規模が小さい分アップサイドあり\n\n\nMOD\nロマン枠\nリスク枠\n2026年Q4スピンオフで純粋DC銘柄に変貌するカタリスト内在。PEGレシオ2.0xで割安だが、NVIDIA RVL未認定がリスク\n\n\nPH\n記録のみ\n—\nUQD世界首位のチョークポイント保有者だが多角化企業で純度薄い\n\n\nDOV\n記録のみ\n—\nCPC子会社でUQD11.5%。PH同様に純度薄い\n\n\n信越化学（4063）\n記録のみ\n—\nTIM世界首位の代替不可能な素材メーカー。フィジカルAIページと合わせて評価\n\n\n\n\nVRT vs ETN の選択軸： VRTは液冷に最も純度が高く、ETNは電力インフラとの相乗効果で差別化。電力インフラページとの重複を踏まえてどちらを優先するか検討。"
   },
   {
-    "objectID": "youtube/2026-06-24-ai-semiconductor.html",
-    "href": "youtube/2026-06-24-ai-semiconductor.html",
-    "title": "YouTube構成：AI半導体相場は終わったのか",
+    "objectID": "macro/index.html",
+    "href": "macro/index.html",
+    "title": "AIデータセンター・バリューチェーン全体像",
     "section": "",
-    "text": "AI半導体相場は終わったのか？Micron決算前に見るべき3つのポイント"
+    "text": "AIの進化は「ソフトウェアやシリコンの魔法」によってもたらされるものではない。メガワット単位の電力、液冷の物理学、超高純度の化学素材、そして限界に挑む精密加工技術のすべてが統合されることで初めて成立する「物理インフラの極致」である。"
   },
   {
-    "objectID": "youtube/2026-06-24-ai-semiconductor.html#タイトル案",
-    "href": "youtube/2026-06-24-ai-semiconductor.html#タイトル案",
-    "title": "YouTube構成：AI半導体相場は終わったのか",
-    "section": "",
-    "text": "AI半導体相場は終わったのか？Micron決算前に見るべき3つのポイント"
+    "objectID": "macro/index.html#なぜ今インフラに着目するのか",
+    "href": "macro/index.html#なぜ今インフラに着目するのか",
+    "title": "AIデータセンター・バリューチェーン全体像",
+    "section": "なぜ今、インフラに着目するのか",
+    "text": "なぜ今、インフラに着目するのか\nモルガン・スタンレー（2026年）によれば、AI関連インフラ投資は2028年までに約3兆ドル規模に達すると予測されており、その80%以上はこれから投下される段階にある。マッキンゼーの試算では、2025〜2030年のデータセンター向けCapExは5.2〜7.9兆ドルに及ぶとされる。\n投資機会は「GPU争奪戦（計算能力の確保）」という初期フェーズから、「物理的制約の突破（電力・冷却・極小素材）」という二次・三次フェーズへとシフトしている。"
   },
   {
-    "objectID": "youtube/2026-06-24-ai-semiconductor.html#冒頭",
-    "href": "youtube/2026-06-24-ai-semiconductor.html#冒頭",
-    "title": "YouTube構成：AI半導体相場は終わったのか",
-    "section": "冒頭",
-    "text": "冒頭\n今日は、急落した日本のAI半導体関連株について整理します。\n結論から言うと、AI半導体の構造的需要が終わったわけではありません。ただし、短期では急騰銘柄の利確と需給悪化が出ており、ここからは「何でも買えば上がる」局面ではありません。"
+    "objectID": "macro/index.html#テーマ別パフォーマンス資金はどこまで来たか",
+    "href": "macro/index.html#テーマ別パフォーマンス資金はどこまで来たか",
+    "title": "AIデータセンター・バリューチェーン全体像",
+    "section": "テーマ別パフォーマンス：資金はどこまで来たか",
+    "text": "テーマ別パフォーマンス：資金はどこまで来たか\nAIインフラの波はバリューチェーンの上流から下流へ、順番に資金が流れ込む構造をとっている。チャートは各テーマの代表銘柄の過去2年パフォーマンス（構成銘柄の平均、開始=100）。「既に発見され爆騰したテーマ」と「まだ資金が来ていないテーマ」を一目で把握できる。\n\n\n\n\n\n\n\n\n\n\n読み方： 各線はテーマ内の代表銘柄の平均。x3.89は2年で3.89倍（+289%）を意味する。日本株（安川電機・ファナック）は円建て騰落率のためUSD換算なし。\n\n\nテーマ別 現在PER\nPERは「市場がそのテーマにどれだけの将来成長を織り込んでいるか」を示す。パフォーマンスチャートと合わせて読むことで、「既に爆騰＋高PER＝フル評価」か「まだ動いていない＋低PER＝未発見の余地あり」かが見えてくる。\n\n\n\n\n\n\n\n\n\n\n読み方： trailing PER平均（取得不可の場合はforward PERで代替）。N/Aは赤字企業。25x点線＝市場平均、50x点線＝高成長プレミアム水準。"
   },
   {
-    "objectID": "youtube/2026-06-24-ai-semiconductor.html#何が起きたのか",
-    "href": "youtube/2026-06-24-ai-semiconductor.html#何が起きたのか",
-    "title": "YouTube構成：AI半導体相場は終わったのか",
-    "section": "1. 何が起きたのか",
-    "text": "1. 何が起きたのか\n2026-06-23、日本のAI半導体関連株は大きく下落しました。\n\nキオクシアは大幅安\n村田製作所も大幅安\n東京エレクトロンやアドバンテストも下落\n一方で、米国のSOXやSMHは直近では強い\nMicronも決算前に上昇している\n\nつまり、単純に「AI半導体が全部終わった」というより、日本側の急騰銘柄の利確・巻き戻しが強く出た形です。"
+    "objectID": "macro/index.html#バリューチェーン構造図",
+    "href": "macro/index.html#バリューチェーン構造図",
+    "title": "AIデータセンター・バリューチェーン全体像",
+    "section": "バリューチェーン構造図",
+    "text": "バリューチェーン構造図\nAIデータセンターの構築を6フェーズに分解すると、以下のサプライチェーンが見えてくる。\n\n\n\nフェーズ\n内容\n主な投資テーマ\n\n\n\n\nPh.1 原材料\n銅・ガリウム・ゲルマニウム・フッ素化合物・ヘリウム\n素材\n\n\nPh.2 半導体\nEDA/IP設計 → EUV露光 → 先進パッケージング → テスト\n半導体エコシステム / フォトニクス / 先進パッケージング\n\n\nPh.3 基礎インフラ\n光ファイバー・電線ケーブル・DACケーブル\n電力インフラ\n\n\nPh.4 ハードウェア\n液冷システム・光トランシーバー・サーバーラック\n液冷・冷却 / フォトニクス\n\n\nPh.5 施設建設\nDC建設施工・免震・MEP工事\n電力インフラ\n\n\nPh.6 電力・運用\n変圧器・電気工事・SMR自家発電\n電力インフラ / SMR\n\n\n\nさらにDCの外側へと展開するテーマとして、宇宙インフラ・フィジカルAI・ロボティクス・DC REITがある。"
   },
   {
-    "objectID": "youtube/2026-06-24-ai-semiconductor.html#micron決算が重要な理由",
-    "href": "youtube/2026-06-24-ai-semiconductor.html#micron決算が重要な理由",
-    "title": "YouTube構成：AI半導体相場は終わったのか",
-    "section": "2. Micron決算が重要な理由",
-    "text": "2. Micron決算が重要な理由\nMicronはAIメモリ/HBM相場の代表銘柄です。\n見るべきポイントは3つです。\n\nHBM需要がどれだけ強いか\nDRAM/NAND価格の見通し\n次の四半期ガイダンスが市場期待を上回るか\n\nここで一番重要なのは、決算の数字そのものだけではありません。\n好決算でも売られるかどうかです。\n期待が高すぎる相場では、良い決算でも株価が下がることがあります。その場合、日本の半導体株にも戻り売りが出やすくなります。"
+    "objectID": "macro/index.html#つの隠れたボトルネック",
+    "href": "macro/index.html#つの隠れたボトルネック",
+    "title": "AIデータセンター・バリューチェーン全体像",
+    "section": "5つの隠れたボトルネック",
+    "text": "5つの隠れたボトルネック\n需要に対して供給が構造的に追いつかず、強力な価格決定権（プライシング・パワー）を持つ可能性が高い急所。\n\n\n\n#\nボトルネック\n象徴的な事実\n詳細テーマ\n\n\n\n\n①\n超大型変圧器・配電インフラ\n納期が12週間→160週間（約3年強）に長期化\n電力インフラ\n\n\n②\n次世代ガラスコア基板（TGV/LIDE）\n有機基板の反り・限界を突破する次のゲームチェンジャー\n先進パッケージング\n\n\n③\nEUVフォトレジスト・ペリクル\n日本企業が世界シェア96%以上を独占する絶対的チョークポイント\n半導体エコシステム\n\n\n④\n液冷用クイック・ディスコネクト（UQD）\n1滴の液漏れが数億円のラック破壊を招くため価格より信頼性が優先\n液冷・冷却\n\n\n⑤\nSMR（小型モジュール炉）による自家発電\nグリッド接続申請の待機期間が米国で平均5年→ビハインド・ザ・メーターへ\nSMR"
   },
   {
-    "objectID": "youtube/2026-06-24-ai-semiconductor.html#押し目か崩壊か",
-    "href": "youtube/2026-06-24-ai-semiconductor.html#押し目か崩壊か",
-    "title": "YouTube構成：AI半導体相場は終わったのか",
-    "section": "3. 押し目か、崩壊か",
-    "text": "3. 押し目か、崩壊か\n押し目として見てよい条件:\n\nSOX/SMHが崩れない\nMicronが決算後も高値圏を維持\nアドバンテスト、東京エレクトロン、ディスコが下げ止まる\n村田や太陽誘電が前日安値を割らない\n小型材料株が出来高を伴って反発する\n\n崩壊を疑う条件:\n\n好材料でも半導体主力が売られる\n急騰銘柄が連続で戻せない\n大型株まで大陰線で崩れる\n小型材料株のリバが寄り天で終わる"
-  },
-  {
-    "objectID": "youtube/2026-06-24-ai-semiconductor.html#いま見るべき銘柄群",
-    "href": "youtube/2026-06-24-ai-semiconductor.html#いま見るべき銘柄群",
-    "title": "YouTube構成：AI半導体相場は終わったのか",
-    "section": "4. いま見るべき銘柄群",
-    "text": "4. いま見るべき銘柄群\n大型の確認銘柄:\n\nアドバンテスト\n東京エレクトロン\nディスコ\n村田製作所\nMicron\n\n値幅が出やすい小型・材料株:\n\nFIG\nテクニスコ\n日本電波工業\n\nただし、小型材料株は本命ではなく、短期リバの対象です。テーマが正しくても、需給が悪ければ簡単に売られます。"
-  },
-  {
-    "objectID": "youtube/2026-06-24-ai-semiconductor.html#まとめ",
-    "href": "youtube/2026-06-24-ai-semiconductor.html#まとめ",
-    "title": "YouTube構成：AI半導体相場は終わったのか",
-    "section": "まとめ",
-    "text": "まとめ\nAI半導体相場は、構造的にはまだ強いです。\nただし、短期では一度、楽勝ムードが終わりました。\nここから重要なのは、テーマを信じることではなく、主力株の下げ止まり、Micron決算後の反応、出来高を確認することです。\n「テーマが正しい」と「今日買ってよい」は別問題です。"
-  },
-  {
-    "objectID": "youtube/2026-06-24-ai-semiconductor.html#参考リンク",
-    "href": "youtube/2026-06-24-ai-semiconductor.html#参考リンク",
-    "title": "YouTube構成：AI半導体相場は終わったのか",
-    "section": "参考リンク",
-    "text": "参考リンク\n\nDaily Watch 2026-06-24\n半導体エコシステム\n銘柄ユニバース"
-  },
-  {
-    "objectID": "youtube/index.html",
-    "href": "youtube/index.html",
-    "title": "YouTube Scripts",
-    "section": "",
-    "text": "YouTube解説用の構成メモ。動画で話す順番、見せる論点、結論を整理する。\n公開ページとして使うため、個人の売買ログではなく、視聴者が理解できるテーマ解説に寄せる。"
-  },
-  {
-    "objectID": "youtube/index.html#scripts",
-    "href": "youtube/index.html#scripts",
-    "title": "YouTube Scripts",
-    "section": "Scripts",
-    "text": "Scripts\n\n\n\n日付\nタイトル\n概要\n\n\n\n\n2026-06-24\nAI半導体相場は終わったのか\nMicron決算、メモリ/HBM、日本AI関連株の下落を整理"
-  },
-  {
-    "objectID": "macro/physical-ai.html",
-    "href": "macro/physical-ai.html",
-    "title": "フィジカルAI・ロボティクス：AIが「体」を持つ時代",
-    "section": "",
-    "text": "ソフトウェアとしてのAIは画面の中にある。フィジカルAIは工場の床、手術室、道路の上にある。NVIDIAのジェンセン・フアンが「次の巨大市場はロボティクス」と繰り返し強調するとき、彼はハードウェアの世界全体を指している。"
-  },
-  {
-    "objectID": "macro/physical-ai.html#なぜ今フィジカルaiが投資テーマになるのか",
-    "href": "macro/physical-ai.html#なぜ今フィジカルaiが投資テーマになるのか",
-    "title": "フィジカルAI・ロボティクス：AIが「体」を持つ時代",
-    "section": "なぜ今、フィジカルAIが投資テーマになるのか",
-    "text": "なぜ今、フィジカルAIが投資テーマになるのか\n生成AIが言語・画像を扱うソフトウェア領域を制覇しつつある中、次のフロンティアは物理世界との相互作用だ。ヒューマノイドロボット・自動運転・産業用ロボットの高度化、そしてその学習基盤となる「センサーデータ」の重要性が急上昇している。\nNVIDIAはIsaac SimとOmniverse platformで、仮想空間でロボットを訓練して現実に転送する「シミュレーション→リアル転送（Sim2Real）」を推進している。これにより、実機のトレーニングコストが劇的に低下し、ヒューマノイドの商業展開が加速する。\n市場規模：\n\n\n\nセグメント\n2025年\n2030年予測\nCAGR\n\n\n\n\nヒューマノイドロボット\n~$1B\n~$15〜30B\n70%超\n\n\n産業用ロボット\n~$25B\n~$55B\n12〜15%\n\n\n自動運転（L4/L5）\n~$10B\n~$80B\n40〜50%\n\n\n精密減速機（ロボット関節）\n~$4B\n~$12B\n15〜20%"
-  },
-  {
-    "objectID": "macro/physical-ai.html#フィジカルaiのバリューチェーン",
-    "href": "macro/physical-ai.html#フィジカルaiのバリューチェーン",
-    "title": "フィジカルAI・ロボティクス：AIが「体」を持つ時代",
-    "section": "フィジカルAIのバリューチェーン",
-    "text": "フィジカルAIのバリューチェーン\n\n\n\n\n\n\n\n\nレイヤー\n内容\n主な銘柄\n\n\n\n\nセンサー\nカメラ・LiDAR・ToFセンサー\nSony（6758.T）\n\n\nコントローラー\n産業用サーボドライブ・モーション制御\nYaskawa（6506.T）、FANUC（6954.T）\n\n\n精密機構\n関節用精密減速機（Harmonic Drive等）\nHarmonic Drive（6324.T）\n\n\nAI学習基盤\nSim2Realプラットフォーム\nNVDA\n\n\nインテグレーター\nロボット+AIシステムの統合\nTSLA（Optimus）、GOOGL（DeepMind）"
-  },
-  {
-    "objectID": "macro/physical-ai.html#主要銘柄マップ",
-    "href": "macro/physical-ai.html#主要銘柄マップ",
-    "title": "フィジカルAI・ロボティクス：AIが「体」を持つ時代",
-    "section": "主要銘柄マップ",
-    "text": "主要銘柄マップ\n\n日本株（センサー・精密機構で世界独占）\n\n\n\n\n\n\n\n\n\n\n銘柄\nティッカー\n業界パワー\n概要\n分類\n\n\n\n\nソニーグループ\n6758.T（東証）\n★★★★★\nCMOSイメージセンサー世界シェア約50%。スマホ・ロボット・自動運転すべての目\n中核候補\n\n\nハーモニック・ドライブ\n6324.T（東証）\n★★★★★\n精密波動減速機（Strain Wave Gear）の世界独占。ヒューマノイド関節の事実上の標準\n中核候補\n\n\n安川電機\n6506.T（東証）\n★★★★\n産業用ロボット・サーボモーター世界4強。MOTOMAN製品群がモータースポンサー\n中核候補\n\n\nFANUC\n6954.T（東証）\n★★★★★\nCNCシステム・産業用ロボット世界トップ。NVIDIA・Google協業発表で注目集中\n中核候補\n\n\n\n\n\n米国株\n\n\n\n\n\n\n\n\n\n\n銘柄\nティッカー\n業界パワー\n概要\n分類\n\n\n\n\nTesla\nTSLA（NASDAQ）\n★★★★\nOptimusヒューマノイドのSim2Real先駆者。FSD自動運転データ最大保有者\n中核候補\n\n\nIntuitive Surgical\nISRG（NASDAQ）\n★★★★★\n手術支援ロボットの世界独占（da Vinci）。AIによる手術精度向上で参入障壁強化中\n中核候補"
-  },
-  {
-    "objectID": "macro/physical-ai.html#株価パフォーマンス過去1年",
-    "href": "macro/physical-ai.html#株価パフォーマンス過去1年",
-    "title": "フィジカルAI・ロボティクス：AIが「体」を持つ時代",
-    "section": "株価パフォーマンス（過去1年）",
-    "text": "株価パフォーマンス（過去1年）\n\n\n\n\n\n\n\n\n\n\n注： 日本株（6758.T・6324.T・6954.T・6506.T）は円建て騰落率。USD換算なし。"
-  },
-  {
-    "objectID": "macro/physical-ai.html#ソニー6758.tなぜ本命か",
-    "href": "macro/physical-ai.html#ソニー6758.tなぜ本命か",
-    "title": "フィジカルAI・ロボティクス：AIが「体」を持つ時代",
-    "section": "ソニー（6758.T）：なぜ本命か",
-    "text": "ソニー（6758.T）：なぜ本命か\nソニーをフィジカルAIの本命とする理由は1つに集約される：CMOSイメージセンサー世界シェア約50%。\nロボット・自動運転・工場監視カメラ・ドローンの「目」はすべてCMOSセンサーで作られており、その約半数がソニー製だ。フィジカルAIが普及すればするほど、ソニーのセンサー出荷量が増える。しかもカメラ以外の収益柱（PlayStation・エンタメ・半導体受託）が足元を支えており、PERは同等成長企業と比較して明確に割安。\n\n分析ノート： analysis/physical_ai.ipynb に5銘柄の定量分析あり。"
-  },
-  {
-    "objectID": "macro/physical-ai.html#投資まとめ",
-    "href": "macro/physical-ai.html#投資まとめ",
-    "title": "フィジカルAI・ロボティクス：AIが「体」を持つ時代",
-    "section": "投資まとめ",
-    "text": "投資まとめ\n\n\n\n\n\n\n\n\n銘柄\n選択理由\nバケット\n\n\n\n\nSony（6758.T）\nセンサー独占×割安PER。本命\n運用枠\n\n\nHarmonic Drive（6324.T）\nヒューマノイド関節の世界標準。好決算後の押し目で購入済み\nリスク枠\n\n\nFANUC（6954.T）\nNVIDIA・Google協業モメンタム。購入済み\n運用枠\n\n\n\n\nヒューマノイドが量産フェーズに入る2026〜2027年が最初のリターン検証点。Harmonic Driveは1台あたり複数個の減速機を使用するため、出荷台数に直結する。"
-  },
-  {
-    "objectID": "macro/glass-substrate.html",
-    "href": "macro/glass-substrate.html",
-    "title": "先進パッケージング・ガラスコア基板：次世代チップ統合の「土台」",
-    "section": "",
-    "text": "有機基板は微細化の壁に当たった。加熱すると反り、精度が落ち、配線が限界に達する。IntelとCorningが「ガラスコア基板」という解答を出した。これは半導体パッケージングの100年に一度の素材革命だ。"
-  },
-  {
-    "objectID": "macro/glass-substrate.html#なぜ先進パッケージングが投資テーマになるのか",
-    "href": "macro/glass-substrate.html#なぜ先進パッケージングが投資テーマになるのか",
-    "title": "先進パッケージング・ガラスコア基板：次世代チップ統合の「土台」",
-    "section": "なぜ先進パッケージングが投資テーマになるのか",
-    "text": "なぜ先進パッケージングが投資テーマになるのか\nAIチップの性能向上には、チップ自体の微細化（ムーアの法則）だけでなく、複数のチップを1つのパッケージに高密度で統合する「先進パッケージング」が不可欠になっている。HBM（高帯域幅メモリ）をGPUのわきに積層するNVIDIAのCoWoS（Chip on Wafer on Substrate）技術がその象徴だ。\n現在の主流（有機基板）の限界：\n\n\n\n問題\n詳細\n\n\n\n\n熱による反り\n高温工程で基板が変形し、チップ接続精度が低下\n\n\n配線密度の上限\n有機材料の物性限界で微細配線（2μm以下）が困難\n\n\n電力損失\n誘電損失が大きく、高周波信号での損失増大\n\n\n\nガラスコア基板（TGV/LIDE技術）の優位性：\n\n熱膨張係数がシリコンに近い→反りが激減\nガラス貫通電極（TGV）で超微細な垂直配線が可能\n高周波での誘電損失が有機基板の1/3以下\n\nIntelは2026〜2028年の量産開始を宣言。市場は2023年の~$100Mから2030年には$6〜10Bへの成長が予測される。"
-  },
-  {
-    "objectID": "macro/glass-substrate.html#先進パッケージングのバリューチェーン",
-    "href": "macro/glass-substrate.html#先進パッケージングのバリューチェーン",
-    "title": "先進パッケージング・ガラスコア基板：次世代チップ統合の「土台」",
-    "section": "先進パッケージングのバリューチェーン",
-    "text": "先進パッケージングのバリューチェーン\n\n\n\n\n\n\n\n\nフェーズ\n内容\n主な上場プレイヤー\n\n\n\n\nガラス基板製造\nガラスコア材料・TGV加工\nGLW、AGC（5201.T）、HOYA（7741.T）\n\n\nパッケージング工程\nCoWoS・Fan-Out・SoIC実装\nAMKR、TSM\n\n\nボンディング装置\nダイボンダー・ワイヤーボンダー\nKLIC（Kulicke & Soffa）\n\n\n検査・計測\nパッケージング後の検査\nONTO、COHU"
-  },
-  {
-    "objectID": "macro/glass-substrate.html#主要銘柄マップ",
-    "href": "macro/glass-substrate.html#主要銘柄マップ",
-    "title": "先進パッケージング・ガラスコア基板：次世代チップ統合の「土台」",
-    "section": "主要銘柄マップ",
-    "text": "主要銘柄マップ\n\nガラス素材（TGV最前線）\n\n\n\n\n\n\n\n\n\n\n銘柄\nティッカー\n業界パワー\n概要\nステータス\n\n\n\n\nCorning\nGLW（NYSE）\n★★★★★\nガラスコア基板でIntelと独占的パートナーシップ。光ファイバーでも世界首位\nウォッチ\n\n\nAGC\n5201.T（東証）\n★★★★\n旭硝子。ガラスコア基板で独自技術を持つ。Intelとも共同開発\nウォッチ\n\n\nHOYA\n7741.T（東証）\n★★★★★\nフォトマスク（EUV対応）の世界独占シェア。ガラス製品全般\nウォッチ\n\n\n\n\n\nパッケージング（量産の実行者）\n\n\n\n\n\n\n\n\n\n\n銘柄\nティッカー\n業界パワー\n概要\nステータス\n\n\n\n\nAmkor Technology\nAMKR（NASDAQ）\n★★★★\nOSAT（外部半導体パッケージング）世界2位。Apple・NVIDIAから受注\nウォッチ\n\n\nKulicke & Soffa\nKLIC（NASDAQ）\n★★★★\nワイヤーボンダー・ダイボンダーの世界最大手。先進パッケージング装置も展開\nウォッチ\n\n\nOnto Innovation\nONTO（NASDAQ）\n★★★★\nパッケージング後の光学検査装置。先進パッケージング拡大で受注増\nウォッチ"
-  },
-  {
-    "objectID": "macro/glass-substrate.html#株価パフォーマンス過去1年",
-    "href": "macro/glass-substrate.html#株価パフォーマンス過去1年",
-    "title": "先進パッケージング・ガラスコア基板：次世代チップ統合の「土台」",
-    "section": "株価パフォーマンス（過去1年）",
-    "text": "株価パフォーマンス（過去1年）\n\n\n\n\n\n\n\n\n\n\n注： AGC（5201.T）・HOYA（7741.T）は円建て騰落率。"
-  },
-  {
-    "objectID": "macro/glass-substrate.html#投資まとめ",
-    "href": "macro/glass-substrate.html#投資まとめ",
-    "title": "先進パッケージング・ガラスコア基板：次世代チップ統合の「土台」",
-    "section": "投資まとめ",
-    "text": "投資まとめ\nガラスコア基板はまだ「投資家に発見されていない」フェーズにある。量産開始は2026〜2028年で、現時点での材料株（GLW・AGC）は先行投資段階だ。\nGLWを注目する理由： - Intelとの独占的パートナーシップが公表済み - 光ファイバー（AI DC内の光インターコネクト）でも恩恵 - PERは相対的に低く、先進パッケージング成長が織り込まれていない\nHOYAを注目する理由： - EUV対応フォトマスクの世界シェア独占（これだけでも強力） - ガラス素材技術でTGVへの転用可能\n\n現状： 全銘柄ウォッチ。量産開始のニュースをトリガーに購入検討。"
+    "objectID": "macro/index.html#テーマ別ページ一覧",
+    "href": "macro/index.html#テーマ別ページ一覧",
+    "title": "AIデータセンター・バリューチェーン全体像",
+    "section": "テーマ別ページ一覧",
+    "text": "テーマ別ページ一覧\n\n\n\nテーマ\nページ\n優先度\n\n\n\n\n素材（銅・レアメタル・特殊化学）\nmaterials.qmd\n高\n\n\n半導体エコシステム（EDA/IP・製造・装置）\nsemiconductor.qmd\n高\n\n\nフォトニクス・光インターコネクト\nphotonics.qmd\n高\n\n\n液冷・冷却\nliquid-cooling.qmd\n高\n\n\n先進パッケージング（ガラスコア基板）\nglass-substrate.qmd\n高\n\n\n電力インフラ（変圧器・配電・建設）\npower-infra.qmd\n高\n\n\nSMR・自家発電\nsmr.qmd\n中\n\n\n宇宙インフラ・宇宙DC構想\nspace.qmd\n高\n\n\nフィジカルAI・ロボティクス\nphysical-ai.qmd\n中\n\n\nDC REIT\nreit.qmd\n低"
   },
   {
     "objectID": "macro/materials.html",
@@ -686,193 +371,536 @@
     "text": "銅価格の構造的サポートと生産者の暗黙的価格決定力\n\nなぜ「価格決定力」が議論できるのか\n銅はLME/COMEX市場で価格が決まるコモディティであり、FCXもSCCOも原則としてプライス・テイカー（市場価格を受け入れる側）である。しかし以下の構造的メカニズムにより、大手低コスト生産者は中長期的な価格形成に対して暗黙的な影響力を持つ。\n① 設備投資タイミングの管理（最も強力なレバー）\n新規銅鉱山の開発には平均15〜20年を要する。既存大手が新プロジェクトへの投資を2〜3年遅らせるだけで、中期的な供給ひっ迫は固定化される。これは「OPEC的な生産調整」（独禁法上グレー）とは異なり、各社が自社利益の範囲内で合理的に選択できる行動だ。\n② 需要の非弾力性（Wood Mackenzie）\nデータセンター建設コスト全体に占める銅調達費用はわずか0.5%未満。ビッグテックは銅価格が30〜50%上昇しても建設を止めない。需要側からの価格抑制圧力がほぼ存在しない構造。\n③ 構造的供給赤字（BloombergNEF）\n2027年には一次供給不足が約450万トンのピークに達すると予測。既存鉱山の枯渇速度が新規開発を上回っており、特段の生産管理がなくても銅価格の下方硬直性は高い。\n④ 高コスト鉱山の退出効果（価格フロアの存在）\n世界の銅生産限界コスト（90パーセンタイル）は$3.50〜4.00/lb程度。この水準を下回ると高コスト鉱山が生産停止し、自動的に供給が引き締まる。市場には構造的な価格フロアが存在する。\n\n\n「生産者管理」シナリオの根拠（$12,000/mt / $5.44/lb）\nFCX・SCCO・Codelco・Glencore・BHPの上位5社で世界供給の約40%を占める。これらが新規設備投資を2年遅らせた場合、BloombergNEFの450kt不足推計と整合する水準として$12,000/mt（$5.44/lb）での安定推移が試算できる。\n\n注：COMEXの現在価格（$6.50/lb）は米国の銅輸入関税25%を巡る前倒し需要が上乗せされた特殊水準。LMEは約$9,500/mt（$4.31/lb）前後で推移しており、長期シナリオにはLMEベースの予測値を使用する。\n\n\n\n\nEPS感応度・株価シナリオ分析\n銅価格シナリオごとに、FCXとSCCOの予想EPSおよび株価水準を試算する。\n前提条件：\n\n基準年：2025年実績（FCX EPS $1.53、SCCO EPS $5.22、銅 $4.82/lb 年平均）\nFCX感応度：$0.270/share per $0.10/lb（FCX 2024年次報告書公式開示値）\nSCCO感応度：$0.233/share per $0.10/lb（2023〜2025年実データ回帰、R²=0.982）\nコスト一定・生産量一定の仮定（実際は年次でコスト変動あり）\n\n\n\n\n\n\n\n\nTable 1: FCX・SCCO 銅価格シナリオ別EPS・株価試算（2025年実績ベース）\n\n\n\n\n\n \n$/lb\nFCX EPS\nFCX @P/E17\nFCX @P/E22\nSCCO EPS\nSCCO @P/E25\nSCCO @P/E30\n\n\nシナリオ\n \n \n \n \n \n \n \n\n\n\n\nBear（WB $9,500/mt）\n$4.31\n$0.15 (0.1x)\n$3\n$3\n$4.03 (0.8x)\n$101\n$121\n\n\nNeutral（GS $10,750/mt）\n$4.88\n$1.69 (1.1x)\n$29\n$37\n$5.36 (1.0x)\n$134\n$161\n\n\nSupply Floor（生産者管理 $12,000/mt）\n$5.44\n$3.20 (2.1x)\n$54\n$70\n$6.66 (1.3x)\n$167\n$200\n\n\nBull（Citi $13,000/mt）\n$5.90\n$4.45 (2.9x)\n$76\n$98\n$7.74 (1.5x)\n$193\n$232\n\n\nExtreme（OG $15,000/mt）\n$6.80\n$6.88 (4.5x)\n$117\n$151\n$9.83 (1.9x)\n$246\n$295\n\n\nCOMEX現在（関税込み $6.50/lb）\n$6.50\n$6.07 (4.0x)\n$103\n$133\n$9.13 (1.7x)\n$228\n$274\n\n\n\n\n\n\n\n\n読み方：\n\nFCX 3倍目標 = $193：Extreme（OG $15,000/mt）× P/E 28x 相当。条件は厳しいが、低P/E出発点と大規模生産を考えると最も現実的な3倍候補。\nSCCO 3倍目標 = $556：Bull以下のシナリオではいずれも届かない。現在のP/E（27〜35x）が既に高水準すぎる。Bull + P/E30x でも $232 止まり。\n\n\n\n\n住友金属鉱山（5713.T）：銅プレイとしての再評価\n住友金属鉱山は銅鉱山（Sierra Gorda 50.1%、Cerro Verde 16.8%等）を保有するが、ニッケル事業・電子材料事業の影響が大きく、銅価格との連動性が壊れている。\n\n\n\n年\n銅価格（COMEX）\n純利益\n\n\n\n\n2022\n$4.00/lb\n¥281B\n\n\n2023\n$3.85/lb\n¥161B\n\n\n2024\n$4.22/lb\n¥59B\n\n\n2025\n$4.82/lb\n¥17B\n\n\n\n銅価格が上昇する中で純利益が¥281B → ¥17B に激減。原因はLMEニッケル価格の崩壊（$25,000/mt → $13,000/mt）とバッテリー材料事業の損失。ニッケル市場の回復（インドネシア増産の一巡）が確認されるまで、銅プレイとしての組み入れは保留が妥当。\n\n\n\n銅セクター投資結論\n\n\n\n\n\n\n\n\n銘柄\n方針\n根拠\n\n\n\n\nFCX\nリスク枠（10万円）で検討\nP/E 15〜17x（実質）、世界最大級の銅生産規模、3倍可能性あり（Extreme + P/E再評価）\n\n\nSCCO\n現時点では見送り\nP/E 27〜35x で既に高評価。Bull以下では2x届かず、現状では報酬対リスクが見合わない\n\n\n住友金属鉱山\n保留\nニッケル問題が解消されるまで銅プレイとして機能しない"
   },
   {
-    "objectID": "macro/index.html",
-    "href": "macro/index.html",
-    "title": "AIデータセンター・バリューチェーン全体像",
+    "objectID": "macro/glass-substrate.html",
+    "href": "macro/glass-substrate.html",
+    "title": "先進パッケージング・ガラスコア基板：次世代チップ統合の「土台」",
     "section": "",
-    "text": "AIの進化は「ソフトウェアやシリコンの魔法」によってもたらされるものではない。メガワット単位の電力、液冷の物理学、超高純度の化学素材、そして限界に挑む精密加工技術のすべてが統合されることで初めて成立する「物理インフラの極致」である。"
+    "text": "有機基板は微細化の壁に当たった。加熱すると反り、精度が落ち、配線が限界に達する。IntelとCorningが「ガラスコア基板」という解答を出した。これは半導体パッケージングの100年に一度の素材革命だ。"
   },
   {
-    "objectID": "macro/index.html#なぜ今インフラに着目するのか",
-    "href": "macro/index.html#なぜ今インフラに着目するのか",
-    "title": "AIデータセンター・バリューチェーン全体像",
-    "section": "なぜ今、インフラに着目するのか",
-    "text": "なぜ今、インフラに着目するのか\nモルガン・スタンレー（2026年）によれば、AI関連インフラ投資は2028年までに約3兆ドル規模に達すると予測されており、その80%以上はこれから投下される段階にある。マッキンゼーの試算では、2025〜2030年のデータセンター向けCapExは5.2〜7.9兆ドルに及ぶとされる。\n投資機会は「GPU争奪戦（計算能力の確保）」という初期フェーズから、「物理的制約の突破（電力・冷却・極小素材）」という二次・三次フェーズへとシフトしている。"
+    "objectID": "macro/glass-substrate.html#なぜ先進パッケージングが投資テーマになるのか",
+    "href": "macro/glass-substrate.html#なぜ先進パッケージングが投資テーマになるのか",
+    "title": "先進パッケージング・ガラスコア基板：次世代チップ統合の「土台」",
+    "section": "なぜ先進パッケージングが投資テーマになるのか",
+    "text": "なぜ先進パッケージングが投資テーマになるのか\nAIチップの性能向上には、チップ自体の微細化（ムーアの法則）だけでなく、複数のチップを1つのパッケージに高密度で統合する「先進パッケージング」が不可欠になっている。HBM（高帯域幅メモリ）をGPUのわきに積層するNVIDIAのCoWoS（Chip on Wafer on Substrate）技術がその象徴だ。\n現在の主流（有機基板）の限界：\n\n\n\n問題\n詳細\n\n\n\n\n熱による反り\n高温工程で基板が変形し、チップ接続精度が低下\n\n\n配線密度の上限\n有機材料の物性限界で微細配線（2μm以下）が困難\n\n\n電力損失\n誘電損失が大きく、高周波信号での損失増大\n\n\n\nガラスコア基板（TGV/LIDE技術）の優位性：\n\n熱膨張係数がシリコンに近い→反りが激減\nガラス貫通電極（TGV）で超微細な垂直配線が可能\n高周波での誘電損失が有機基板の1/3以下\n\nIntelは2026〜2028年の量産開始を宣言。市場は2023年の~$100Mから2030年には$6〜10Bへの成長が予測される。"
   },
   {
-    "objectID": "macro/index.html#テーマ別パフォーマンス資金はどこまで来たか",
-    "href": "macro/index.html#テーマ別パフォーマンス資金はどこまで来たか",
-    "title": "AIデータセンター・バリューチェーン全体像",
-    "section": "テーマ別パフォーマンス：資金はどこまで来たか",
-    "text": "テーマ別パフォーマンス：資金はどこまで来たか\nAIインフラの波はバリューチェーンの上流から下流へ、順番に資金が流れ込む構造をとっている。チャートは各テーマの代表銘柄の過去2年パフォーマンス（構成銘柄の平均、開始=100）。「既に発見され爆騰したテーマ」と「まだ資金が来ていないテーマ」を一目で把握できる。\n\n\n\n\n\n\n\n\n\n\n読み方： 各線はテーマ内の代表銘柄の平均。x3.89は2年で3.89倍（+289%）を意味する。日本株（安川電機・ファナック）は円建て騰落率のためUSD換算なし。\n\n\nテーマ別 現在PER\nPERは「市場がそのテーマにどれだけの将来成長を織り込んでいるか」を示す。パフォーマンスチャートと合わせて読むことで、「既に爆騰＋高PER＝フル評価」か「まだ動いていない＋低PER＝未発見の余地あり」かが見えてくる。\n\n\n\n\n\n\n\n\n\n\n読み方： trailing PER平均（取得不可の場合はforward PERで代替）。N/Aは赤字企業。25x点線＝市場平均、50x点線＝高成長プレミアム水準。"
+    "objectID": "macro/glass-substrate.html#先進パッケージングのバリューチェーン",
+    "href": "macro/glass-substrate.html#先進パッケージングのバリューチェーン",
+    "title": "先進パッケージング・ガラスコア基板：次世代チップ統合の「土台」",
+    "section": "先進パッケージングのバリューチェーン",
+    "text": "先進パッケージングのバリューチェーン\n\n\n\n\n\n\n\n\nフェーズ\n内容\n主な上場プレイヤー\n\n\n\n\nガラス基板製造\nガラスコア材料・TGV加工\nGLW、AGC（5201.T）、HOYA（7741.T）\n\n\nパッケージング工程\nCoWoS・Fan-Out・SoIC実装\nAMKR、TSM\n\n\nボンディング装置\nダイボンダー・ワイヤーボンダー\nKLIC（Kulicke & Soffa）\n\n\n検査・計測\nパッケージング後の検査\nONTO、COHU"
   },
   {
-    "objectID": "macro/index.html#バリューチェーン構造図",
-    "href": "macro/index.html#バリューチェーン構造図",
-    "title": "AIデータセンター・バリューチェーン全体像",
-    "section": "バリューチェーン構造図",
-    "text": "バリューチェーン構造図\nAIデータセンターの構築を6フェーズに分解すると、以下のサプライチェーンが見えてくる。\n\n\n\nフェーズ\n内容\n主な投資テーマ\n\n\n\n\nPh.1 原材料\n銅・ガリウム・ゲルマニウム・フッ素化合物・ヘリウム\n素材\n\n\nPh.2 半導体\nEDA/IP設計 → EUV露光 → 先進パッケージング → テスト\n半導体エコシステム / フォトニクス / 先進パッケージング\n\n\nPh.3 基礎インフラ\n光ファイバー・電線ケーブル・DACケーブル\n電力インフラ\n\n\nPh.4 ハードウェア\n液冷システム・光トランシーバー・サーバーラック\n液冷・冷却 / フォトニクス\n\n\nPh.5 施設建設\nDC建設施工・免震・MEP工事\n電力インフラ\n\n\nPh.6 電力・運用\n変圧器・電気工事・SMR自家発電\n電力インフラ / SMR\n\n\n\nさらにDCの外側へと展開するテーマとして、宇宙インフラ・フィジカルAI・ロボティクス・DC REITがある。"
-  },
-  {
-    "objectID": "macro/index.html#つの隠れたボトルネック",
-    "href": "macro/index.html#つの隠れたボトルネック",
-    "title": "AIデータセンター・バリューチェーン全体像",
-    "section": "5つの隠れたボトルネック",
-    "text": "5つの隠れたボトルネック\n需要に対して供給が構造的に追いつかず、強力な価格決定権（プライシング・パワー）を持つ可能性が高い急所。\n\n\n\n#\nボトルネック\n象徴的な事実\n詳細テーマ\n\n\n\n\n①\n超大型変圧器・配電インフラ\n納期が12週間→160週間（約3年強）に長期化\n電力インフラ\n\n\n②\n次世代ガラスコア基板（TGV/LIDE）\n有機基板の反り・限界を突破する次のゲームチェンジャー\n先進パッケージング\n\n\n③\nEUVフォトレジスト・ペリクル\n日本企業が世界シェア96%以上を独占する絶対的チョークポイント\n半導体エコシステム\n\n\n④\n液冷用クイック・ディスコネクト（UQD）\n1滴の液漏れが数億円のラック破壊を招くため価格より信頼性が優先\n液冷・冷却\n\n\n⑤\nSMR（小型モジュール炉）による自家発電\nグリッド接続申請の待機期間が米国で平均5年→ビハインド・ザ・メーターへ\nSMR"
-  },
-  {
-    "objectID": "macro/index.html#テーマ別ページ一覧",
-    "href": "macro/index.html#テーマ別ページ一覧",
-    "title": "AIデータセンター・バリューチェーン全体像",
-    "section": "テーマ別ページ一覧",
-    "text": "テーマ別ページ一覧\n\n\n\nテーマ\nページ\n優先度\n\n\n\n\n素材（銅・レアメタル・特殊化学）\nmaterials.qmd\n高\n\n\n半導体エコシステム（EDA/IP・製造・装置）\nsemiconductor.qmd\n高\n\n\nフォトニクス・光インターコネクト\nphotonics.qmd\n高\n\n\n液冷・冷却\nliquid-cooling.qmd\n高\n\n\n先進パッケージング（ガラスコア基板）\nglass-substrate.qmd\n高\n\n\n電力インフラ（変圧器・配電・建設）\npower-infra.qmd\n高\n\n\nSMR・自家発電\nsmr.qmd\n中\n\n\n宇宙インフラ・宇宙DC構想\nspace.qmd\n高\n\n\nフィジカルAI・ロボティクス\nphysical-ai.qmd\n中\n\n\nDC REIT\nreit.qmd\n低"
-  },
-  {
-    "objectID": "macro/liquid-cooling.html",
-    "href": "macro/liquid-cooling.html",
-    "title": "液冷・冷却：AIラックの「熱の壁」を破る唯一の手段",
-    "section": "",
-    "text": "空冷の限界はラックあたり50kW。GB200 NVL72は130kW超を発熱する。物理法則が液冷への移行を強制した。Microsoftは2025年2月に全新規Azure AIインフラで液冷を義務化した。これは選択肢ではなく、インフラの前提だ。"
-  },
-  {
-    "objectID": "macro/liquid-cooling.html#なぜ今液冷が投資テーマになるのか",
-    "href": "macro/liquid-cooling.html#なぜ今液冷が投資テーマになるのか",
-    "title": "液冷・冷却：AIラックの「熱の壁」を破る唯一の手段",
-    "section": "なぜ今、液冷が投資テーマになるのか",
-    "text": "なぜ今、液冷が投資テーマになるのか\nAIチップの熱設計電力（TDP）は世代ごとに暴力的に上昇している。\n\n\n\nGPUアーキテクチャ\nTDP（チップ単体）\nラック全体\n\n\n\n\nHopper（H100）\n~700W\n~40kW\n\n\nBlackwell（B200）\n~1,000W\n~120〜130kW\n\n\nRubin（VR200、次世代）\n~2,300W（予測）\n200kW超（予測）\n\n\n\n空気の熱伝導率は水の1/25。130kWの熱を空気で捌くことは物理的に不可能であり、直接液冷（DLC）への移行は不可逆だ。\n世界の液冷市場は2025年時点の約32〜48億ドルから2033〜2036年には170〜270億ドル規模へ成長すると予測され、CAGRは17〜31%と極めて高い。"
-  },
-  {
-    "objectID": "macro/liquid-cooling.html#技術レイヤーとチョークポイント構造",
-    "href": "macro/liquid-cooling.html#技術レイヤーとチョークポイント構造",
-    "title": "液冷・冷却：AIラックの「熱の壁」を破る唯一の手段",
-    "section": "技術レイヤーとチョークポイント構造",
-    "text": "技術レイヤーとチョークポイント構造\n液冷バリューチェーンは4つのレイヤーに分断されており、各レイヤーに独自の参入障壁がある。\n\n\n\n\n\n\n\n\n\nレイヤー\n内容\n主な上場プレイヤー\nチョークポイント度\n\n\n\n\nシステム全体（CDU・ラック）\n冷却水分配装置・ラック統合・制御SW\nVRT、ETN、NVT、MOD\n★★★★\n\n\nUQD継手\n着脱時の無漏洩コネクタ\nPH（首位24.8%）、DOV/CPC（11.5%）\n★★★★★\n\n\n冷却液\n単相・二相誘電流体、水系\nXOM、SHEL、CC\n★★★\n\n\nTIM（熱伝導材料）\nチップ〜コールドプレート間の熱抵抗低減素材\n信越化学（4063.T）\n★★★★★\n\n\n\n\nUQDが最大のチョークポイントである理由\n液漏れ1滴で数億円のGPUラックが全損する。UQD自体のコストはラック全体の数%に過ぎないが、故障のリスクは破滅的。データセンター事業者は実績のない新参ベンダーを採用するインセンティブを持たない。リスクの非対称性が参入障壁を形成する構造だ。\n市場は完全に寡占化されており、上位5社（PH・Danfoss・Stäubli・CEJN・DOV/CPC）が市場の80%超を独占。UQD市場は2025年の3.9億ドルから2030年には7.5億ドルへCAGR 14.3%で成長予測。\n\n\n信越化学のTIMが代替不可能な理由\nAI最先端チップは1,000W/cm²超の熱流束密度を発生する。信越化学の「TC-PENシリーズ」は、繰り返しの熱サイクルでも硬化・ポンプアウト現象を起こさず、長期間にわたる低熱抵抗を維持する。NVIDIAのGB200以降の世代では、TIMの性能劣化が即座にGPUのサーマルスロットリングを引き起こすため、代替材料の採用は事実上不可能。"
-  },
-  {
-    "objectID": "macro/liquid-cooling.html#主要銘柄マップ",
-    "href": "macro/liquid-cooling.html#主要銘柄マップ",
-    "title": "液冷・冷却：AIラックの「熱の壁」を破る唯一の手段",
+    "objectID": "macro/glass-substrate.html#主要銘柄マップ",
+    "href": "macro/glass-substrate.html#主要銘柄マップ",
+    "title": "先進パッケージング・ガラスコア基板：次世代チップ統合の「土台」",
     "section": "主要銘柄マップ",
-    "text": "主要銘柄マップ\n\nコア投資候補（業界パワー優先）\n\n\n\n\n\n\n\n\n銘柄\n業界パワー\n概要\n\n\n\n\nVertiv（VRT）\n★★★★★\nNVIDIA公式RVL認定パートナー。バックログ$150B。液冷インフラの絶対王者。NVIDIAとGB200向け7MWリファレンスアーキテクチャを共同開発\n\n\nEaton（ETN）\n★★★★★\nNVIDIA RVL認定。電源（UPS・配電）＋液冷CDUの垂直統合で「Grid-to-Chip」を提供。液冷テーマと電力インフラテーマの両取りができる唯一の銘柄\n\n\nnVent Electric（NVT）\n★★★★☆\nNVIDIA RVLパートナー。売上+53%、バックログ$26B。ラック・PDU・液冷マニホールドの統合ソリューション\n\n\n\n\n\nチョークポイント保有者\n\n\n\n\n\n\n\n\n銘柄\nレイヤー\n概要\n\n\n\n\nParker Hannifin（PH）\nUQD\nUQD世界首位24.8%。本物のチョークポイント。ただし多角化企業のためDC純度は薄め\n\n\nDover（DOV）\nUQD\n子会社CPC（Colder Products）がUQD市場11.5%。PH同様に多角化企業\n\n\n信越化学工業（4063.T）\nTIM\nTIM分野で代替不可能な世界首位。DCへの純度は薄いが素材レイヤーのチョークポイント\n\n\n\n\n\nロマン枠（変革カタリスト型）\n\n\n\n\n\n\n\n銘柄\n概要\n\n\n\n\nModine Manufacturing（MOD）\nCDU特化の純粋プレイ。DC向け売上+78%（直近）。2026年Q4にPT部門（自動車向け）をGenthermへRMT方式でスピンオフ予定。完了後にDC冷却専業銘柄として機関投資家の再分類が起きる可能性。PEGレシオ2.0倍（VRT 3.7倍比で割安）。NVIDIA RVL未認定がリスク\n\n\n\n\n\nドキュメント記録のみ（現時点では投資対象外）\n\n\n\n\n\n\n\n銘柄\n概要\n\n\n\n\n日本電産 / Nidec（6594.T）\nGoogle OCP「Project Deschutes 5」で2MW超CDUを供給する唯一の日本ベンダー\n\n\n荏原製作所（6361.T）\n宇宙開発レベルのポンプ技術をDC液冷ポンプに応用。アジア太平洋向けに強み\n\n\n古河電工（5801.T）\nマイクロチャネル構造の銅製コールドプレートで400W/cm²処理実績\n\n\n三桜工業（6584.T）\nスーパーコンピュータ「富岳」採用の無漏洩配管技術を保有"
+    "text": "主要銘柄マップ\n\nガラス素材（TGV最前線）\n\n\n\n\n\n\n\n\n\n\n銘柄\nティッカー\n業界パワー\n概要\nステータス\n\n\n\n\nCorning\nGLW（NYSE）\n★★★★★\nガラスコア基板でIntelと独占的パートナーシップ。光ファイバーでも世界首位\nウォッチ\n\n\nAGC\n5201.T（東証）\n★★★★\n旭硝子。ガラスコア基板で独自技術を持つ。Intelとも共同開発\nウォッチ\n\n\nHOYA\n7741.T（東証）\n★★★★★\nフォトマスク（EUV対応）の世界独占シェア。ガラス製品全般\nウォッチ\n\n\n\n\n\nパッケージング（量産の実行者）\n\n\n\n\n\n\n\n\n\n\n銘柄\nティッカー\n業界パワー\n概要\nステータス\n\n\n\n\nAmkor Technology\nAMKR（NASDAQ）\n★★★★\nOSAT（外部半導体パッケージング）世界2位。Apple・NVIDIAから受注\nウォッチ\n\n\nKulicke & Soffa\nKLIC（NASDAQ）\n★★★★\nワイヤーボンダー・ダイボンダーの世界最大手。先進パッケージング装置も展開\nウォッチ\n\n\nOnto Innovation\nONTO（NASDAQ）\n★★★★\nパッケージング後の光学検査装置。先進パッケージング拡大で受注増\nウォッチ"
   },
   {
-    "objectID": "macro/liquid-cooling.html#定量分析",
-    "href": "macro/liquid-cooling.html#定量分析",
-    "title": "液冷・冷却：AIラックの「熱の壁」を破る唯一の手段",
+    "objectID": "macro/glass-substrate.html#株価パフォーマンス過去1年",
+    "href": "macro/glass-substrate.html#株価パフォーマンス過去1年",
+    "title": "先進パッケージング・ガラスコア基板：次世代チップ統合の「土台」",
+    "section": "株価パフォーマンス（過去1年）",
+    "text": "株価パフォーマンス（過去1年）\n\n\n\n\n\n\n\n\n\n\n注： AGC（5201.T）・HOYA（7741.T）は円建て騰落率。"
+  },
+  {
+    "objectID": "macro/glass-substrate.html#投資まとめ",
+    "href": "macro/glass-substrate.html#投資まとめ",
+    "title": "先進パッケージング・ガラスコア基板：次世代チップ統合の「土台」",
+    "section": "投資まとめ",
+    "text": "投資まとめ\nガラスコア基板はまだ「投資家に発見されていない」フェーズにある。量産開始は2026〜2028年で、現時点での材料株（GLW・AGC）は先行投資段階だ。\nGLWを注目する理由： - Intelとの独占的パートナーシップが公表済み - 光ファイバー（AI DC内の光インターコネクト）でも恩恵 - PERは相対的に低く、先進パッケージング成長が織り込まれていない\nHOYAを注目する理由： - EUV対応フォトマスクの世界シェア独占（これだけでも強力） - ガラス素材技術でTGVへの転用可能\n\n現状： 全銘柄ウォッチ。量産開始のニュースをトリガーに購入検討。"
+  },
+  {
+    "objectID": "macro/physical-ai.html",
+    "href": "macro/physical-ai.html",
+    "title": "フィジカルAI・ロボティクス：AIが「体」を持つ時代",
+    "section": "",
+    "text": "ソフトウェアとしてのAIは画面の中にある。フィジカルAIは工場の床、手術室、道路の上にある。NVIDIAのジェンセン・フアンが「次の巨大市場はロボティクス」と繰り返し強調するとき、彼はハードウェアの世界全体を指している。"
+  },
+  {
+    "objectID": "macro/physical-ai.html#なぜ今フィジカルaiが投資テーマになるのか",
+    "href": "macro/physical-ai.html#なぜ今フィジカルaiが投資テーマになるのか",
+    "title": "フィジカルAI・ロボティクス：AIが「体」を持つ時代",
+    "section": "なぜ今、フィジカルAIが投資テーマになるのか",
+    "text": "なぜ今、フィジカルAIが投資テーマになるのか\n生成AIが言語・画像を扱うソフトウェア領域を制覇しつつある中、次のフロンティアは物理世界との相互作用だ。ヒューマノイドロボット・自動運転・産業用ロボットの高度化、そしてその学習基盤となる「センサーデータ」の重要性が急上昇している。\nNVIDIAはIsaac SimとOmniverse platformで、仮想空間でロボットを訓練して現実に転送する「シミュレーション→リアル転送（Sim2Real）」を推進している。これにより、実機のトレーニングコストが劇的に低下し、ヒューマノイドの商業展開が加速する。\n市場規模：\n\n\n\nセグメント\n2025年\n2030年予測\nCAGR\n\n\n\n\nヒューマノイドロボット\n~$1B\n~$15〜30B\n70%超\n\n\n産業用ロボット\n~$25B\n~$55B\n12〜15%\n\n\n自動運転（L4/L5）\n~$10B\n~$80B\n40〜50%\n\n\n精密減速機（ロボット関節）\n~$4B\n~$12B\n15〜20%"
+  },
+  {
+    "objectID": "macro/physical-ai.html#フィジカルaiのバリューチェーン",
+    "href": "macro/physical-ai.html#フィジカルaiのバリューチェーン",
+    "title": "フィジカルAI・ロボティクス：AIが「体」を持つ時代",
+    "section": "フィジカルAIのバリューチェーン",
+    "text": "フィジカルAIのバリューチェーン\n\n\n\n\n\n\n\n\nレイヤー\n内容\n主な銘柄\n\n\n\n\nセンサー\nカメラ・LiDAR・ToFセンサー\nSony（6758.T）\n\n\nコントローラー\n産業用サーボドライブ・モーション制御\nYaskawa（6506.T）、FANUC（6954.T）\n\n\n精密機構\n関節用精密減速機（Harmonic Drive等）\nHarmonic Drive（6324.T）\n\n\nAI学習基盤\nSim2Realプラットフォーム\nNVDA\n\n\nインテグレーター\nロボット+AIシステムの統合\nTSLA（Optimus）、GOOGL（DeepMind）"
+  },
+  {
+    "objectID": "macro/physical-ai.html#主要銘柄マップ",
+    "href": "macro/physical-ai.html#主要銘柄マップ",
+    "title": "フィジカルAI・ロボティクス：AIが「体」を持つ時代",
+    "section": "主要銘柄マップ",
+    "text": "主要銘柄マップ\n\n日本株（センサー・精密機構で世界独占）\n\n\n\n\n\n\n\n\n\n\n銘柄\nティッカー\n業界パワー\n概要\n分類\n\n\n\n\nソニーグループ\n6758.T（東証）\n★★★★★\nCMOSイメージセンサー世界シェア約50%。スマホ・ロボット・自動運転すべての目\n中核候補\n\n\nハーモニック・ドライブ\n6324.T（東証）\n★★★★★\n精密波動減速機（Strain Wave Gear）の世界独占。ヒューマノイド関節の事実上の標準\n中核候補\n\n\n安川電機\n6506.T（東証）\n★★★★\n産業用ロボット・サーボモーター世界4強。MOTOMAN製品群がモータースポンサー\n中核候補\n\n\nFANUC\n6954.T（東証）\n★★★★★\nCNCシステム・産業用ロボット世界トップ。NVIDIA・Google協業発表で注目集中\n中核候補\n\n\n\n\n\n米国株\n\n\n\n\n\n\n\n\n\n\n銘柄\nティッカー\n業界パワー\n概要\n分類\n\n\n\n\nTesla\nTSLA（NASDAQ）\n★★★★\nOptimusヒューマノイドのSim2Real先駆者。FSD自動運転データ最大保有者\n中核候補\n\n\nIntuitive Surgical\nISRG（NASDAQ）\n★★★★★\n手術支援ロボットの世界独占（da Vinci）。AIによる手術精度向上で参入障壁強化中\n中核候補"
+  },
+  {
+    "objectID": "macro/physical-ai.html#株価パフォーマンス過去1年",
+    "href": "macro/physical-ai.html#株価パフォーマンス過去1年",
+    "title": "フィジカルAI・ロボティクス：AIが「体」を持つ時代",
+    "section": "株価パフォーマンス（過去1年）",
+    "text": "株価パフォーマンス（過去1年）\n\n\n\n\n\n\n\n\n\n\n注： 日本株（6758.T・6324.T・6954.T・6506.T）は円建て騰落率。USD換算なし。"
+  },
+  {
+    "objectID": "macro/physical-ai.html#ソニー6758.tなぜ本命か",
+    "href": "macro/physical-ai.html#ソニー6758.tなぜ本命か",
+    "title": "フィジカルAI・ロボティクス：AIが「体」を持つ時代",
+    "section": "ソニー（6758.T）：なぜ本命か",
+    "text": "ソニー（6758.T）：なぜ本命か\nソニーをフィジカルAIの本命とする理由は1つに集約される：CMOSイメージセンサー世界シェア約50%。\nロボット・自動運転・工場監視カメラ・ドローンの「目」はすべてCMOSセンサーで作られており、その約半数がソニー製だ。フィジカルAIが普及すればするほど、ソニーのセンサー出荷量が増える。しかもカメラ以外の収益柱（PlayStation・エンタメ・半導体受託）が足元を支えており、PERは同等成長企業と比較して明確に割安。\n\n分析ノート： analysis/physical_ai.ipynb に5銘柄の定量分析あり。"
+  },
+  {
+    "objectID": "macro/physical-ai.html#投資まとめ",
+    "href": "macro/physical-ai.html#投資まとめ",
+    "title": "フィジカルAI・ロボティクス：AIが「体」を持つ時代",
+    "section": "投資まとめ",
+    "text": "投資まとめ\n\n\n\n\n\n\n\n\n銘柄\n選択理由\nバケット\n\n\n\n\nSony（6758.T）\nセンサー独占×割安PER。本命\n運用枠\n\n\nHarmonic Drive（6324.T）\nヒューマノイド関節の世界標準。好決算後の押し目で購入済み\nリスク枠\n\n\nFANUC（6954.T）\nNVIDIA・Google協業モメンタム。購入済み\n運用枠\n\n\n\n\nヒューマノイドが量産フェーズに入る2026〜2027年が最初のリターン検証点。Harmonic Driveは1台あたり複数個の減速機を使用するため、出荷台数に直結する。"
+  },
+  {
+    "objectID": "youtube/index.html",
+    "href": "youtube/index.html",
+    "title": "YouTube Scripts",
+    "section": "",
+    "text": "YouTube解説用の構成メモ。動画で話す順番、見せる論点、結論を整理する。\n公開ページとして使うため、個人の売買ログではなく、視聴者が理解できるテーマ解説に寄せる。"
+  },
+  {
+    "objectID": "youtube/index.html#scripts",
+    "href": "youtube/index.html#scripts",
+    "title": "YouTube Scripts",
+    "section": "Scripts",
+    "text": "Scripts\n\n\n\n日付\nタイトル\n概要\n\n\n\n\n2026-06-24\nAI半導体相場は終わったのか\nMicron決算、メモリ/HBM、日本AI関連株の下落を整理"
+  },
+  {
+    "objectID": "youtube/2026-06-24-ai-semiconductor.html",
+    "href": "youtube/2026-06-24-ai-semiconductor.html",
+    "title": "YouTube構成：AI半導体相場は終わったのか",
+    "section": "",
+    "text": "AI半導体相場は終わったのか？Micron決算前に見るべき3つのポイント"
+  },
+  {
+    "objectID": "youtube/2026-06-24-ai-semiconductor.html#タイトル案",
+    "href": "youtube/2026-06-24-ai-semiconductor.html#タイトル案",
+    "title": "YouTube構成：AI半導体相場は終わったのか",
+    "section": "",
+    "text": "AI半導体相場は終わったのか？Micron決算前に見るべき3つのポイント"
+  },
+  {
+    "objectID": "youtube/2026-06-24-ai-semiconductor.html#冒頭",
+    "href": "youtube/2026-06-24-ai-semiconductor.html#冒頭",
+    "title": "YouTube構成：AI半導体相場は終わったのか",
+    "section": "冒頭",
+    "text": "冒頭\n今日は、急落した日本のAI半導体関連株について整理します。\n結論から言うと、AI半導体の構造的需要が終わったわけではありません。ただし、短期では急騰銘柄の利確と需給悪化が出ており、ここからは「何でも買えば上がる」局面ではありません。"
+  },
+  {
+    "objectID": "youtube/2026-06-24-ai-semiconductor.html#何が起きたのか",
+    "href": "youtube/2026-06-24-ai-semiconductor.html#何が起きたのか",
+    "title": "YouTube構成：AI半導体相場は終わったのか",
+    "section": "1. 何が起きたのか",
+    "text": "1. 何が起きたのか\n2026-06-23、日本のAI半導体関連株は大きく下落しました。\n\nキオクシアは大幅安\n村田製作所も大幅安\n東京エレクトロンやアドバンテストも下落\n一方で、米国のSOXやSMHは直近では強い\nMicronも決算前に上昇している\n\nつまり、単純に「AI半導体が全部終わった」というより、日本側の急騰銘柄の利確・巻き戻しが強く出た形です。"
+  },
+  {
+    "objectID": "youtube/2026-06-24-ai-semiconductor.html#micron決算が重要な理由",
+    "href": "youtube/2026-06-24-ai-semiconductor.html#micron決算が重要な理由",
+    "title": "YouTube構成：AI半導体相場は終わったのか",
+    "section": "2. Micron決算が重要な理由",
+    "text": "2. Micron決算が重要な理由\nMicronはAIメモリ/HBM相場の代表銘柄です。\n見るべきポイントは3つです。\n\nHBM需要がどれだけ強いか\nDRAM/NAND価格の見通し\n次の四半期ガイダンスが市場期待を上回るか\n\nここで一番重要なのは、決算の数字そのものだけではありません。\n好決算でも売られるかどうかです。\n期待が高すぎる相場では、良い決算でも株価が下がることがあります。その場合、日本の半導体株にも戻り売りが出やすくなります。"
+  },
+  {
+    "objectID": "youtube/2026-06-24-ai-semiconductor.html#押し目か崩壊か",
+    "href": "youtube/2026-06-24-ai-semiconductor.html#押し目か崩壊か",
+    "title": "YouTube構成：AI半導体相場は終わったのか",
+    "section": "3. 押し目か、崩壊か",
+    "text": "3. 押し目か、崩壊か\n押し目として見てよい条件:\n\nSOX/SMHが崩れない\nMicronが決算後も高値圏を維持\nアドバンテスト、東京エレクトロン、ディスコが下げ止まる\n村田や太陽誘電が前日安値を割らない\n小型材料株が出来高を伴って反発する\n\n崩壊を疑う条件:\n\n好材料でも半導体主力が売られる\n急騰銘柄が連続で戻せない\n大型株まで大陰線で崩れる\n小型材料株のリバが寄り天で終わる"
+  },
+  {
+    "objectID": "youtube/2026-06-24-ai-semiconductor.html#いま見るべき銘柄群",
+    "href": "youtube/2026-06-24-ai-semiconductor.html#いま見るべき銘柄群",
+    "title": "YouTube構成：AI半導体相場は終わったのか",
+    "section": "4. いま見るべき銘柄群",
+    "text": "4. いま見るべき銘柄群\n大型の確認銘柄:\n\nアドバンテスト\n東京エレクトロン\nディスコ\n村田製作所\nMicron\n\n値幅が出やすい小型・材料株:\n\nFIG\nテクニスコ\n日本電波工業\n\nただし、小型材料株は本命ではなく、短期リバの対象です。テーマが正しくても、需給が悪ければ簡単に売られます。"
+  },
+  {
+    "objectID": "youtube/2026-06-24-ai-semiconductor.html#まとめ",
+    "href": "youtube/2026-06-24-ai-semiconductor.html#まとめ",
+    "title": "YouTube構成：AI半導体相場は終わったのか",
+    "section": "まとめ",
+    "text": "まとめ\nAI半導体相場は、構造的にはまだ強いです。\nただし、短期では一度、楽勝ムードが終わりました。\nここから重要なのは、テーマを信じることではなく、主力株の下げ止まり、Micron決算後の反応、出来高を確認することです。\n「テーマが正しい」と「今日買ってよい」は別問題です。"
+  },
+  {
+    "objectID": "youtube/2026-06-24-ai-semiconductor.html#参考リンク",
+    "href": "youtube/2026-06-24-ai-semiconductor.html#参考リンク",
+    "title": "YouTube構成：AI半導体相場は終わったのか",
+    "section": "参考リンク",
+    "text": "参考リンク\n\nDaily Watch 2026-06-24\n半導体エコシステム\n銘柄ユニバース"
+  },
+  {
+    "objectID": "macro/space.html",
+    "href": "macro/space.html",
+    "title": "宇宙インフラ：SpaceX IPOが引き金を引くセクター再評価",
+    "section": "",
+    "text": "SpaceXは2026年6月にIPOを予定している。評価額$1.75〜2.0兆ドル、調達額最大$750億は史上最大のIPOだ。SpaceXを直接買えない資金が、類似・関連する上場銘柄に流れ込む構造はすでに始まっている。"
+  },
+  {
+    "objectID": "macro/space.html#なぜ今宇宙インフラが投資テーマになるのか",
+    "href": "macro/space.html#なぜ今宇宙インフラが投資テーマになるのか",
+    "title": "宇宙インフラ：SpaceX IPOが引き金を引くセクター再評価",
+    "section": "なぜ今、宇宙インフラが投資テーマになるのか",
+    "text": "なぜ今、宇宙インフラが投資テーマになるのか\n宇宙産業は「国家プロジェクト」から「民間インフラビジネス」へと不可逆的に転換した。その中心にいるSpaceXは非上場のまま$1.75兆の評価を得ており、機関・個人投資家は上場できないSpaceXの「代替需要」を公開市場で満たそうとしている。\nSpaceX IPOのインパクト：\n\n史上最大のIPO（サウジアラムコ$294億の2.5倍超）\nIPO後にSpaceXは流動性の高い「買収通貨（公開株式）」を手に入れ、M&Aを加速\nStarshipの量産が本格化すれば打ち上げコストが90%低下し、川下の衛星・データ企業の利益率が直接改善\nMorgan Stanleyは「Space 60」と呼ぶ関連銘柄リストで波及範囲を示している\n\n現在の市場の読み：「モートより物語」\n防衛プライム（NOC・LHX・KTOS）はDOGE（政府効率化省）による調達ボトルネックで売られている一方、宇宙の物語に近い銘柄（RKLB・LUNR・PL）は急上昇している。モメンタムトレードにおいて「乗り遅れた感」が最も強い時期が往々にして買い時となる。"
+  },
+  {
+    "objectID": "macro/space.html#spacexの波及マップ",
+    "href": "macro/space.html#spacexの波及マップ",
+    "title": "宇宙インフラ：SpaceX IPOが引き金を引くセクター再評価",
+    "section": "SpaceXの波及マップ",
+    "text": "SpaceXの波及マップ\nSpaceXの3つの事業柱ごとに、上場市場で資金が向かう銘柄を整理する。\n\n\n\n\n\n\n\nSpaceXの事業\n上場市場の代替・関連銘柄\n\n\n\n\nStarship・打ち上げ\nRKLB（唯一の公開打ち上げ会社）、LUNR（月面探索）\n\n\nStarlink（衛星インターネット）\nASTS（直接競合）、IRDM（周波数補完）、GSAT、VSAT\n\n\n宇宙データ・観測\nPL、BKSY（打ち上げコスト低下で利益率改善）"
+  },
+  {
+    "objectID": "macro/space.html#定量分析",
+    "href": "macro/space.html#定量分析",
+    "title": "宇宙インフラ：SpaceX IPOが引き金を引くセクター再評価",
     "section": "定量分析",
-    "text": "定量分析\n\nバリュエーション・収益性サマリー\n\n\n\n\n\n\n\n \n \n時価総額\nForward PER\nEV/EBITDA\n営業利益率\n売上成長(YoY)\n\n\nカテゴリ\n銘柄\n \n \n \n \n \n\n\n\n\nコア（業界パワー）\nVertiv (VRT)\n~$140B\n43.0\n61.0\n16.4%\n30.1%\n\n\nEaton (ETN)\n~$160B\n26.0\n28.3\n16.1%\n16.8%\n\n\nnVent Electric (NVT)\n~$30B\n31.2\n32.1\n16.0%\n53.5%\n\n\nチョークポイント\nParker Hannifin (PH)\n~$110B\n25.9\n21.9\n21.5%\n10.6%\n\n\nDover (DOV)\n~$30B\n18.5\n16.4\n16.4%\n10.1%\n\n\n信越化学工業 (4063.T)\n~$80B\n21.8\n14.4\n21.4%\n1.3%\n\n\nロマン枠\nModine (MOD)\n~$15B\n39.6\n38.3\n11.9%\n30.5%\n\n\n\n\n\n\n\n株価パフォーマンス比較（過去1年）\n\n\n\n\n\n\n\n\n\n\n\nForward PER 比較（割高感の可視化）"
+    "text": "定量分析\n\n株価パフォーマンス比較（過去6ヶ月）\n\n\n\n\n\n\n\n\n\n\n\nモメンタム比較（1ヶ月・3ヶ月・6ヶ月）\n\n\n\n\n\n\n\n\n\n\n\n時価総額比較"
   },
   {
-    "objectID": "macro/liquid-cooling.html#投資判断サマリー",
-    "href": "macro/liquid-cooling.html#投資判断サマリー",
-    "title": "液冷・冷却：AIラックの「熱の壁」を破る唯一の手段",
+    "objectID": "macro/space.html#銘柄分析",
+    "href": "macro/space.html#銘柄分析",
+    "title": "宇宙インフラ：SpaceX IPOが引き金を引くセクター再評価",
+    "section": "銘柄分析",
+    "text": "銘柄分析\n\nSpaceX物語と最も近い銘柄群\nRocket Lab（RKLB）　打ち上げ・衛星コンポーネントの垂直統合\n西側諸国で唯一のSpaceX代替。Electron（小型）での再使用化実績を持ち、中型ロケットNeutronを開発中。衛星バス・コンポーネント事業（Space Systems）が全売上の半分近くに成長しており、「ロケット会社」から「宇宙インフラ会社」への転換が進む。2026年Q1売上は$203M（YoY+64%）、受注残$22億。DoD（米国防総省）が意図的にSpaceXへの依存を分散させるため資金を投入しており、単なる民間企業以上の安全網がある。時価総額$72Bはすでに大型株の領域だが、SpaceX IPOの直接的な比較対象として資金が入り続ける構造。\nIntuitive Machines（LUNR）　月面着陸船・Artemis計画\nNASA Artemis計画の商業月面輸送（CLPS）プロバイダー。IM-1（2024年）で民間初の月面軟着陸を達成（転倒したが着陸は成功）、IM-2（2025年3月）は月面到達も転倒。IM-3（2026年後半予定）でリベンジを狙う。月面インフラ構築という壮大な物語を持ちながら、時価総額$5.4Bとまだ小さい。RKLBの13分の1の時価総額で同じ宇宙探索ストーリーを共有しており、上昇余地の非対称性が魅力。ただし着陸ミッションごとに株価がバイナリーに動くリスクがある。\n\n\n\n衛星インターネット・通信\nAST SpaceMobile（ASTS）　Starlink Direct-to-Cellの直接競合\n低軌道衛星から標準スマートフォンへの直接5G通信を目指す。AT&T・Verizon・楽天モバイル等との提携で$12億以上の契約収益を確保済み。インフラが完成すれば通信キャリアにとって不可欠なプラットフォームとなるポテンシャルを持つが、現在は粗利益率がマイナスで資本集約度が極めて高い。BlueBird衛星の展開に伴う技術的遅延リスクが常に存在する。\nIridium（IRDM）　周波数独占×GPS代替PNT\n66基のLEO衛星で極地含む全球カバレッジを提供する唯一の企業。最大のモートはLバンド・Sバンド周波数帯の独占。気象条件に左右されにくく小型アンテナで通信できる特性から、軍事・海事・IoTで代替不可能なインフラとなっている。Satelles買収によるGPS代替PNT（測位・航法・タイミング）サービスは、GPSジャミングが常態化する戦場において軍事的チョークポイントとなりつつある。現在のモメンタムは弱いが、周波数という物理的に複製不可能な資産の長期価値は変わらない。\n\n\n\n防衛・宇宙チョークポイント型（現在売られている）\nDOGEによる政府調達の人員削減（宇宙軍司令部から約10%削減）で短期的に売られているが、宇宙軍予算自体は+77%（$711億）と増加している。「資金はあるが執行できない」という一時的な官僚的ボトルネックが解消されれば反転する可能性がある。\n\n\n\n\n\n\n\n\n銘柄\nモート\n現状\n\n\n\n\nNOC\nSDA衛星150基以上のプライム。ロケット推進で競合も依存\n1M-19%。DOGE懸念で売られているが宇宙軍予算の最大受益者\n\n\nLHX\nAerojet Rocketdyne買収でロケットエンジン製造能力獲得\n1M-13%。「Andromeda」プログラム参画\n\n\nTDG\nFAA認証アフターマーケット部品を独占。EBITDA 54%\n6M-14%。宇宙純度は薄いが全セクター通じて最強モートの一つ\n\n\nHEI\nPMA認証代替部品でTDGを侵食するディスラプター\n航空宇宙アフターマーケットの双璧\n\n\nCW\n耐放射線エレクトロニクス。認証に24〜36ヶ月の参入障壁\n衛星が1基失敗するだけでミッション全損→誰も安物を使えない\n\n\nKTOS\nOpenSpaceで衛星地上局をSaaS化。ベンダーロックイン\n3M-43%と急落中。バリュエーション高すぎ（PER558倍）のリスク"
+  },
+  {
+    "objectID": "macro/space.html#投資判断サマリー",
+    "href": "macro/space.html#投資判断サマリー",
+    "title": "宇宙インフラ：SpaceX IPOが引き金を引くセクター再評価",
     "section": "投資判断サマリー",
-    "text": "投資判断サマリー\n\n\n\n\n\n\n\n\n\n銘柄\n方針\nバケット\n根拠\n\n\n\n\nVRT\n本命候補\n運用枠\n液冷王者×NVIDIA RVL×$150Bバックログ。業界パワー最強\n\n\nETN\n本命候補\n運用枠\nRVL認定×電力+液冷の垂直統合。電力インフラテーマとの相乗効果\n\n\nNVT\n次点\n運用枠\nRVL認定×バックログ$26B。VRT・ETNより規模が小さい分アップサイドあり\n\n\nMOD\nロマン枠\nリスク枠\n2026年Q4スピンオフで純粋DC銘柄に変貌するカタリスト内在。PEGレシオ2.0xで割安だが、NVIDIA RVL未認定がリスク\n\n\nPH\n記録のみ\n—\nUQD世界首位のチョークポイント保有者だが多角化企業で純度薄い\n\n\nDOV\n記録のみ\n—\nCPC子会社でUQD11.5%。PH同様に純度薄い\n\n\n信越化学（4063）\n記録のみ\n—\nTIM世界首位の代替不可能な素材メーカー。フィジカルAIページと合わせて評価\n\n\n\n\nVRT vs ETN の選択軸： VRTは液冷に最も純度が高く、ETNは電力インフラとの相乗効果で差別化。電力インフラページとの重複を踏まえてどちらを優先するか検討。"
+    "text": "投資判断サマリー\n\n\n\n\n\n\n\n\n\n銘柄\n方針\nバケット\n根拠\n\n\n\n\nRKLB\n保有継続\n運用枠\nSpaceX IPOの直接代替。DoD育成銘柄。モメンタム継続中\n\n\nASTS\n保有継続（小額）\nリスク枠\nStarlink競合・ネット話題性。バイナリーリスクを認識した上で小額保有\n\n\nLUNR\n検討中\nリスク枠\n時価総額がRKLBの13分の1で同じ物語。IM-3ミッションが近づくにつれ資金流入期待\n\n\nIRDM\nウォッチ\n—\n周波数独占という本物のチョークポイント。モメンタムが弱い今が仕込み時の可能性\n\n\nPL\nウォッチ\n—\nStarship量産で打ち上げコスト低下→利益率直接改善。サブスク98%リテンション\n\n\nNOC・TDG\nウォッチ\n—\n最強モートだが現在売られている。DOGE懸念解消後の逆張り候補\n\n\nKTOS\nウォッチ\n—\nOpenSpaceは本物の堀だが、PER558倍×3M-43%はバリュエーションリスク大\n\n\n\n\nSpaceX IPOタイムライン： 2026年4月にSECへ非公開提出済み。6月8日週にロードショー開始予定。それまでの数週間が「IPO前のポジション構築」の最終機会となる可能性がある。"
   },
   {
-    "objectID": "watchlist.html",
-    "href": "watchlist.html",
-    "title": "銘柄ユニバース",
+    "objectID": "macro/reit.html",
+    "href": "macro/reit.html",
+    "title": "DC REIT：データセンター不動産の長期オーナー",
     "section": "",
-    "text": "AIインフラのバリューチェーンに関係する銘柄カタログ。ここでは個別の売買ステータスではなく、テーマ上の位置づけだけを整理する。"
+    "text": "AIデータセンターのGPUは陳腐化するが、その「場所」は残る。立地・電力・冷却インフラを所有するREITは、AI需要がどこへ向かっても定期収入を得続ける「不動産の大家」だ。"
   },
   {
-    "objectID": "watchlist.html#重点テーマ",
-    "href": "watchlist.html#重点テーマ",
-    "title": "銘柄ユニバース",
-    "section": "重点テーマ",
-    "text": "重点テーマ\n\n\n\n\n\n\n\n\nテーマ\n見る理由\n代表銘柄\n\n\n\n\nAIアクセラレーター / カスタムASIC\nAI計算需要の源泉\nNVIDIA, Broadcom, AMD, Marvell\n\n\nHBM / DRAM / NAND\nGPU性能を制約するメモリ帯域と容量\nMicron, SK Hynix, Samsung, キオクシア\n\n\nEUV / 半導体製造装置\n先端ロジックと先端DRAMの供給制約\nASML, 東京エレクトロン, Applied Materials, Lam Research, KLA\n\n\n半導体テスト / 検査\nAIチップ大型化・高価化で歩留まり管理が重要化\nアドバンテスト, Teradyne, Lasertec, KLA\n\n\n先端パッケージング\nGPUとHBMをつなぐCoWoS/2.5D/3D工程\nTSMC, Amkor, ASE, イビデン, 新光電工, ディスコ\n\n\nAIサーバー部品\n電源安定化・高密度実装の部品需要\n村田製作所, 太陽誘電, TDK\n\n\n電力・冷却\nAIデータセンターの物理制約\nVertiv, Eaton, GE Vernova, Quanta Services, フジクラ\n\n\n光通信 / フォトニクス\nGPUクラスタ間通信の帯域制約\nCoherent, Lumentum, POET Technologies\n\n\nフィジカルAI\nヒューマノイド・産業ロボットの次世代需要\nハーモニック・ドライブ, ファナック, 安川電機, キーエンス"
+    "objectID": "macro/reit.html#dc-reitの特性",
+    "href": "macro/reit.html#dc-reitの特性",
+    "title": "DC REIT：データセンター不動産の長期オーナー",
+    "section": "DC REITの特性",
+    "text": "DC REITの特性\nデータセンターREIT（Real Estate Investment Trust）は、データセンターの建物・土地・電力インフラを所有し、クラウドプロバイダーや企業に賃貸するビジネスモデルだ。REITは法的に収益の90%以上を配当として還元する義務があるため、高配当+AI成長の組み合わせが特徴。\nDC REITが強い理由：\n\nクラウド3強（AWS・Azure・GCP）との長期賃貸契約（10〜15年）が収益の安定性を確保\nDC適地（電力・冷却・低レイテンシ）は限られており、新規参入が困難\nAIによるクラウド需要増 → 入居率・賃料単価が上昇\n\nリスク：\n\n金利上昇局面でREITの配当利回りの相対的魅力が低下\nビッグテックの自社DC建設拡大が賃貸需要を一部代替"
   },
   {
-    "objectID": "watchlist.html#日本株の注目群",
-    "href": "watchlist.html#日本株の注目群",
-    "title": "銘柄ユニバース",
-    "section": "日本株の注目群",
-    "text": "日本株の注目群\n\n\n\n\n\n\n\n\n\n領域\n銘柄\nティッカー\nメモ\n\n\n\n\nテスト\nアドバンテスト\n6857.T\nAI半導体テスタの中核。大型株で資金の受け皿になりやすい\n\n\n製造装置\n東京エレクトロン\n8035.T\n前工程装置の日本代表。半導体設備投資サイクルに強く連動\n\n\n切断・研削\nディスコ\n6146.T\n先端パッケージング、薄化、ダイシングで重要\n\n\n検査\nLasertec\n6920.T\nEUVマスク検査など先端工程に関係\n\n\nMLCC\n村田製作所\n6981.T\nAIサーバー部品の王道。品質・シェア重視\n\n\nMLCC\n太陽誘電\n6976.T\nAIサーバー部品テーマへの感応度が高い\n\n\n光/通信部品\n日本電波工業\n6779.T\nAIデータセンター光通信連想。値動きは荒い\n\n\n光/電線\nフジクラ\n5803.T\nデータセンター通信・電力周辺テーマ\n\n\nフィジカルAI\nハーモニック・ドライブ\n6324.T\nロボット関節用減速機のチョークポイント\n\n\n先端パッケージ検査\nFIG\n4392.T\nAI半導体検査工程の材料株。公式事実と市場推論を分けて見る"
+    "objectID": "macro/reit.html#主要銘柄マップ",
+    "href": "macro/reit.html#主要銘柄マップ",
+    "title": "DC REIT：データセンター不動産の長期オーナー",
+    "section": "主要銘柄マップ",
+    "text": "主要銘柄マップ\n\n\n\n\n\n\n\n\n\n\n\n銘柄\nティッカー\n業界パワー\n概要\n配当利回り目安\nステータス\n\n\n\n\nEquinix\nEQIX（NASDAQ）\n★★★★★\n世界最大のDC REIT。60ヶ国250拠点。プレミアム立地の事実上の独占\n~2%\nウォッチ\n\n\nDigital Realty\nDLR（NYSE）\n★★★★\n世界2位のDC REIT。ハイパースケーラー向け大型DC特化\n~3%\nウォッチ\n\n\nIron Mountain\nIRM（NYSE）\n★★★\n文書保管から転換中。DC事業が急成長\n~3〜4%\nウォッチ"
   },
   {
-    "objectID": "watchlist.html#米国株adrの注目群",
-    "href": "watchlist.html#米国株adrの注目群",
-    "title": "銘柄ユニバース",
-    "section": "米国株・ADRの注目群",
-    "text": "米国株・ADRの注目群\n\n\n\n\n\n\n\n\n\n領域\n銘柄\nティッカー\nメモ\n\n\n\n\nGPU\nNVIDIA\nNVDA\nAIアクセラレーターの中心\n\n\nASIC/ネットワーク\nBroadcom\nAVGO\nカスタムAIチップとネットワークASIC\n\n\nメモリ\nMicron Technology\nMU\nHBM/DRAM/NAND。AIメモリ需給の代表\n\n\nEUV\nASML\nASML\nEUV露光装置の独占企業\n\n\nファウンドリ\nTSMC\nTSM\n先端ロジック製造の中心\n\n\n製造装置\nApplied Materials\nAMAT\n成膜・CMPなど装置総合\n\n\n製造装置\nLam Research\nLRCX\nエッチング・成膜\n\n\n検査\nKLA\nKLAC\n歩留まり管理・欠陥検査\n\n\n電力/冷却\nVertiv\nVRT\nAIデータセンター電力・冷却インフラ\n\n\n電力\nEaton\nETN\n配電・UPS・電力管理\n\n\n発電設備\nGE Vernova\nGEV\nガスタービン・電力インフラ\n\n\nフォトニクス\nCoherent\nCOHR\n光トランシーバー・レーザー\n\n\nフォトニクス\nLumentum\nLITE\n光部品・レーザー"
+    "objectID": "macro/reit.html#株価パフォーマンス過去1年",
+    "href": "macro/reit.html#株価パフォーマンス過去1年",
+    "title": "DC REIT：データセンター不動産の長期オーナー",
+    "section": "株価パフォーマンス（過去1年）",
+    "text": "株価パフォーマンス（過去1年）"
   },
   {
-    "objectID": "watchlist.html#使い方",
-    "href": "watchlist.html#使い方",
-    "title": "銘柄ユニバース",
-    "section": "使い方",
-    "text": "使い方\n\nまずテーマの強弱を見る。\n次に銘柄がバリューチェーンのどこにいるか確認する。\n最後に株価位置、出来高、決算日、材料の公式性を確認する。\n\n個別の売買判断や未整理の検討ログは公開せず、非公開のObsidianで管理する。"
+    "objectID": "macro/reit.html#投資まとめ",
+    "href": "macro/reit.html#投資まとめ",
+    "title": "DC REIT：データセンター不動産の長期オーナー",
+    "section": "投資まとめ",
+    "text": "投資まとめ\nDC REITはAIインフラ投資の「安全弁」的な位置づけだ。高リスク・高リターン銘柄（RKLB・LUNR等）のボラティリティを抑えたい局面での補完的保有として機能する。\n現在の投資方針（攻め重視・50万円で3倍狙い）では優先度は低いが、資金規模が拡大した場合にEQIXが第一候補。\n\n現状： 低優先度のウォッチリスト。資金・リスク許容度の拡大後に改めて検討。"
   },
   {
-    "objectID": "analysis/copper.html",
-    "href": "analysis/copper.html",
-    "title": "銅セクター分析：FCX / SCCO / 住友金属鉱山",
+    "objectID": "macro/smr.html",
+    "href": "macro/smr.html",
+    "title": "SMR・自家発電：グリッドに繋がらないデータセンターの電力源",
     "section": "",
-    "text": "目的： AIデータセンター特需を背景とした銅セクターへの投資判断を、定量・定性の両面から分析する。\n主要な結論（先出し） - FCX：低PER出発点 × リーチング技術 × 2030年期待織り込みで3倍の経路あり → 主力候補 - SCCO：高品質だが高バリュエーション。Bull以下では2x届かず - 住友金属鉱山：ニッケル価格崩壊で銅プレイとして機能していない → 保留\nimport yfinance as yf\nimport pandas as pd\nimport numpy as np\nimport matplotlib.pyplot as plt\nimport matplotlib.dates as mdates\nfrom scipy import stats\nimport warnings, logging\n\nwarnings.filterwarnings('ignore')\nlogging.getLogger('yfinance').setLevel(logging.CRITICAL)\n\n# 日本語フォント（Windows）\nfrom matplotlib import rcParams\nrcParams['font.family'] = 'sans-serif'\nrcParams['font.sans-serif'] = ['MS Gothic', 'Meiryo', 'Yu Gothic', 'DejaVu Sans']\nrcParams['axes.unicode_minus'] = False\n\n# USDJPY レート\nfx = yf.Ticker('USDJPY=X').history(period='1d')\nUSDJPY = float(fx['Close'].iloc[-1]) if not fx.empty else 150.0\nprint(f'USDJPY: {USDJPY:.2f}')\n\nTICKERS = {\n    'FCX':    'Freeport-McMoRan',\n    'SCCO':   'Southern Copper',\n    '5713.T': '住友金属鉱山',\n}\n\nUSDJPY: 157.73"
+    "text": "米国の系統連系申請の平均待機期間は5年を超えた。ビッグテックは待てない。答えは「グリッドに繋がない自家発電」だ。SMR（小型モジュール炉）とガスタービンがその主役になりつつある。"
   },
   {
-    "objectID": "analysis/copper.html#基本財務データ",
-    "href": "analysis/copper.html#基本財務データ",
-    "title": "銅セクター分析：FCX / SCCO / 住友金属鉱山",
+    "objectID": "macro/smr.html#なぜsmrが投資テーマになるのか",
+    "href": "macro/smr.html#なぜsmrが投資テーマになるのか",
+    "title": "SMR・自家発電：グリッドに繋がらないデータセンターの電力源",
+    "section": "なぜSMRが投資テーマになるのか",
+    "text": "なぜSMRが投資テーマになるのか\nAIデータセンターはMW単位で電力を消費する。グリッドからの接続を申請しても5年以上待たされる現状では、ビッグテックは自前の電源を求め始めている。\nビハインド・ザ・メーター（BTM）戦略：\nグリッドを経由せず、データセンター敷地内または隣接地に電源を設置するアプローチ。太陽光・ガスタービンに加え、カーボンニュートラルで24時間安定稼働できる「SMR」が最有力候補として急浮上している。\n\n\n\n電源オプション\n安定性\nCO₂\nコスト\n実用化時期\n\n\n\n\n天然ガスタービン\n◎\n×\n低\n今すぐ\n\n\n太陽光+蓄電池\n△（夜間・曇天）\n◎\n中\n今すぐ\n\n\nSMR（小型モジュール炉）\n◎\n◎\n高（初期）\n2028〜2030年\n\n\n水素タービン\n△（水素製造コスト）\n◎\n高\n2030年以降\n\n\n\n主要動向：\n\nMicrosoft：Three Mile Island原発を2028年まで再稼働（Constellation Energyと20年PPA契約）\nAmazon：Talen Energy原発をペンシルベニアで直接購入（$650M）\nGoogle：Kairos PowerのMSRと7基購入に向けたPPA締結\nNuScale（SMR）：商業1号機は難航中だが、技術評価は継続中"
+  },
+  {
+    "objectID": "macro/smr.html#主要銘柄マップ",
+    "href": "macro/smr.html#主要銘柄マップ",
+    "title": "SMR・自家発電：グリッドに繋がらないデータセンターの電力源",
+    "section": "主要銘柄マップ",
+    "text": "主要銘柄マップ\n\n原子力発電所オペレーター（即座の受益者）\n\n\n\n\n\n\n\n\n\n\n銘柄\nティッカー\n業界パワー\n概要\nステータス\n\n\n\n\nConstellation Energy\nCEG（NASDAQ）\n★★★★★\n米国最大の原子力発電事業者。Microsoftとの20年PPAが象徴的\nウォッチ\n\n\nVistra Corp\nVST（NYSE）\n★★★★\n原子力+ガス+蓄電池のハイブリッド電力会社\nウォッチ\n\n\n\n\n\nウラン採掘（核燃料供給チェーン）\n\n\n\n\n\n\n\n\n\n\n銘柄\nティッカー\n業界パワー\n概要\nステータス\n\n\n\n\nCameco\nCCJ（NYSE）\n★★★★★\n西側世界最大のウラン採掘会社。原発回帰でウラン需要増\nウォッチ\n\n\n\n\n\nSMR開発（長期・投機的）\n\n\n\n\n\n\n\n\n\n\n銘柄\nティッカー\n業界パワー\n概要\nステータス\n\n\n\n\nNuScale Power\nSMR（NYSE）\n★★★\n米国唯一のNRC設計認証取得SMR開発企業\nウォッチ（高リスク）\n\n\nBWX Technologies\nBWXT（NYSE）\n★★★★\n海軍原子炉・SMRコンポーネントの製造受託\nウォッチ"
+  },
+  {
+    "objectID": "macro/smr.html#株価パフォーマンス過去1年",
+    "href": "macro/smr.html#株価パフォーマンス過去1年",
+    "title": "SMR・自家発電：グリッドに繋がらないデータセンターの電力源",
+    "section": "株価パフォーマンス（過去1年）",
+    "text": "株価パフォーマンス（過去1年）"
+  },
+  {
+    "objectID": "macro/smr.html#投資まとめ",
+    "href": "macro/smr.html#投資まとめ",
+    "title": "SMR・自家発電：グリッドに繋がらないデータセンターの電力源",
+    "section": "投資まとめ",
+    "text": "投資まとめ\nSMRテーマで最もリスク/リターンのバランスが良いのはCEG（Constellation）だ。既存原発の稼働延長という「確実な収益」に加え、ビッグテックとの長期PPAが収益を下支えする。\nSMR（NuScale）への投資は高リスク： 1号機の完成遅延・資金調達リスクが残存しており、商業電力会社（CEG・VST）とは全く異なる投資プロファイルを持つ。\n\n現状： 全銘柄ウォッチ。グリッド制約が深刻化するニュースやビッグテックの新規PPA締結をトリガーに購入検討。"
+  },
+  {
+    "objectID": "macro/semiconductor.html",
+    "href": "macro/semiconductor.html",
+    "title": "半導体エコシステム：AIチップを生み出すサプライチェーンの全体像",
+    "section": "",
+    "text": "NVIDIAは設計するだけだ。製造はTSMC、露光装置はASML、EDA設計ツールはCadenceとSynopsys、それぞれが世界で他に代替不可能な独占的地位を持つ。GPUを1枚作るのに、地球規模のサプライチェーンが絡み合う。"
+  },
+  {
+    "objectID": "macro/semiconductor.html#なぜ半導体エコシステム全体が投資テーマになるのか",
+    "href": "macro/semiconductor.html#なぜ半導体エコシステム全体が投資テーマになるのか",
+    "title": "半導体エコシステム：AIチップを生み出すサプライチェーンの全体像",
+    "section": "なぜ半導体エコシステム全体が投資テーマになるのか",
+    "text": "なぜ半導体エコシステム全体が投資テーマになるのか\nNVIDIA・AMD・Broadcomといった「ファブレス」企業はチップを設計するだけで、製造は外部に委託する。この分業構造が生み出した産業チェーンでは、各工程に「世界シェア50〜90%を独占する」プレイヤーが存在する。AIチップへの需要増は、チップメーカーだけでなく、その上流にいる設計ツール・製造装置・テスト・パッケージング各社への受注を等しく爆発させる。\nAIチップの製造難易度は世代を経るごとに指数的に上昇しており、参入障壁も高まり続けている。TSMC N2（2nm）の歩留まりを支えるKLA・Lam・Applied Materialsの装置なくして、GB200は1枚も作れない。\n2026年時点で重要なのは、AI半導体を「GPU単体」ではなく、EUV露光、先端DRAM/HBM、テスト、先端パッケージングを含む供給制約の連鎖として見ること。前工程の微細化と後工程のパッケージングは分離した工程ではなく、AIチップの出荷量を同時に決めるボトルネックになっている。\n\n\n\n\n\n\nNote\n\n\n\n短期の株価判断では、テーマの正しさと買いタイミングを分ける必要がある。AI半導体の構造的需要は強い一方、急騰後の銘柄は決算前後や地合い悪化で大きく巻き戻すことがある。"
+  },
+  {
+    "objectID": "macro/semiconductor.html#年に見るべき論点",
+    "href": "macro/semiconductor.html#年に見るべき論点",
+    "title": "半導体エコシステム：AIチップを生み出すサプライチェーンの全体像",
+    "section": "2027〜2028年に見るべき論点",
+    "text": "2027〜2028年に見るべき論点\n\nLow NA EUVの需給逼迫\nHigh NA EUVは次世代技術として注目されやすいが、2027〜2028年の実需では既存のLow NA EUVの台数需要が重要になる可能性がある。先端ロジックだけでなく、HBM/DRAMの世代移行でもEUV工程の重要性が増すためだ。\n投資上は「High NAのニュース性」だけでなく、ASMLのLow NA受注、メモリ向けEUV需要、顧客別の設備投資計画を確認する。\n\n\n先端DRAM/HBM投資\nAI計算ではGPU性能だけでなく、メモリ帯域と容量が制約になる。HBM、先端DRAM、メモリ検査、パッケージング能力は、AI半導体の供給量を左右する。\n見るべき代表銘柄:\n\nMicron\nSK Hynix\nSamsung Electronics\nキオクシア\nアドバンテスト\nディスコ\n\n\n\n後工程のフロントエンド化\nCoWoS、2.5D/3D実装、HBMスタック、ハイブリッドボンディングなどの先端パッケージングは、もはや単なる後工程ではない。GPUとHBMを高帯域・低消費電力で接続する工程が、AIチップの性能と歩留まりを決める。\n見るべき代表銘柄:\n\nTSMC\nAmkor\nASE\nイビデン\n新光電工\nディスコ\nApplied Materials"
+  },
+  {
+    "objectID": "macro/semiconductor.html#半導体バリューチェーン",
+    "href": "macro/semiconductor.html#半導体バリューチェーン",
+    "title": "半導体エコシステム：AIチップを生み出すサプライチェーンの全体像",
+    "section": "半導体バリューチェーン",
+    "text": "半導体バリューチェーン\n\n\n\n\n\n\n\n\nフェーズ\n内容\n主な上場プレイヤー（米国・日本）\n\n\n\n\n①設計（EDA/IP）\nチップ設計ツール・IP回路ブロック\nCDNS、SNPS、ARM\n\n\n②露光（フォトリソグラフィ）\nEUV露光装置（ASML独占）、Low NA/High NA\nASML\n\n\n③薄膜・エッチング\nCVD・ALD・エッチング装置\nAMAT、LRCX\n\n\n④計測・検査\nプロセス管理・欠陥検査\nKLAC\n\n\n⑤先進パッケージング\nCoWoS・SoIC・HBMスタック・ハイブリッドボンディング\nAMKR、TSM、DISCO、IBIDEN\n\n\n⑥テスト\nウェーハ・完成品テスト、AI半導体検査\nATEYY、TER、COHU、FORM\n\n\n⑦チップ設計・販売\nGPU・CPU・カスタムASIC\nNVDA、AVGO、AMD、INTC"
+  },
+  {
+    "objectID": "macro/semiconductor.html#主要銘柄マップ",
+    "href": "macro/semiconductor.html#主要銘柄マップ",
+    "title": "半導体エコシステム：AIチップを生み出すサプライチェーンの全体像",
+    "section": "主要銘柄マップ",
+    "text": "主要銘柄マップ\n\n絶対的チョークポイント（世界シェア独占）\n\n\n\n\n\n\n\n\n\n\n銘柄\nティッカー\n業界パワー\n独占度\nステータス\n\n\n\n\nASML\nASML（NASDAQ）\n★★★★★\nEUV露光装置の世界独占（シェア100%）\nウォッチ（高PER）\n\n\nSynopsys\nSNPS（NASDAQ）\n★★★★★\nEDAツール世界2強の一角\nウォッチ\n\n\nCadence Design\nCDNS（NASDAQ）\n★★★★★\nEDAツール世界2強の一角\nウォッチ\n\n\nARM Holdings\nARM（NASDAQ）\n★★★★★\nスマートフォンCPU命令セットの世界事実独占。AIチップへの展開加速\nウォッチ\n\n\n\n\n\n製造・装置（設備投資の直接受益者）\n\n\n\n\n\n\n\n\n\n\n銘柄\nティッカー\n業界パワー\n概要\nステータス\n\n\n\n\nTSMC\nTSM（NYSE ADR）\n★★★★★\n先端半導体製造の世界独占（N3・N2の量産はTSMCのみ）\nウォッチ\n\n\nApplied Materials\nAMAT（NASDAQ）\n★★★★★\n半導体製造装置の世界最大手。薄膜・CMP装置\nウォッチ\n\n\nLam Research\nLRCX（NASDAQ）\n★★★★★\nエッチング・ALD装置。HANAフラッシュ・HBM製造に必須\nウォッチ\n\n\nKLA Corp\nKLAC（NASDAQ）\n★★★★★\nプロセス計測・欠陥検査装置。歩留まり管理の要\nウォッチ\n\n\n\n\n\nチップ設計・販売\n\n\n\n\n\n\n\n\n\n\n銘柄\nティッカー\n業界パワー\n概要\nステータス\n\n\n\n\nNVIDIA\nNVDA（NASDAQ）\n★★★★★\nAIアクセラレーターの世界標準。CUDAエコシステムが参入障壁\nウォッチ（割高）\n\n\nBroadcom\nAVGO（NASDAQ）\n★★★★★\nネットワーキングASIC・カスタムAIチップ（Google TPU等を受注）\nウォッチ\n\n\nAMD\nAMD（NASDAQ）\n★★★★\nGPU（MI300）・CPU（EPYC）。NVIDIAへの唯一の対抗馬\nウォッチ\n\n\nIntel\nINTC（NASDAQ）\n★★★\nCPU→AIアクセラレーターへの転換中。ファウンドリ事業再建中\nウォッチ（再建中）"
+  },
+  {
+    "objectID": "macro/semiconductor.html#株価パフォーマンス過去1年",
+    "href": "macro/semiconductor.html#株価パフォーマンス過去1年",
+    "title": "半導体エコシステム：AIチップを生み出すサプライチェーンの全体像",
+    "section": "株価パフォーマンス（過去1年）",
+    "text": "株価パフォーマンス（過去1年）"
+  },
+  {
+    "objectID": "macro/semiconductor.html#forward-per比較",
+    "href": "macro/semiconductor.html#forward-per比較",
+    "title": "半導体エコシステム：AIチップを生み出すサプライチェーンの全体像",
+    "section": "Forward PER比較",
+    "text": "Forward PER比較"
+  },
+  {
+    "objectID": "macro/semiconductor.html#投資まとめ",
+    "href": "macro/semiconductor.html#投資まとめ",
+    "title": "半導体エコシステム：AIチップを生み出すサプライチェーンの全体像",
+    "section": "投資まとめ",
+    "text": "投資まとめ\n半導体エコシステムはAI特需の最上流に位置するが、多くの銘柄はすでに高PERに達している。\nポイント別整理：\n\nNVDA・AVGO：既に市場が発見済み。高PERだが成長率が正当化する水準か常に確認が必要\nASML：EUVの世界独占。ただし輸出規制（中国向け）リスクがバリュエーションを抑制\nAMAT・LRCX・KLAC：製造装置3強。HBMおよび先進パッケージングの設備投資拡大で直接受益\nARM：ロイヤルティモデルの純粋な受益者。AIチップへのARM採用が拡大中\n\n\n現在のポジション： 半導体エコシステム全体はウォッチ。既存のFCX（銅）・Harmonic・FANUCで間接的に参加中。直接投資はMU（メモリ）を計画中。"
+  },
+  {
+    "objectID": "macro/photonics.html",
+    "href": "macro/photonics.html",
+    "title": "フォトニクス・光インターコネクト：電気配線の限界を突破する光の革命",
+    "section": "",
+    "text": "AIクラスターのスループットは、チップの計算速度ではなくチップ間の「帯域幅」で決まる。銅線の電気信号は10メートルで限界を迎えるが、光は減衰なく伝搬する。これは物理の問題であり、フォトニクスへの移行は不可逆だ。"
+  },
+  {
+    "objectID": "macro/photonics.html#なぜ今フォトニクスが投資テーマになるのか",
+    "href": "macro/photonics.html#なぜ今フォトニクスが投資テーマになるのか",
+    "title": "フォトニクス・光インターコネクト：電気配線の限界を突破する光の革命",
+    "section": "なぜ今、フォトニクスが投資テーマになるのか",
+    "text": "なぜ今、フォトニクスが投資テーマになるのか\nNVIDIAのGB200 NVL72（72基のB200 GPUを統合したスーパーポッド）は、GPU間で毎秒270TB超のデータをやり取りする。この帯域幅を銅線で確保しようとすれば、ケーブルの重量・電力消費・発熱が爆発的に増大し、データセンターの物理的制約を超えてしまう。\n光トランシーバー（光信号を電気信号に相互変換するモジュール）と共同パッケージング光学（CPO: Co-Packaged Optics）は、この問題の根本解決策だ。NVIDIAはCoherent・Lumentumに計40億ドルを出資し、次世代光インターコネクト技術の囲い込みに動いた。この巨額出資は「光インターコネクトが次の主戦場」であることを市場に宣言したに等しい。\n\n\n\n指標\n数値\n\n\n\n\n光トランシーバー市場（2025年）\n~$12B\n\n\n光トランシーバー市場（2030年予測）\n~$25〜35B（CAGR 15〜20%）\n\n\nCPO市場（2025年）\n~$0.8B\n\n\nCPO市場（2030年予測）\n~$8〜12B（CAGR 50%超）\n\n\nNVIDIAのCoherent・Lumentum出資額\n計約40億ドル"
+  },
+  {
+    "objectID": "macro/photonics.html#技術レイヤー",
+    "href": "macro/photonics.html#技術レイヤー",
+    "title": "フォトニクス・光インターコネクト：電気配線の限界を突破する光の革命",
+    "section": "技術レイヤー",
+    "text": "技術レイヤー\n\n\n\n\n\n\n\n\nレイヤー\n内容\n主なプレイヤー\n\n\n\n\n光トランシーバー\n電気↔︎光変換モジュール（現在の主戦場）\nCOHR、LITE\n\n\nCPO（共同パッケージング）\nスイッチチップに光学素子を直接実装（次世代）\nCOHR、LITE\n\n\nレーザー光源\nEML/VCSEL等の光生成素子\nCOHR、LITE\n\n\n光集積回路（PIC）\nシリコンフォトニクス・InP PIC\nPOET Technologies"
+  },
+  {
+    "objectID": "macro/photonics.html#主要銘柄マップ",
+    "href": "macro/photonics.html#主要銘柄マップ",
+    "title": "フォトニクス・光インターコネクト：電気配線の限界を突破する光の革命",
+    "section": "主要銘柄マップ",
+    "text": "主要銘柄マップ\n\n\n\n\n\n\n\n\n\n\n銘柄\nティッカー\n業界パワー\n概要\n分類\n\n\n\n\nCoherent\nCOHR（NYSE）\n★★★★★\n光トランシーバー世界トップ3。NVIDIAから直接出資。CPO開発最前線\n中核候補\n\n\nLumentum\nLITE（NASDAQ）\n★★★★\nレーザーコンポーネント・光トランシーバー。NVIDIAから直接出資\n中核候補\n\n\nPOET Technologies\nPOET（NASDAQ）\n★★★\n光集積回路のピュアプレイ。小型・投機的\n高リスク候補"
+  },
+  {
+    "objectID": "macro/photonics.html#株価パフォーマンス過去1年",
+    "href": "macro/photonics.html#株価パフォーマンス過去1年",
+    "title": "フォトニクス・光インターコネクト：電気配線の限界を突破する光の革命",
+    "section": "株価パフォーマンス（過去1年）",
+    "text": "株価パフォーマンス（過去1年）"
+  },
+  {
+    "objectID": "macro/photonics.html#バリュエーション比較",
+    "href": "macro/photonics.html#バリュエーション比較",
+    "title": "フォトニクス・光インターコネクト：電気配線の限界を突破する光の革命",
+    "section": "バリュエーション比較",
+    "text": "バリュエーション比較"
+  },
+  {
+    "objectID": "macro/photonics.html#投資まとめ",
+    "href": "macro/photonics.html#投資まとめ",
+    "title": "フォトニクス・光インターコネクト：電気配線の限界を突破する光の革命",
+    "section": "投資まとめ",
+    "text": "投資まとめ\nNVIDIAが両社に出資した事実が「フォトニクス必須化」の証明だが、2社の性格は異なる。\nCOHRを選ぶ理由： - 垂直統合された製造能力（レーザー→トランシーバー→CPO） - NVIDIAとの最深部での協力関係 - LITEより相対的に低PER\nLITEをウォッチに留める理由： - 現時点でPERがCOHRより割高 - 業界パワーは同等だが、価格に割高プレミアムが乗っている\n\n結論： COHR集中投資（~$400）。CPO移行が加速する2026〜2027年が本格的なカタリスト。LITEはウォッチ。"
+  },
+  {
+    "objectID": "macro/power-infra.html",
+    "href": "macro/power-infra.html",
+    "title": "電力インフラ：AIの電力爆食を支える「新しい石油」",
+    "section": "",
+    "text": "データセンター1棟の電力消費は、数万世帯分の電力に相当する。ビッグテックは土地と電力の確保から始める。グリッドが追いつかない。変圧器の納期は3年。これは需要の問題ではなく、物理インフラの問題だ。"
+  },
+  {
+    "objectID": "macro/power-infra.html#なぜ電力インフラが投資テーマになるのか",
+    "href": "macro/power-infra.html#なぜ電力インフラが投資テーマになるのか",
+    "title": "電力インフラ：AIの電力爆食を支える「新しい石油」",
+    "section": "なぜ電力インフラが投資テーマになるのか",
+    "text": "なぜ電力インフラが投資テーマになるのか\nGPT-4のトレーニングには約50GWh、Gemini Ultraには推定100GWh超の電力が消費された。AIチップの推論需要が拡大するにつれ、データセンターの電力需要は指数的に増大している。\nGoldman Sachsによれば、米国のデータセンター電力需要は2023年の17GWから2030年には47GWに達する見通しだ。これは米国の現在の総電力需要の約4〜5%に相当する。\n構造的な問題：\n\n超大型変圧器（EHV変圧器）の平均納期は2019年の12〜16週間から2026年には160週間超（約3年）に長期化\n米国送電インフラの40%は40年以上経過した老朽設備\n系統連系申請（インターコネクション申請）の平均待機期間は現在5年超\nこのグリッド制約が、SMR（小型モジュール炉）等による自家発電需要を生んでいる"
+  },
+  {
+    "objectID": "macro/power-infra.html#バリューチェーン",
+    "href": "macro/power-infra.html#バリューチェーン",
+    "title": "電力インフラ：AIの電力爆食を支える「新しい石油」",
+    "section": "バリューチェーン",
+    "text": "バリューチェーン\n\n\n\n\n\n\n\n\nフェーズ\n内容\n主な上場プレイヤー\n\n\n\n\n変圧器・配電機器\nEHV変圧器・スイッチギア・配電パネル\nETN、GEV\n\n\n電気工事・建設\n送電線設置・DC建設施工・MEP工事\nPWR、MYRG\n\n\n電力管理システム\nUPS・電源管理・監視制御\nETN、EMR\n\n\nバックアップ電源\n大型ディーゼル発電機・フライホイール\nGNRC"
+  },
+  {
+    "objectID": "macro/power-infra.html#主要銘柄マップ",
+    "href": "macro/power-infra.html#主要銘柄マップ",
+    "title": "電力インフラ：AIの電力爆食を支える「新しい石油」",
+    "section": "主要銘柄マップ",
+    "text": "主要銘柄マップ\n\nコア投資候補（業界パワー優先）\n\n\n\n\n\n\n\n\n\n\n銘柄\nティッカー\n業界パワー\n概要\nステータス\n\n\n\n\nEaton\nETN（NYSE）\n★★★★★\n電力管理・変圧器・配電機器の世界最大手。DC向け電源インフラ全般を網羅\nコア候補\n\n\nQuanta Services\nPWR（NYSE）\n★★★★★\n北米最大の電気工事会社。送電線敷設・DC建設施工を独占的に受注\nコア候補\n\n\nGE Vernova\nGEV（NYSE）\n★★★★\nGEからスピンアウトしたエネルギー事業体。グリッド機器・風力発電\nウォッチ\n\n\nEmerson Electric\nEMR（NYSE）\n★★★★\n工場自動化・電力管理システム。データセンター向けPDU\nウォッチ\n\n\n\n\n\nウォッチ\n\n\n\n\n\n\n\n\n銘柄\nティッカー\n概要\n\n\n\n\nMYR Group\nMYRG（NASDAQ）\n専門電気工事会社。DC建設施工に特化した中型株\n\n\nGenerac\nGNRC（NYSE）\n大型バックアップ発電機。DC向けUPSシステム"
+  },
+  {
+    "objectID": "macro/power-infra.html#株価パフォーマンス過去1年",
+    "href": "macro/power-infra.html#株価パフォーマンス過去1年",
+    "title": "電力インフラ：AIの電力爆食を支える「新しい石油」",
+    "section": "株価パフォーマンス（過去1年）",
+    "text": "株価パフォーマンス（過去1年）"
+  },
+  {
+    "objectID": "macro/power-infra.html#forward-per比較",
+    "href": "macro/power-infra.html#forward-per比較",
+    "title": "電力インフラ：AIの電力爆食を支える「新しい石油」",
+    "section": "Forward PER比較",
+    "text": "Forward PER比較"
+  },
+  {
+    "objectID": "macro/power-infra.html#投資まとめ",
+    "href": "macro/power-infra.html#投資まとめ",
+    "title": "電力インフラ：AIの電力爆食を支える「新しい石油」",
+    "section": "投資まとめ",
+    "text": "投資まとめ\n電力インフラはAIデータセンター需要の「物理的制約の急所」であり、需要の非弾力性（AI投資計画が中断されても電力インフラは止まらない）が強みだ。\nETN vs PWR の選択軸：\n\n\n\n\n\n\n\n\n\nEaton（ETN）\nQuanta Services（PWR）\n\n\n\n\nビジネス\n製品製造（変圧器・配電機器）\nサービス（電気工事・建設）\n\n\nマージン\n高利益率（製品）\n安定収益（長期工事契約）\n\n\nAI感応度\nDC電源機器需要直結\nDC建設・送電線工事\n\n\n特徴\n変圧器3年待ち＝プライシングパワー\nバックログが積み上がり視界良好\n\n\n\n\n結論： ETN・PWRともにコア候補。変圧器のボトルネックとグリッド拡張の長期テーマで2028年まで安定した成長余地がある。液冷（VRT・ETN重複）と合わせてポートフォリオ全体のバランスを考えて選択。"
+  },
+  {
+    "objectID": "analysis/physical_ai.html",
+    "href": "analysis/physical_ai.html",
+    "title": "フィジカルAI関連銘柄 横並び比較",
+    "section": "",
+    "text": "対象5銘柄（東証上場） - ソニーグループ（6758）：CMOSイメージセンサー世界1位、Nihon AI Kiban参画 - キーエンス（6861）：FAセンサー・マシンビジョン、営業利益率約50% - ファナック（6954）：産業用ロボット・CNC世界トップ - ナブテスコ（6268）：中大型ロボット関節用精密減速機、世界シェアトップ - ハーモニック・ドライブ（6324）：ヒューマノイド関節用波動歯車装置\n評価軸：フィジカルAI純度 / 最大手か / チョークポイント / バリュエーション\nimport yfinance as yf\nimport pandas as pd\nimport numpy as np\nimport matplotlib.pyplot as plt\nimport matplotlib.dates as mdates\nimport warnings, logging\n\nwarnings.filterwarnings('ignore')\nlogging.getLogger('yfinance').setLevel(logging.CRITICAL)\n\nfrom matplotlib import rcParams\nrcParams['font.family'] = 'sans-serif'\nrcParams['font.sans-serif'] = ['MS Gothic', 'Meiryo', 'Yu Gothic', 'DejaVu Sans']\nrcParams['axes.unicode_minus'] = False\n\nfx = yf.Ticker('USDJPY=X').history(period='1d')\nUSDJPY = float(fx['Close'].iloc[-1]) if not fx.empty else 155.0\nprint(f'USDJPY: {USDJPY:.2f}')\n\nTICKERS = {\n    '6758.T': 'ソニーグループ',\n    '6861.T': 'キーエンス',\n    '6954.T': 'ファナック',\n    '6268.T': 'ナブテスコ',\n    '6324.T': 'ハーモニック・ドライブ',\n}\n\nCOLORS = {\n    '6758.T': '#E53935',\n    '6861.T': '#1E88E5',\n    '6954.T': '#43A047',\n    '6268.T': '#FB8C00',\n    '6324.T': '#8E24AA',\n}\n\nUSDJPY: 157.77"
+  },
+  {
+    "objectID": "analysis/physical_ai.html#基本財務データ",
+    "href": "analysis/physical_ai.html#基本財務データ",
+    "title": "フィジカルAI関連銘柄 横並び比較",
     "section": "1. 基本財務データ",
-    "text": "1. 基本財務データ\n\nrows = []\nfor ticker, name in TICKERS.items():\n    info = yf.Ticker(ticker).info\n    price = info.get('currentPrice') or info.get('regularMarketPrice', 0)\n    eps   = info.get('trailingEps', None)\n    pe    = info.get('trailingPE', None)\n    fpe   = info.get('forwardPE', None)\n    mcap  = info.get('marketCap', None)\n    om    = info.get('operatingMargins', None)\n\n    is_jpy = ticker.endswith('.T')\n    if is_jpy:\n        price_str = f'¥{price:,.0f} (~${price/USDJPY:.1f})'\n        mcap_str  = f'~${mcap/USDJPY/1e9:.0f}B' if mcap else 'N/A'\n    else:\n        price_str = f'${price:.2f}'\n        mcap_str  = f'~${mcap/1e9:.0f}B' if mcap else 'N/A'\n\n    rows.append({\n        '銘柄':       f'{name} ({ticker})',\n        '現在株価':   price_str,\n        '時価総額':   mcap_str,\n        'Trailing EPS': f'${eps:.2f}' if eps and not is_jpy else (f'¥{eps:.0f}' if eps else 'N/A'),\n        'Trailing PER': f'{pe:.1f}x' if pe else 'N/A',\n        'Forward PER':  f'{fpe:.1f}x' if fpe else 'N/A',\n        '営業利益率':  f'{om*100:.1f}%' if om else 'N/A',\n    })\n\ndf_basic = pd.DataFrame(rows).set_index('銘柄')\ndf_basic\n\n\n\n\n\n\n\n\n現在株価\n時価総額\nTrailing EPS\nTrailing PER\nForward PER\n営業利益率\n\n\n銘柄\n\n\n\n\n\n\n\n\n\n\nFreeport-McMoRan (FCX)\n$66.03\n~$95B\n$1.89\n34.9x\n17.8x\n29.6%\n\n\nSouthern Copper (SCCO)\n$191.75\n~$160B\n$5.96\n32.2x\n28.4x\n58.3%\n\n\n住友金属鉱山 (5713.T)\n¥10,925 (~$69.3)\n~$19B\n¥650\n16.8x\n26.9x\n13.2%"
+    "text": "1. 基本財務データ\n\nrows = []\ninfo_cache = {}\n\nfor ticker, name in TICKERS.items():\n    info = yf.Ticker(ticker).info\n    info_cache[ticker] = info\n\n    price  = info.get('currentPrice') or info.get('regularMarketPrice', 0)\n    mcap   = info.get('marketCap', None)\n    pe_tr  = info.get('trailingPE', None)\n    pe_fw  = info.get('forwardPE', None)\n    om     = info.get('operatingMargins', None)\n    rev    = info.get('totalRevenue', None)\n    rev_g  = info.get('revenueGrowth', None)\n    eps_tr = info.get('trailingEps', None)\n\n    rows.append({\n        '銘柄':        f'{name}\\n({ticker.replace(\".T\",\"\")})',\n        '株価（円）':   f'{price:,.0f}',\n        '時価総額':    f'~¥{mcap/1e12:.1f}兆 (~${mcap/USDJPY/1e9:.0f}B)' if mcap else 'N/A',\n        'Trailing EPS': f'¥{eps_tr:,.0f}' if eps_tr else 'N/A',\n        'Trailing PER': f'{pe_tr:.1f}x' if pe_tr else 'N/A',\n        'Forward PER':  f'{pe_fw:.1f}x' if pe_fw else 'N/A',\n        '営業利益率':   f'{om*100:.1f}%' if om else 'N/A',\n        '売上成長率':   f'{rev_g*100:+.1f}%' if rev_g else 'N/A',\n    })\n\ndf_basic = pd.DataFrame(rows).set_index('銘柄')\nprint('5銘柄 基本財務データ')\ndf_basic\n\n5銘柄 基本財務データ\n\n\n\n\n\n\n\n\n\n株価（円）\n時価総額\nTrailing EPS\nTrailing PER\nForward PER\n営業利益率\n売上成長率\n\n\n銘柄\n\n\n\n\n\n\n\n\n\n\n\nソニーグループ\\n(6758)\n3,660\n~¥21.6兆 (~$137B)\n¥171\n21.4x\n20.0x\n7.6%\n+15.4%\n\n\nキーエンス\\n(6861)\n79,440\n~¥19.3兆 (~$122B)\n¥1,839\n43.2x\n42.5x\n53.6%\n+17.9%\n\n\nファナック\\n(6954)\n7,680\n~¥7.2兆 (~$45B)\n¥178\n43.1x\n44.4x\n23.9%\n+10.6%\n\n\nナブテスコ\\n(6268)\n5,737\n~¥0.7兆 (~$4B)\n¥124\n46.2x\n53.2x\n9.9%\n+1.6%\n\n\nハーモニック・ドライブ\\n(6324)\n6,970\n~¥0.7兆 (~$4B)\n¥49\n142.7x\n92.1x\n5.1%\nN/A"
   },
   {
-    "objectID": "analysis/copper.html#銅価格トレンドと-comex-lme-乖離",
-    "href": "analysis/copper.html#銅価格トレンドと-comex-lme-乖離",
-    "title": "銅セクター分析：FCX / SCCO / 住友金属鉱山",
-    "section": "2. 銅価格トレンドと COMEX / LME 乖離",
-    "text": "2. 銅価格トレンドと COMEX / LME 乖離\n重要な文脈： 現在のCOMEX（HG=F）は米国の銅輸入関税25%を見越した前倒し需要でLMEより大幅高。 - FCX（米国内生産あり）はCOMEX価格の恩恵を受けるが、国際生産（約70%）はLMEベース。 - シナリオ分析はLMEベースの機関予測を使用する。\n\nhg = yf.Ticker('HG=F').history(period='2y')\nhg.index = pd.to_datetime(hg.index).tz_localize(None)\n\n# 年次平均\nannual_avg = hg['Close'].resample('YS').mean()\nprint('COMEX 年次平均 ($/lb):')\nfor yr, p in annual_avg.items():\n    print(f'  {yr.year}: ${p:.2f}/lb = ${p*2204.62:,.0f}/mt')\n\ncurrent_lb = float(hg['Close'].iloc[-1])\nprint(f'\\n現在 (COMEX): ${current_lb:.2f}/lb = ${current_lb*2204.62:,.0f}/mt')\nprint(f'推定 LME:     ~$4.31/lb = ~$9,500/mt')\nprint(f'COMEX-LME乖離: ${current_lb-4.31:.2f}/lb ({(current_lb/4.31-1)*100:.0f}%)')\n\nfig, ax = plt.subplots(figsize=(10, 4))\nax.plot(hg.index, hg['Close'], color='#795548', linewidth=1.8)\nax.fill_between(hg.index, hg['Close'], alpha=0.15, color='#795548')\nax.set_ylabel('$/lb (COMEX)', fontsize=9)\nax.set_title('銅先物価格推移（COMEX HG=F、過去2年）', fontsize=11, fontweight='bold')\nax.xaxis.set_major_formatter(mdates.DateFormatter('%y/%m'))\nax.xaxis.set_major_locator(mdates.MonthLocator(interval=3))\nax.tick_params(axis='x', rotation=30, labelsize=8)\nax.grid(True, alpha=0.25)\nplt.tight_layout()\nplt.show()\n\nCOMEX 年次平均 ($/lb):\n  2024: $4.32/lb = $9,522/mt\n  2025: $4.82/lb = $10,637/mt\n  2026: $5.85/lb = $12,897/mt\n\n現在 (COMEX): $6.66/lb = $14,674/mt\n推定 LME:     ~$4.31/lb = ~$9,500/mt\nCOMEX-LME乖離: $2.35/lb (54%)"
+    "objectID": "analysis/physical_ai.html#株価パフォーマンス比較過去3年",
+    "href": "analysis/physical_ai.html#株価パフォーマンス比較過去3年",
+    "title": "フィジカルAI関連銘柄 横並び比較",
+    "section": "2. 株価パフォーマンス比較（過去3年）",
+    "text": "2. 株価パフォーマンス比較（過去3年）\n\nhist = {}\nfor ticker in TICKERS:\n    df = yf.Ticker(ticker).history(period='3y')\n    if not df.empty:\n        s = df['Close'].copy()\n        s.index = pd.to_datetime(s.index).tz_localize(None)\n        hist[ticker] = s\n\nfig, ax = plt.subplots(figsize=(11, 5))\n\nfor ticker, name in TICKERS.items():\n    if ticker in hist:\n        s = hist[ticker]\n        norm = s / s.iloc[0] * 100\n        ax.plot(norm.index, norm.values, label=name, color=COLORS[ticker], linewidth=1.8)\n        # 末尾にラベル\n        ax.annotate(f'{name}\\n{norm.iloc[-1]:.0f}',\n                    xy=(norm.index[-1], norm.iloc[-1]),\n                    xytext=(5, 0), textcoords='offset points',\n                    fontsize=7, color=COLORS[ticker], va='center')\n\nax.axhline(100, color='gray', linestyle=':', linewidth=0.8, alpha=0.6)\nax.set_ylabel('株価（基準=100）', fontsize=9)\nax.set_title('フィジカルAI関連5銘柄 株価パフォーマンス（過去3年）', fontsize=11, fontweight='bold')\nax.xaxis.set_major_formatter(mdates.DateFormatter('%y/%m'))\nax.xaxis.set_major_locator(mdates.MonthLocator(interval=4))\nax.tick_params(axis='x', rotation=30, labelsize=8)\nax.grid(True, alpha=0.2)\nax.legend(fontsize=8, loc='upper left')\nplt.tight_layout()\nplt.show()\n\n\n\n\n\n\n\n\n\n# 期間別リターン\nperiods = {'1ヶ月': '1mo', '3ヶ月': '3mo', '1年': '1y', '3年': '3y'}\nret_rows = []\n\nfor ticker, name in TICKERS.items():\n    row = {'銘柄': name}\n    for label, period in periods.items():\n        df = yf.Ticker(ticker).history(period=period)\n        if not df.empty:\n            ret = (df['Close'].iloc[-1] / df['Close'].iloc[0] - 1) * 100\n            row[label] = f'{ret:+.1f}%'\n        else:\n            row[label] = 'N/A'\n    ret_rows.append(row)\n\ndf_ret = pd.DataFrame(ret_rows).set_index('銘柄')\nprint('期間別リターン')\ndf_ret\n\n期間別リターン\n\n\n\n\n\n\n\n\n\n1ヶ月\n3ヶ月\n1年\n3年\n\n\n銘柄\n\n\n\n\n\n\n\n\nソニーグループ\n+12.6%\n+3.4%\n+0.9%\n+45.0%\n\n\nキーエンス\n+25.1%\n+43.6%\n+24.8%\n+22.4%\n\n\nファナック\n+24.2%\n+20.3%\n+96.9%\n+78.5%\n\n\nナブテスコ\n+23.1%\n+28.6%\n+134.0%\n+96.1%\n\n\nハーモニック・ドライブ\n+67.7%\n+92.8%\n+84.6%\n+61.0%"
   },
   {
-    "objectID": "analysis/copper.html#銅価格-vs-株価-相関チャート過去3年",
-    "href": "analysis/copper.html#銅価格-vs-株価-相関チャート過去3年",
-    "title": "銅セクター分析：FCX / SCCO / 住友金属鉱山",
-    "section": "3. 銅価格 vs 株価 相関チャート（過去3年）",
-    "text": "3. 銅価格 vs 株価 相関チャート（過去3年）\n\nhist_data = {}\nfor ticker in list(TICKERS.keys()) + ['HG=F']:\n    try:\n        df_h = yf.Ticker(ticker).history(period='3y')\n        if not df_h.empty:\n            s = df_h['Close'].copy()\n            s.index = pd.to_datetime(s.index).tz_localize(None)\n            hist_data[ticker] = s\n    except Exception:\n        pass\n\nif 'HG=F' in hist_data:\n    fig, ax1 = plt.subplots(figsize=(10, 5))\n    colors_c = {'FCX': '#2196F3', 'SCCO': '#4CAF50', '5713.T': '#FF9800'}\n\n    copper = hist_data['HG=F']\n    ax2 = ax1.twinx()\n    ax2.fill_between(copper.index, copper.values, alpha=0.10, color='gray')\n    ax2.plot(copper.index, copper.values, color='gray', linewidth=1.2,\n             linestyle='--', label='銅価格 ($/lb)', alpha=0.7)\n    ax2.set_ylabel('銅価格 ($/lb)', fontsize=8, color='gray')\n    ax2.tick_params(axis='y', labelcolor='gray', labelsize=7)\n\n    for ticker, name in TICKERS.items():\n        if ticker in hist_data:\n            s = hist_data[ticker]\n            norm = s / s.iloc[0] * 100\n            ax1.plot(norm.index, norm.values, label=name,\n                     color=colors_c.get(ticker, 'black'), linewidth=1.8)\n\n    ax1.axhline(100, color='gray', linestyle=':', linewidth=0.7, alpha=0.5)\n    ax1.set_ylabel('株価（基準=100）', fontsize=8)\n    ax1.legend(fontsize=8, loc='upper left')\n    ax2.legend(fontsize=8, loc='upper right')\n    ax1.xaxis.set_major_formatter(mdates.DateFormatter('%y/%m'))\n    ax1.xaxis.set_major_locator(mdates.MonthLocator(interval=4))\n    ax1.tick_params(axis='x', rotation=30, labelsize=7)\n    ax1.tick_params(axis='y', labelsize=7)\n    ax1.grid(True, alpha=0.2)\n    ax1.set_title('銅価格 vs 銅株パフォーマンス（過去3年）', fontsize=11, fontweight='bold')\n    plt.tight_layout()\n    plt.show()"
+    "objectID": "analysis/physical_ai.html#バリュエーション比較per-営業利益率",
+    "href": "analysis/physical_ai.html#バリュエーション比較per-営業利益率",
+    "title": "フィジカルAI関連銘柄 横並び比較",
+    "section": "3. バリュエーション比較：PER × 営業利益率",
+    "text": "3. バリュエーション比較：PER × 営業利益率\n\nfig, axes = plt.subplots(1, 2, figsize=(12, 5))\n\nnames_short = [TICKERS[t].replace('グループ', '').replace('ハーモニック・', 'H.') for t in TICKERS]\nticker_list = list(TICKERS.keys())\ncolor_list  = [COLORS[t] for t in ticker_list]\n\n# 左：Forward PER\nax = axes[0]\nfpe_vals = []\nfor t in ticker_list:\n    v = info_cache[t].get('forwardPE', None)\n    fpe_vals.append(v if v else 0)\n\nbars = ax.bar(names_short, fpe_vals, color=color_list, alpha=0.85)\nfor bar, val in zip(bars, fpe_vals):\n    if val:\n        ax.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 0.5,\n                f'{val:.1f}x', ha='center', va='bottom', fontsize=9, fontweight='bold')\nax.set_ylabel('Forward PER', fontsize=9)\nax.set_title('Forward PER 比較', fontsize=11, fontweight='bold')\nax.tick_params(axis='x', labelsize=8)\nax.grid(True, alpha=0.25, axis='y')\n\n# 右：営業利益率\nax2 = axes[1]\nom_vals = []\nfor t in ticker_list:\n    v = info_cache[t].get('operatingMargins', None)\n    om_vals.append(v * 100 if v else 0)\n\nbars2 = ax2.bar(names_short, om_vals, color=color_list, alpha=0.85)\nfor bar, val in zip(bars2, om_vals):\n    if val:\n        ax2.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 0.3,\n                 f'{val:.1f}%', ha='center', va='bottom', fontsize=9, fontweight='bold')\nax2.set_ylabel('営業利益率（%）', fontsize=9)\nax2.set_title('営業利益率 比較', fontsize=11, fontweight='bold')\nax2.tick_params(axis='x', labelsize=8)\nax2.grid(True, alpha=0.25, axis='y')\n\nplt.tight_layout()\nplt.show()"
   },
   {
-    "objectID": "analysis/copper.html#eps感応度分析",
-    "href": "analysis/copper.html#eps感応度分析",
-    "title": "銅セクター分析：FCX / SCCO / 住友金属鉱山",
-    "section": "4. EPS感応度分析",
-    "text": "4. EPS感応度分析\n銅価格 $0.10/lb 変化 → EPS 変化 を実データ回帰と公式値で導出。\n\n\n\n\n\n\n\n\n銘柄\n感応度\n根拠\n\n\n\n\nFCX\n$0.270/share per $0.10/lb\nFCX 2024年次報告書（10-K）公式開示\n\n\nSCCO\n$0.233/share per $0.10/lb\n2023〜2025年実データ回帰（R²=0.982）\n\n\n住友金属鉱山\n算出不可\nニッケル価格の影響が支配的で銅との相関が崩壊\n\n\n\n\n# 実証データ（年次 net income と COMEX 銅価格平均）\ncopper_annual = {2022: 4.00, 2023: 3.85, 2024: 4.22, 2025: 4.82}\n\nfcx_ni  = {2022: 3.468, 2023: 1.848, 2024: 1.889, 2025: 2.204}  # $B\nscco_ni = {2022: 2.639, 2023: 2.425, 2024: 3.377, 2025: 4.335}  # $B\nsmm_ni  = {2022: 281.0, 2023: 160.6, 2024: 58.6,  2025: 16.5}   # JPY B\n\nFCX_SHARES  = 1.44e9\nSCCO_SHARES = 0.83e9\n\n# SCCO 回帰（2022はモリブデン等の特殊要因でFCXが歪む → 2023-2025のみ）\nyrs = [2023, 2024, 2025]\ncu  = [copper_annual[y] for y in yrs]\nsc  = [scco_ni[y] for y in yrs]\nslope_s, _, r_s, _, _ = stats.linregress(cu, sc)\nscco_sens_empirical = (slope_s / 10) / SCCO_SHARES * 1e9\nprint(f'SCCO 実証感応度: ${scco_sens_empirical:.3f}/share per $0.10/lb (R²={r_s**2:.3f})')\n\n# 住友金属鉱山：銅価格上昇なのに純利益激減を確認\nprint('\\n住友金属鉱山 純利益トレンド（銅価格上昇にもかかわらず）:')\nfor yr in sorted(smm_ni):\n    print(f'  {yr}: 銅 ${copper_annual[yr]:.2f}/lb → 純利益 JPY {smm_ni[yr]:.0f}B')\nprint('  → ニッケル価格崩壊（$25,000→$13,000/mt）が銅利益を完全に打ち消し')\n\nSCCO 実証感応度: $0.233/share per $0.10/lb (R²=0.982)\n\n住友金属鉱山 純利益トレンド（銅価格上昇にもかかわらず）:\n  2022: 銅 $4.00/lb → 純利益 JPY 281B\n  2023: 銅 $3.85/lb → 純利益 JPY 161B\n  2024: 銅 $4.22/lb → 純利益 JPY 59B\n  2025: 銅 $4.82/lb → 純利益 JPY 16B\n  → ニッケル価格崩壊（$25,000→$13,000/mt）が銅利益を完全に打ち消し"
+    "objectID": "analysis/physical_ai.html#総合評価マトリクス",
+    "href": "analysis/physical_ai.html#総合評価マトリクス",
+    "title": "フィジカルAI関連銘柄 横並び比較",
+    "section": "4. 総合評価マトリクス",
+    "text": "4. 総合評価マトリクス\n定性評価（レポート記載内容ベース）を定量スコアに変換して5軸レーダーチャートで比較。\n\n\n\n評価軸\n定義\n\n\n\n\nフィジカルAI純度\n売上・事業のどれだけがフィジカルAIに直結するか\n\n\n最大手度\nその領域でのグローバル市場シェア・地位\n\n\nチョークポイント\n代替困難性・参入障壁の高さ\n\n\nバリュエーション妥当性\nPER・利益率から見た割安感（高いほど割安）\n\n\n成長カタリスト\n1〜3年でヒューマノイド量産の恩恵を受ける直接度\n\n\n\n\n# 定性スコア（5点満点、レポート記載内容ベース）\nscores = {\n    'ソニーグループ': {\n        'フィジカルAI純度':    4,  # I&SS 17%、ゲーム・音楽も大きい\n        '最大手度':           5,  # センサー世界シェア43%\n        'チョークポイント':    5,  # EVS・積層型CMOS、代替なし\n        'バリュエーション妥当性': 4,  # PER22倍、I&SSはまだ割安\n        '成長カタリスト':     5,  # Nihon AI Kiban・TSMC合弁・Ace\n    },\n    'キーエンス': {\n        'フィジカルAI純度':    4,  # FAセンサー・マシンビジョン専業\n        '最大手度':           5,  # 世界トップ、営業利益率50%\n        'チョークポイント':    5,  # ロボットの「目」を独占供給\n        'バリュエーション妥当性': 2,  # 高PER、割高感あり\n        '成長カタリスト':     4,  # ロボット普及で需要増は直接的\n    },\n    'ファナック': {\n        'フィジカルAI純度':    5,  # 産業ロボット・CNC専業\n        '最大手度':           5,  # 世界トップ\n        'チョークポイント':    4,  # FA自動化の中枢、競合はあり\n        'バリュエーション妥当性': 3,  # 中程度\n        '成長カタリスト':     3,  # 産業用中心、ヒューマノイド直結は薄い\n    },\n    'ナブテスコ': {\n        'フィジカルAI純度':    5,  # 精密減速機専業\n        '最大手度':           5,  # 中大型ロボット用で世界トップ\n        'チョークポイント':    5,  # 関節なしにロボットは動かない\n        'バリュエーション妥当性': 4,  # 比較的割安\n        '成長カタリスト':     4,  # ロボット量産で直接恩恵\n    },\n    'ハーモニック・ドライブ': {\n        'フィジカルAI純度':    5,  # ヒューマノイド関節専業\n        '最大手度':           5,  # 波動歯車で世界トップ\n        'チョークポイント':    5,  # ヒューマノイドに必須、代替困難\n        'バリュエーション妥当性': 3,  # 小型株、成長期待でやや高め\n        '成長カタリスト':     5,  # ヒューマノイド量産の最直接受益\n    },\n}\n\naxes_labels = ['フィジカルAI純度', '最大手度', 'チョークポイント', 'バリュエーション\\n妥当性', '成長カタリスト']\nN = len(axes_labels)\nangles = np.linspace(0, 2 * np.pi, N, endpoint=False).tolist()\nangles += angles[:1]\n\nfig, ax = plt.subplots(figsize=(8, 8), subplot_kw=dict(polar=True))\n\nfor name, sc in scores.items():\n    ticker = [t for t, n in TICKERS.items() if n == name][0]\n    values = [sc[l.replace('\\n', '')] for l in axes_labels]\n    values += values[:1]\n    ax.plot(angles, values, color=COLORS[ticker], linewidth=2, label=name)\n    ax.fill(angles, values, color=COLORS[ticker], alpha=0.08)\n\nax.set_xticks(angles[:-1])\nax.set_xticklabels(axes_labels, fontsize=10)\nax.set_ylim(0, 5)\nax.set_yticks([1, 2, 3, 4, 5])\nax.set_yticklabels(['1', '2', '3', '4', '5'], fontsize=7)\nax.set_title('フィジカルAI関連5銘柄 総合評価レーダーチャート', fontsize=12, fontweight='bold', pad=20)\nax.legend(loc='upper right', bbox_to_anchor=(1.35, 1.15), fontsize=9)\nax.grid(True, alpha=0.3)\nplt.tight_layout()\nplt.show()\n\n\n\n\n\n\n\n\n\n# 総合スコア表\nscore_rows = []\nfor name, sc in scores.items():\n    total = sum(sc.values())\n    row = {'銘柄': name}\n    row.update({k: f'{v}/5' for k, v in sc.items()})\n    row['合計'] = f'{total}/25'\n    score_rows.append(row)\n\ndf_score = pd.DataFrame(score_rows).set_index('銘柄')\ndf_score\n\n\n\n\n\n\n\n\nフィジカルAI純度\n最大手度\nチョークポイント\nバリュエーション妥当性\n成長カタリスト\n合計\n\n\n銘柄\n\n\n\n\n\n\n\n\n\n\nソニーグループ\n4/5\n5/5\n5/5\n4/5\n5/5\n23/25\n\n\nキーエンス\n4/5\n5/5\n5/5\n2/5\n4/5\n20/25\n\n\nファナック\n5/5\n5/5\n4/5\n3/5\n3/5\n20/25\n\n\nナブテスコ\n5/5\n5/5\n5/5\n4/5\n4/5\n23/25\n\n\nハーモニック・ドライブ\n5/5\n5/5\n5/5\n3/5\n5/5\n23/25"
   },
   {
-    "objectID": "analysis/copper.html#銅価格シナリオ別-eps株価試算",
-    "href": "analysis/copper.html#銅価格シナリオ別-eps株価試算",
-    "title": "銅セクター分析：FCX / SCCO / 住友金属鉱山",
-    "section": "5. 銅価格シナリオ別 EPS・株価試算",
-    "text": "5. 銅価格シナリオ別 EPS・株価試算\n前提： - 基準：2025年実績（FCX EPS $1.53、SCCO EPS $5.22、COMEX平均 $4.82/lb） - 感応度：FCX $0.270、SCCO \\(0.233（\\)/share per $0.10/lb） - シナリオはLMEベースの機関予測。COMEX現在は関税プレミアム込み。\n\nFCX_BASE_EPS  = 1.53\nSCCO_BASE_EPS = 5.22\nBASE_CU       = 4.82\nFCX_SENS      = 0.270\nSCCO_SENS     = 0.233\nFCX_PRICE     = 64.37\nSCCO_PRICE    = 185.23\n\nscenarios = [\n    ('Bear',         'WB $9,500/mt',           4.31),\n    ('Neutral',      'GS $10,750/mt',           4.88),\n    ('Supply Floor', '生産者管理 $12,000/mt',   5.44),\n    ('Bull',         'Citi $13,000/mt',          5.90),\n    ('Extreme',      'OG $15,000/mt',            6.80),\n    ('COMEX現在',    '関税込み $6.50/lb',        6.50),\n]\n\nrows = []\nfor name, note, cu in scenarios:\n    fe = FCX_BASE_EPS  + FCX_SENS  * (cu - BASE_CU) / 0.10\n    se = SCCO_BASE_EPS + SCCO_SENS * (cu - BASE_CU) / 0.10\n    rows.append({\n        'シナリオ':     f'{name}（{note}）',\n        '$/lb':         f'${cu:.2f}',\n        'FCX EPS':      f'${fe:.2f} ({fe/FCX_BASE_EPS:.1f}x)',\n        'FCX @P/E17':   f'${fe*17:.0f}',\n        'FCX @P/E22':   f'${fe*22:.0f}',\n        'FCX @P/E30':   f'${fe*30:.0f}',\n        'SCCO EPS':     f'${se:.2f} ({se/SCCO_BASE_EPS:.1f}x)',\n        'SCCO @P/E25':  f'${se*25:.0f}',\n        'SCCO @P/E30':  f'${se*30:.0f}',\n    })\n\ndf_sc = pd.DataFrame(rows).set_index('シナリオ')\nprint(f'FCX  3倍目標: ${FCX_PRICE*3:.0f}')\nprint(f'SCCO 3倍目標: ${SCCO_PRICE*3:.0f}')\nprint()\ndf_sc\n\nFCX  3倍目標: $193\nSCCO 3倍目標: $556\n\n\n\n\n\n\n\n\n\n\n$/lb\nFCX EPS\nFCX @P/E17\nFCX @P/E22\nFCX @P/E30\nSCCO EPS\nSCCO @P/E25\nSCCO @P/E30\n\n\nシナリオ\n\n\n\n\n\n\n\n\n\n\n\n\nBear（WB $9,500/mt）\n$4.31\n$0.15 (0.1x)\n$3\n$3\n$5\n$4.03 (0.8x)\n$101\n$121\n\n\nNeutral（GS $10,750/mt）\n$4.88\n$1.69 (1.1x)\n$29\n$37\n$51\n$5.36 (1.0x)\n$134\n$161\n\n\nSupply Floor（生産者管理 $12,000/mt）\n$5.44\n$3.20 (2.1x)\n$54\n$70\n$96\n$6.66 (1.3x)\n$167\n$200\n\n\nBull（Citi $13,000/mt）\n$5.90\n$4.45 (2.9x)\n$76\n$98\n$133\n$7.74 (1.5x)\n$193\n$232\n\n\nExtreme（OG $15,000/mt）\n$6.80\n$6.88 (4.5x)\n$117\n$151\n$206\n$9.83 (1.9x)\n$246\n$295\n\n\nCOMEX現在（関税込み $6.50/lb）\n$6.50\n$6.07 (4.0x)\n$103\n$133\n$182\n$9.13 (1.7x)\n$228\n$274"
+    "objectID": "analysis/physical_ai.html#時価総額スケール比較",
+    "href": "analysis/physical_ai.html#時価総額スケール比較",
+    "title": "フィジカルAI関連銘柄 横並び比較",
+    "section": "5. 時価総額スケール比較",
+    "text": "5. 時価総額スケール比較\nハーモニック・ドライブのような小型株は、同じ需要増でもより大きな株価インパクトが出やすい。\n\nfig, ax = plt.subplots(figsize=(10, 4))\n\nmcap_vals = []\nname_list = []\nfor ticker, name in TICKERS.items():\n    mcap = info_cache[ticker].get('marketCap', 0)\n    mcap_vals.append(mcap / 1e12)  # 兆円\n    name_list.append(name.replace('グループ', '').replace('ハーモニック・', 'H.'))\n\nbars = ax.barh(name_list, mcap_vals, color=color_list, alpha=0.85)\nfor bar, val in zip(bars, mcap_vals):\n    ax.text(bar.get_width() + 0.3, bar.get_y() + bar.get_height()/2,\n            f'¥{val:.1f}兆 (~${val*1e12/USDJPY/1e9:.0f}B)',\n            va='center', fontsize=9)\n\nax.set_xlabel('時価総額（兆円）', fontsize=9)\nax.set_title('時価総額スケール比較（小型株ほどアップサイド大）', fontsize=11, fontweight='bold')\nax.grid(True, alpha=0.25, axis='x')\nplt.tight_layout()\nplt.show()"
   },
   {
-    "objectID": "analysis/copper.html#年期待値の2028年への前倒し織り込み",
-    "href": "analysis/copper.html#年期待値の2028年への前倒し織り込み",
-    "title": "銅セクター分析：FCX / SCCO / 住友金属鉱山",
-    "section": "6. 2030年期待値の2028年への前倒し織り込み",
-    "text": "6. 2030年期待値の2028年への前倒し織り込み\n定量分析は「2028年の実現EPS × 現在のP/E」で止まるが、実際の市場は2028年時点で2030年の期待を織り込む。 AI市場が2030年までに5倍なら、銅需要（AI DC向け）も相応に拡大。2028年の株価には2030年EPS × 市場が評価するP/Eが乗ってくる。\n\n# 2030年のExtremeシナリオ（OG $15,000/mt = $6.80/lb）でのEPS\nfcx_2030e  = FCX_BASE_EPS  + FCX_SENS  * (6.80 - BASE_CU) / 0.10  # $6.88\nscco_2030e = SCCO_BASE_EPS + SCCO_SENS * (6.80 - BASE_CU) / 0.10  # $9.83\n\nprint('2030E EPS（Extreme銅シナリオ $6.80/lb）:')\nprint(f'  FCX:  ${fcx_2030e:.2f}/share')\nprint(f'  SCCO: ${scco_2030e:.2f}/share')\nprint()\nprint('2028年株価試算（市場が2030年EPSを2年先取りして評価）:')\nprint()\nprint(f'{\"P/E\":&gt;6} | {\"FCX株価\":&gt;10} | {\"FCX倍率\":&gt;8} | {\"SCCO株価\":&gt;10} | {\"SCCO倍率\":&gt;8}')\nprint('-' * 55)\nfor pe in [17, 22, 25, 30, 35]:\n    fp = fcx_2030e * pe\n    sp = scco_2030e * pe\n    print(f'{pe:&gt;5}x | ${fp:&gt;9.0f} | {fp/FCX_PRICE:&gt;7.1f}x | ${sp:&gt;9.0f} | {sp/SCCO_PRICE:&gt;7.1f}x')\n\nprint(f'\\n→ FCXはP/E 30xで {fcx_2030e*30/FCX_PRICE:.1f}x（3倍超）')\nprint(f'→ SCCOはP/E 55x超が必要（現実的でない）')\n\n2030E EPS（Extreme銅シナリオ $6.80/lb）:\n  FCX:  $6.88/share\n  SCCO: $9.83/share\n\n2028年株価試算（市場が2030年EPSを2年先取りして評価）:\n\n   P/E |      FCX株価 |    FCX倍率 |     SCCO株価 |   SCCO倍率\n-------------------------------------------------------\n   17x | $      117 |     1.8x | $      167 |     0.9x\n   22x | $      151 |     2.4x | $      216 |     1.2x\n   25x | $      172 |     2.7x | $      246 |     1.3x\n   30x | $      206 |     3.2x | $      295 |     1.6x\n   35x | $      241 |     3.7x | $      344 |     1.9x\n\n→ FCXはP/E 30xで 3.2x（3倍超）\n→ SCCOはP/E 55x超が必要（現実的でない）"
+    "objectID": "analysis/physical_ai.html#投資判断サマリー",
+    "href": "analysis/physical_ai.html#投資判断サマリー",
+    "title": "フィジカルAI関連銘柄 横並び比較",
+    "section": "6. 投資判断サマリー",
+    "text": "6. 投資判断サマリー\n\n\n\n\n\n\n\n\n\n銘柄\n位置づけ\nバケット候補\n理由\n\n\n\n\nソニー（6758）\n本命・主力\n運用枠\nセンサー世界1位×政府支援×PER割安\n\n\nハーモニック・ドライブ（6324）\n高純度・小型\nリスク枠\nヒューマノイド量産の最直接受益、小型株ゆえの上振れ余地\n\n\nナブテスコ（6268）\nチョークポイント型\n運用枠候補\n中大型ロボット関節で世界トップ、安定感あり\n\n\nファナック（6954）\n安定大型\n運用枠候補\n産業ロボット世界トップだが、ヒューマノイド直結は薄め\n\n\nキーエンス（6861）\n超高品質・割高\n—\nモートは最強クラスだがバリュエーションが重い"
   },
   {
-    "objectID": "analysis/copper.html#資金フロー銅の相対的な早さの確認",
-    "href": "analysis/copper.html#資金フロー銅の相対的な早さの確認",
-    "title": "銅セクター分析：FCX / SCCO / 住友金属鉱山",
-    "section": "7. 資金フロー：銅の相対的な「早さ」の確認",
-    "text": "7. 資金フロー：銅の相対的な「早さ」の確認\n\n# AIインフラ主要テーマの2年パフォーマンス比較（銅の相対位置確認）\ncompare_tickers = {\n    'VRT':  'Vertiv（液冷）',\n    'PWR':  'Quanta（電力工事）',\n    'NVDA': 'Nvidia（GPU）',\n    'FCX':  'Freeport（銅）',\n    'SCCO': 'Southern Copper（銅）',\n}\n\nperf = {}\nfor t, name in compare_tickers.items():\n    for period, label in [('2y','2年'), ('1y','1年'), ('3mo','3ヶ月'), ('1mo','1ヶ月')]:\n        h = yf.Ticker(t).history(period=period)\n        if not h.empty:\n            ret = (h['Close'].iloc[-1] / h['Close'].iloc[0] - 1) * 100\n            perf.setdefault(name, {})[label] = f'{ret:+.0f}%'\n\ndf_perf = pd.DataFrame(perf).T[['2年','1年','3ヶ月','1ヶ月']]\nprint('相対パフォーマンス（先行組 vs 銅）')\nprint(df_perf.to_string())\nprint('\\n→ VRT/PWRは2年で3〜4倍（終盤）、FCXは+27%（まだ来ていない）')\n\n相対パフォーマンス（先行組 vs 銅）\n                       2年     1年   3ヶ月   1ヶ月\nVertiv（液冷）          +288%  +248%  +57%  +22%\nQuanta（電力工事）        +189%  +123%  +46%  +29%\nNvidia（GPU）         +144%   +70%  +21%  +17%\nFreeport（銅）          +30%   +69%   +5%   -3%\nSouthern Copper（銅）   +78%  +118%   -2%   -1%\n\n→ VRT/PWRは2年で3〜4倍（終盤）、FCXは+27%（まだ来ていない）"
+    "objectID": "analysis/sony.html",
+    "href": "analysis/sony.html",
+    "title": "ソニーグループ（6758.T）分析：センサー事業のPER再評価とフィジカルAI",
+    "section": "",
+    "text": "目的： ソニーのI&SS（イメージング＆センシング・ソリューション）事業が、コングロマリット平均PERに埋もれている「評価の歪み」を定量的に検証し、SOTP（Sum of the Parts）バリュエーションで妥当株価を試算する。\n主要な結論（先出し） - I&SS は売上の17%・利益の25%を稼ぐ超高収益エンジン。営業増益 +37%（FY2025） - 現在のPER約22倍はゲーム・音楽込みの平均。センサーだけをAI半導体（PER50倍）で再評価すると目標株価 約4,870円（+31%） - I&SS が+37%成長を2年継続 × PER50倍なら 約7,200円（+95%） - TSMC合弁 × イメージセンサー世界シェア43%という「堀の深さ」がフィジカルAI時代の本命\nimport yfinance as yf\nimport pandas as pd\nimport numpy as np\nimport matplotlib.pyplot as plt\nimport matplotlib.patches as mpatches\nimport warnings, logging\n\nwarnings.filterwarnings('ignore')\nlogging.getLogger('yfinance').setLevel(logging.CRITICAL)\n\nfrom matplotlib import rcParams\nrcParams['font.family'] = 'sans-serif'\nrcParams['font.sans-serif'] = ['MS Gothic', 'Meiryo', 'Yu Gothic', 'DejaVu Sans']\nrcParams['axes.unicode_minus'] = False\n\nfx = yf.Ticker('USDJPY=X').history(period='1d')\nUSDJPY = float(fx['Close'].iloc[-1]) if not fx.empty else 155.0\nprint(f'USDJPY: {USDJPY:.2f}')\n\n# FY2025決算実績（億円）\nSONY_PRICE     = 3700      # 現在株価（円）\nSONY_MCAP      = 226000    # 時価総額（億円）= 22.6兆円\nSONY_SHARES    = SONY_MCAP / SONY_PRICE  # 億株\n\nTOTAL_REV      = 124796    # 売上高（億円）\nTOTAL_OP       = 14475     # 営業利益（億円）\nTOTAL_NI       = 10309     # 純利益・継続事業（億円）\n\nISS_REV        = 21515     # I&SS 売上高（億円）\nISS_OP         = 3573      # I&SS 営業利益（億円）\nISS_OP_PREV    = 2607      # I&SS 前年営業利益（億円、+37%計算用）\n\nISS_SHARE_OP   = ISS_OP / TOTAL_OP      # 25%弱\nISS_NI         = TOTAL_NI * ISS_SHARE_OP  # 純利益への近似配分\nOTHER_NI       = TOTAL_NI - ISS_NI\n\nprint(f'\\n--- FY2025 基本数値 ---')\nprint(f'発行済株式数：{SONY_SHARES:.2f}億株')\nprint(f'I&SS 営業利益シェア：{ISS_SHARE_OP*100:.1f}%')\nprint(f'I&SS 推定純利益：{ISS_NI:.0f}億円')\nprint(f'その他推定純利益：{OTHER_NI:.0f}億円')\nprint(f'現在PER（全体）：{SONY_MCAP/TOTAL_NI:.1f}x')\n\nUSDJPY: 157.78\n\n--- FY2025 基本数値 ---\n発行済株式数：61.08億株\nI&SS 営業利益シェア：24.7%\nI&SS 推定純利益：2545億円\nその他推定純利益：7764億円\n現在PER（全体）：21.9x"
   },
   {
-    "objectID": "analysis/copper.html#fcx-リーチング技術追加生産インパクト試算",
-    "href": "analysis/copper.html#fcx-リーチング技術追加生産インパクト試算",
-    "title": "銅セクター分析：FCX / SCCO / 住友金属鉱山",
-    "section": "8. FCX リーチング技術：追加生産インパクト試算",
-    "text": "8. FCX リーチング技術：追加生産インパクト試算\nFCXの新バイオ浸出技術（既存の廃棄物堆積鉱から低コストで銅を回収）の生産量と財務インパクト。\n\n\n\n年\n追加生産量\n\n\n\n\n2023年実績\n144M lbs\n\n\n2024年実績\n214M lbs\n\n\n2025-2026目標\n300〜400M lbs/年\n\n\n2030目標\n800M lbs/年\n\n\n\nコスト：$1/lb以下（市場価格の1/4〜1/6）\n\n# 2030年に800M lbs の追加生産が実現した場合のEPS上乗せ試算\nleach_lbs      = 800e6          # 800M lbs\ncopper_scenarios_lb = {'Bear $4.31': 4.31, 'Base $4.88': 4.88,\n                        'Bull $5.90': 5.90, 'Extreme $6.80': 6.80}\ncost_per_lb    = 0.80           # リーチングコスト $0.80/lb（保守的）\ntax_rate       = 0.25\n\nprint('リーチング800M lbs 追加によるEPS上乗せ試算（2030年）')\nprint(f'{\"シナリオ\":&gt;20} | {\"追加純利益\":&gt;12} | {\"EPS上乗せ\":&gt;10}')\nprint('-' * 48)\nfor sc_name, price in copper_scenarios_lb.items():\n    margin     = price - cost_per_lb\n    net_income = leach_lbs * margin * (1 - tax_rate)\n    eps_add    = net_income / FCX_SHARES\n    print(f'{sc_name:&gt;20} | ${net_income/1e9:&gt;10.2f}B | +${eps_add:&gt;8.2f}/share')\n\nprint(f'\\n→ Bull以上のシナリオでは EPS が +$2.5〜4.0 追加で乗ってくる')\nprint(f'  この上乗せ分はEPS感応度の計算に含まれていない → 上振れ余地')\n\nリーチング800M lbs 追加によるEPS上乗せ試算（2030年）\n                シナリオ |        追加純利益 |     EPS上乗せ\n------------------------------------------------\n          Bear $4.31 | $      2.11B | +$    1.46/share\n          Base $4.88 | $      2.45B | +$    1.70/share\n          Bull $5.90 | $      3.06B | +$    2.13/share\n       Extreme $6.80 | $      3.60B | +$    2.50/share\n\n→ Bull以上のシナリオでは EPS が +$2.5〜4.0 追加で乗ってくる\n  この上乗せ分はEPS感応度の計算に含まれていない → 上振れ余地"
+    "objectID": "analysis/sony.html#会社全体の業績概要fy2025",
+    "href": "analysis/sony.html#会社全体の業績概要fy2025",
+    "title": "ソニーグループ（6758.T）分析：センサー事業のPER再評価とフィジカルAI",
+    "section": "1. 会社全体の業績概要（FY2025）",
+    "text": "1. 会社全体の業績概要（FY2025）\n\n# セグメント別データ（FY2025決算）\nsegments = {\n    'G&NS（ゲーム）':       {'rev': 46698, 'op': 3843,  'op_prev': 3168},\n    '音楽':                 {'rev': 17270, 'op': 4002,  'op_prev': 3424},\n    '映画':                 {'rev': 14591, 'op': 1318,  'op_prev': 1266},\n    'ET&S（エレクトロニクス）': {'rev': 24765, 'op': 1458,  'op_prev': 1369},\n    'I&SS（センサー）':      {'rev': 21515, 'op': 3573,  'op_prev': 2607},\n    '金融':                 {'rev': 16200, 'op':  917,  'op_prev':  899},\n}\n\nrows = []\nfor seg, d in segments.items():\n    op_margin = d['op'] / d['rev'] * 100\n    op_growth = (d['op'] / d['op_prev'] - 1) * 100\n    rev_share = d['rev'] / TOTAL_REV * 100\n    op_share  = d['op']  / TOTAL_OP  * 100\n    rows.append({\n        'セグメント':    seg,\n        '売上（億円）':  f\"{d['rev']:,}\",\n        '売上シェア':    f\"{rev_share:.1f}%\",\n        '営業利益（億円）': f\"{d['op']:,}\",\n        '利益シェア':    f\"{op_share:.1f}%\",\n        '営業利益率':    f\"{op_margin:.1f}%\",\n        '利益成長率':    f\"{op_growth:+.0f}%\",\n    })\n\ndf_seg = pd.DataFrame(rows).set_index('セグメント')\nprint('ソニー セグメント別業績（FY2025）')\ndf_seg\n\nソニー セグメント別業績（FY2025）\n\n\n\n\n\n\n\n\n\n売上（億円）\n売上シェア\n営業利益（億円）\n利益シェア\n営業利益率\n利益成長率\n\n\nセグメント\n\n\n\n\n\n\n\n\n\n\nG&NS（ゲーム）\n46,698\n37.4%\n3,843\n26.5%\n8.2%\n+21%\n\n\n音楽\n17,270\n13.8%\n4,002\n27.6%\n23.2%\n+17%\n\n\n映画\n14,591\n11.7%\n1,318\n9.1%\n9.0%\n+4%\n\n\nET&S（エレクトロニクス）\n24,765\n19.8%\n1,458\n10.1%\n5.9%\n+7%\n\n\nI&SS（センサー）\n21,515\n17.2%\n3,573\n24.7%\n16.6%\n+37%\n\n\n金融\n16,200\n13.0%\n917\n6.3%\n5.7%\n+2%\n\n\n\n\n\n\n\n\n# セグメント別 利益シェア・利益率 可視化\nfig, axes = plt.subplots(1, 2, figsize=(12, 5))\n\nseg_names  = list(segments.keys())\nop_vals    = [segments[s]['op'] for s in seg_names]\nop_margins = [segments[s]['op'] / segments[s]['rev'] * 100 for s in seg_names]\ncolors     = ['#2196F3','#9C27B0','#FF9800','#607D8B','#E53935','#4CAF50']\nhighlight  = ['#E53935' if 'I&SS' in s else c for s, c in zip(seg_names, colors)]\n\nax = axes[0]\nbars = ax.bar(range(len(seg_names)), op_vals, color=highlight, alpha=0.85)\nax.set_xticks(range(len(seg_names)))\nax.set_xticklabels([s.replace('（', '\\n（') for s in seg_names], fontsize=8)\nax.set_ylabel('営業利益（億円）', fontsize=9)\nax.set_title('セグメント別 営業利益（FY2025）', fontsize=11, fontweight='bold')\nfor bar, val in zip(bars, op_vals):\n    ax.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 50,\n            f'{val:,}', ha='center', va='bottom', fontsize=8)\nax.grid(True, alpha=0.25, axis='y')\n\nax2 = axes[1]\nbars2 = ax2.bar(range(len(seg_names)), op_margins, color=highlight, alpha=0.85)\nax2.set_xticks(range(len(seg_names)))\nax2.set_xticklabels([s.replace('（', '\\n（') for s in seg_names], fontsize=8)\nax2.set_ylabel('営業利益率（%）', fontsize=9)\nax2.set_title('セグメント別 営業利益率（FY2025）', fontsize=11, fontweight='bold')\nfor bar, val in zip(bars2, op_margins):\n    ax2.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 0.3,\n             f'{val:.1f}%', ha='center', va='bottom', fontsize=8)\nax2.grid(True, alpha=0.25, axis='y')\n\nfig.suptitle('赤 = I&SS（センサー）', fontsize=9, color='#E53935')\nplt.tight_layout()\nplt.show()"
   },
   {
-    "objectID": "analysis/copper.html#投資結論",
-    "href": "analysis/copper.html#投資結論",
-    "title": "銅セクター分析：FCX / SCCO / 住友金属鉱山",
-    "section": "9. 投資結論",
-    "text": "9. 投資結論\n\nFCX（Freeport-McMoRan）\n\n推奨：運用枠（40万円の一部）で検討\nP/E 15〜17x の低い出発点 → 2030年期待値の前倒し織り込みでP/E 30x到達余地あり\nExtreme銅（$6.80/lb）× P/E 30x → 株価 $206（現在比 3.2x）\nリーチング技術（2030年 800M lbs）は EPS感応度の計算に含まれていない追加上乗せ\nAmazon/Rio Tinto「クリーン銅」契約はFCXへのBig Tech需要の前兆\n\n\n\nSCCO（Southern Copper）\n\n推奨：現時点では見送り\nP/E 27〜35x で既にフル評価。Bull以下では 2x に届かない\n3x達成にはP/E 55x超が必要（現実的でない）\n長期（2030年以降）の埋蔵量は世界最大だが、2028年タイムラインには機動力が低い\n\n\n\n住友金属鉱山（5713.T）\n\n推奨：保留\n銅価格上昇（$3.85→$4.82/lb）にもかかわらず純利益が ¥161B → ¥17B に激減\nニッケル価格崩壊（$25,000→$13,000/mt）とバッテリー材料事業の損失が支配的\nニッケル市場の回復が確認されるまで、銅プレイとしては機能しない"
+    "objectID": "analysis/sony.html#sotp-バリュエーションperの逆数を線形分解する",
+    "href": "analysis/sony.html#sotp-バリュエーションperの逆数を線形分解する",
+    "title": "ソニーグループ（6758.T）分析：センサー事業のPER再評価とフィジカルAI",
+    "section": "2. SOTP バリュエーション：PERの逆数を線形分解する",
+    "text": "2. SOTP バリュエーション：PERの逆数を線形分解する\n益回り（1/PER）を各セグメントの純利益寄与に分解する。\n\\[\n\\frac{1}{\\text{PER}_{\\text{全体}}} = \\frac{E_{\\text{sensor}}}{\\text{Mcap}} + \\frac{E_{\\text{other}}}{\\text{Mcap}}\n\\]\nセンサー項に PER50倍（AI半導体プレミアム）を適用し、その他は現状 PER で据え置いた合計を妥当時価総額とする。\n\nCURRENT_PER = SONY_MCAP / TOTAL_NI\n\nscenarios_per = [\n    ('現状維持',       CURRENT_PER, CURRENT_PER),\n    ('センサーPER30',  30,          CURRENT_PER),\n    ('センサーPER40',  40,          CURRENT_PER),\n    ('センサーPER50',  50,          CURRENT_PER),\n    ('センサーPER60',  60,          CURRENT_PER),\n    ('全体PER30',      30,          30),\n]\n\nrows = []\nfor name, per_iss, per_other in scenarios_per:\n    mcap_iss   = ISS_NI   * per_iss\n    mcap_other = OTHER_NI * per_other\n    mcap_total = mcap_iss + mcap_other\n    price      = mcap_total / SONY_SHARES\n    upside     = (price / SONY_PRICE - 1) * 100\n    rows.append({\n        'シナリオ':         name,\n        'センサーPER':      f'{per_iss:.0f}x',\n        'その他PER':        f'{per_other:.0f}x',\n        'センサー価値（兆円）': f'{mcap_iss/10000:.2f}',\n        'その他価値（兆円）': f'{mcap_other/10000:.2f}',\n        '合計時価総額（兆円）': f'{mcap_total/10000:.2f}',\n        '目標株価（円）':    f'{price:,.0f}',\n        'アップサイド':     f'{upside:+.1f}%',\n    })\n\ndf_sotp = pd.DataFrame(rows).set_index('シナリオ')\nprint(f'現在株価：{SONY_PRICE:,}円 / 現在時価総額：{SONY_MCAP/10000:.1f}兆円 / 現在PER：{CURRENT_PER:.1f}x')\nprint()\ndf_sotp\n\n現在株価：3,700円 / 現在時価総額：22.6兆円 / 現在PER：21.9x\n\n\n\n\n\n\n\n\n\n\nセンサーPER\nその他PER\nセンサー価値（兆円）\nその他価値（兆円）\n合計時価総額（兆円）\n目標株価（円）\nアップサイド\n\n\nシナリオ\n\n\n\n\n\n\n\n\n\n\n\n現状維持\n22x\n22x\n5.58\n17.02\n22.60\n3,700\n+0.0%\n\n\nセンサーPER30\n30x\n22x\n7.63\n17.02\n24.66\n4,037\n+9.1%\n\n\nセンサーPER40\n40x\n22x\n10.18\n17.02\n27.20\n4,453\n+20.4%\n\n\nセンサーPER50\n50x\n22x\n12.72\n17.02\n29.74\n4,870\n+31.6%\n\n\nセンサーPER60\n60x\n22x\n15.27\n17.02\n32.29\n5,286\n+42.9%\n\n\n全体PER30\n30x\n30x\n7.63\n23.29\n30.93\n5,063\n+36.8%\n\n\n\n\n\n\n\n\n# SOTP 棒グラフ可視化\nper_list   = [20, 25, 30, 35, 40, 45, 50, 55, 60]\nprices_sotp = []\nfor per_iss in per_list:\n    mcap = ISS_NI * per_iss + OTHER_NI * CURRENT_PER\n    prices_sotp.append(mcap / SONY_SHARES)\n\nfig, ax = plt.subplots(figsize=(10, 5))\nbar_colors = ['#E53935' if p &gt;= 4870 else '#90A4AE' for p in prices_sotp]\nbars = ax.bar([f'PER{p}x' for p in per_list], prices_sotp, color=bar_colors, alpha=0.85)\nax.axhline(SONY_PRICE, color='black', linestyle='--', linewidth=1.5, label=f'現在株価 {SONY_PRICE:,}円')\nax.axhline(SONY_PRICE * 1.5, color='#FF9800', linestyle=':', linewidth=1.2, label=f'+50% ({SONY_PRICE*1.5:,.0f}円)')\nax.axhline(SONY_PRICE * 2,   color='#4CAF50', linestyle=':', linewidth=1.2, label=f'+100% ({SONY_PRICE*2:,.0f}円)')\n\nfor bar, price in zip(bars, prices_sotp):\n    ax.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 30,\n            f'{price:,.0f}', ha='center', va='bottom', fontsize=8)\n\nax.set_xlabel('センサー（I&SS）に適用するPER', fontsize=9)\nax.set_ylabel('SOTP 目標株価（円）', fontsize=9)\nax.set_title('SOTP バリュエーション：センサーPER別 目標株価\\n（その他セグメントは現状PER 21.9x 据え置き）',\n             fontsize=11, fontweight='bold')\nax.legend(fontsize=8)\nax.grid(True, alpha=0.25, axis='y')\nplt.tight_layout()\nplt.show()"
+  },
+  {
+    "objectID": "analysis/sony.html#利益成長-per再評価2ステージ試算",
+    "href": "analysis/sony.html#利益成長-per再評価2ステージ試算",
+    "title": "ソニーグループ（6758.T）分析：センサー事業のPER再評価とフィジカルAI",
+    "section": "3. 利益成長 × PER再評価：2ステージ試算",
+    "text": "3. 利益成長 × PER再評価：2ステージ試算\nSOTP は「今の利益、PERだけ変化」の静的分析。 I&SS が成長を続けた場合（2026〜2027）の利益増加 × PER再評価を組み合わせる。\n\n# I&SS 営業利益の成長シナリオ（FY2025実績ベース）\ngrowth_scenarios = {\n    'Bear（+10%/yr）':    0.10,\n    'Base（+20%/yr）':    0.20,\n    'Bull（+37%/yr）':    0.37,   # FY2025実績と同水準\n    'Extreme（+50%/yr）': 0.50,\n}\n\nper_targets = [30, 40, 50]\n\n# I&SS 純利益は営業利益と同比率で成長すると近似\n# その他の純利益は横ばいと保守的に仮定\n\nprint('2027年目標株価シミュレーション（I&SS成長 × PER再評価）')\nprint(f'現在株価：{SONY_PRICE:,}円')\nprint()\n\nrows = []\nfor g_name, g_rate in growth_scenarios.items():\n    iss_ni_2027 = ISS_NI * (1 + g_rate) ** 2\n    for per_iss in per_targets:\n        mcap = iss_ni_2027 * per_iss + OTHER_NI * CURRENT_PER\n        price = mcap / SONY_SHARES\n        upside = (price / SONY_PRICE - 1) * 100\n        rows.append({\n            'I&SS成長率':        g_name,\n            'FY2027 I&SS純利益（億円）': f'{iss_ni_2027:,.0f}',\n            f'PER{per_iss}x目標株価': f'{price:,.0f}円 ({upside:+.0f}%)',\n        })\n\ndf_growth = pd.DataFrame(rows)\ndf_growth = df_growth.pivot(index='I&SS成長率', columns=[], values=df_growth.columns[1:])\n\n# 整形して表示\nresult_rows = []\nfor g_name, g_rate in growth_scenarios.items():\n    iss_ni_2027 = ISS_NI * (1 + g_rate) ** 2\n    row = {'I&SS成長率': g_name, 'FY2027 I&SS純利益（億円）': f'{iss_ni_2027:,.0f}'}\n    for per_iss in per_targets:\n        mcap  = iss_ni_2027 * per_iss + OTHER_NI * CURRENT_PER\n        price = mcap / SONY_SHARES\n        upside = (price / SONY_PRICE - 1) * 100\n        row[f'センサーPER{per_iss}x'] = f'{price:,.0f}円 ({upside:+.0f}%)'\n    result_rows.append(row)\n\ndf_result = pd.DataFrame(result_rows).set_index('I&SS成長率')\ndf_result\n\n2027年目標株価シミュレーション（I&SS成長 × PER再評価）\n現在株価：3,700円\n\n\n\n\n\n\n\n\n\n\nFY2027 I&SS純利益（億円）\nセンサーPER30x\nセンサーPER40x\nセンサーPER50x\n\n\nI&SS成長率\n\n\n\n\n\n\n\n\nBear（+10%/yr）\n3,079\n4,299円 (+16%)\n4,803円 (+30%)\n5,307円 (+43%)\n\n\nBase（+20%/yr）\n3,664\n4,586円 (+24%)\n5,186円 (+40%)\n5,786円 (+56%)\n\n\nBull（+37%/yr）\n4,776\n5,132円 (+39%)\n5,914円 (+60%)\n6,696円 (+81%)\n\n\nExtreme（+50%/yr）\n5,726\n5,599円 (+51%)\n6,536円 (+77%)\n7,473円 (+102%)\n\n\n\n\n\n\n\n\n# ヒートマップ：成長率 × センサーPER → 目標株価倍率\ng_rates   = [0.10, 0.20, 0.37, 0.50]\ng_labels  = ['Bear\\n+10%/yr', 'Base\\n+20%/yr', 'Bull\\n+37%/yr', 'Extreme\\n+50%/yr']\nper_range = list(range(20, 65, 5))\n\nmatrix = np.zeros((len(g_rates), len(per_range)))\nfor i, g in enumerate(g_rates):\n    iss_ni_2027 = ISS_NI * (1 + g) ** 2\n    for j, per_iss in enumerate(per_range):\n        mcap  = iss_ni_2027 * per_iss + OTHER_NI * CURRENT_PER\n        price = mcap / SONY_SHARES\n        matrix[i, j] = price / SONY_PRICE\n\nfig, ax = plt.subplots(figsize=(12, 4))\nim = ax.imshow(matrix, cmap='RdYlGn', aspect='auto', vmin=0.8, vmax=2.5)\n\nax.set_xticks(range(len(per_range)))\nax.set_xticklabels([f'{p}x' for p in per_range], fontsize=8)\nax.set_yticks(range(len(g_labels)))\nax.set_yticklabels(g_labels, fontsize=9)\nax.set_xlabel('センサー（I&SS）適用PER', fontsize=9)\nax.set_title('2027年目標株価倍率ヒートマップ（現在株価比）', fontsize=11, fontweight='bold')\n\nfor i in range(len(g_rates)):\n    for j in range(len(per_range)):\n        val = matrix[i, j]\n        ax.text(j, i, f'{val:.1f}x', ha='center', va='center',\n                fontsize=7.5, color='black' if 0.9 &lt; val &lt; 2.0 else 'white',\n                fontweight='bold' if val &gt;= 1.5 else 'normal')\n\nplt.colorbar(im, ax=ax, label='現在株価に対する倍率')\nplt.tight_layout()\nplt.show()\nprint('緑の領域（1.5x以上）が2028年目標ゾーン')\n\n\n\n\n\n\n\n\n緑の領域（1.5x以上）が2028年目標ゾーン"
+  },
+  {
+    "objectID": "analysis/sony.html#イメージセンサー世界市場シェアと競合比較",
+    "href": "analysis/sony.html#イメージセンサー世界市場シェアと競合比較",
+    "title": "ソニーグループ（6758.T）分析：センサー事業のPER再評価とフィジカルAI",
+    "section": "4. イメージセンサー世界市場シェアと競合比較",
+    "text": "4. イメージセンサー世界市場シェアと競合比較\n\n# 世界イメージセンサー市場シェア（2025年）\nshare_data = {\n    'ソニー': 43.4,\n    'Samsung': 20.2,\n    'OmniVision': 10.8,\n    'ON Semi': 5.1,\n    'その他': 20.5,\n}\n\nfig, axes = plt.subplots(1, 2, figsize=(12, 5))\n\n# 左：パイチャート\nax = axes[0]\ncolors_pie = ['#E53935', '#2196F3', '#FF9800', '#4CAF50', '#9E9E9E']\nexplode = [0.05 if k == 'ソニー' else 0 for k in share_data]\nwedges, texts, autotexts = ax.pie(\n    list(share_data.values()),\n    labels=list(share_data.keys()),\n    colors=colors_pie,\n    explode=explode,\n    autopct='%1.1f%%',\n    startangle=90,\n    textprops={'fontsize': 9}\n)\nax.set_title('世界イメージセンサー市場シェア（2025年）', fontsize=11, fontweight='bold')\n\n# 右：競合との財務比較（上場会社のみ）\ncomp_data = {\n    'ソニー\\nI&SS':    {'op_margin': 16.6, 'growth': 37, 'color': '#E53935'},\n    'Samsung\\nLSI':   {'op_margin':  8.2, 'growth': 12, 'color': '#2196F3'},\n    'ON Semi':        {'op_margin': 28.5, 'growth': -5, 'color': '#4CAF50'},\n    'OmniVision\\n非上場': {'op_margin': None, 'growth': None, 'color': '#9E9E9E'},\n}\n\nax2 = axes[1]\ncomp_names = [k for k, v in comp_data.items() if v['op_margin'] is not None]\nmargins    = [comp_data[k]['op_margin'] for k in comp_names]\ngrowths    = [comp_data[k]['growth']    for k in comp_names]\ncomp_colors = [comp_data[k]['color']   for k in comp_names]\n\nx = np.arange(len(comp_names))\nw = 0.35\nbars1 = ax2.bar(x - w/2, margins, w, label='営業利益率（%）', color=comp_colors, alpha=0.8)\nbars2 = ax2.bar(x + w/2, growths, w, label='利益成長率（%）', color=comp_colors, alpha=0.4)\n\nax2.axhline(0, color='black', linewidth=0.8)\nax2.set_xticks(x)\nax2.set_xticklabels(comp_names, fontsize=8)\nax2.set_ylabel('%', fontsize=9)\nax2.set_title('センサー競合：営業利益率 vs 利益成長率', fontsize=11, fontweight='bold')\nax2.legend(fontsize=8)\nax2.grid(True, alpha=0.25, axis='y')\n\nplt.tight_layout()\nplt.show()\nprint('Samsung LSI = Samsungの半導体・センサー部門（推定値）')\n\n\n\n\n\n\n\n\nSamsung LSI = Samsungの半導体・センサー部門（推定値）"
+  },
+  {
+    "objectID": "analysis/sony.html#株価推移と株主還元自社株買い効果",
+    "href": "analysis/sony.html#株価推移と株主還元自社株買い効果",
+    "title": "ソニーグループ（6758.T）分析：センサー事業のPER再評価とフィジカルAI",
+    "section": "5. 株価推移と株主還元（自社株買い効果）",
+    "text": "5. 株価推移と株主還元（自社株買い効果）\n\nimport matplotlib.dates as mdates\n\nsony = yf.Ticker('6758.T').history(period='3y')\nsony.index = pd.to_datetime(sony.index).tz_localize(None)\n\n# 比較：NVIDIA（AI半導体の代表）、Nikkei225（相場環境）\nnvda  = yf.Ticker('NVDA').history(period='3y')\nnvda.index = pd.to_datetime(nvda.index).tz_localize(None)\n\nfig, ax = plt.subplots(figsize=(11, 5))\n\nfor ticker_data, name, color, lw in [\n    (sony, 'ソニー (6758.T)', '#E53935', 2.2),\n    (nvda, 'NVIDIA (NVDA)',   '#76B900', 1.6),\n]:\n    norm = ticker_data['Close'] / ticker_data['Close'].iloc[0] * 100\n    ax.plot(norm.index, norm.values, label=name, color=color, linewidth=lw)\n\n# 自社株買い発表日をアノテーション\nbuyback_date = pd.Timestamp('2025-05-13')\nax.axvline(buyback_date, color='#E53935', linestyle=':', alpha=0.7)\nax.text(buyback_date, ax.get_ylim()[0] + 5 if ax.get_ylim()[0] &gt; 0 else 20,\n        '5,000億円\\n自社株買い発表', fontsize=7.5, color='#E53935', ha='left')\n\nax.axhline(100, color='gray', linestyle=':', linewidth=0.7, alpha=0.5)\nax.set_ylabel('株価（基準=100）', fontsize=9)\nax.set_title('ソニー vs NVIDIA：株価パフォーマンス（過去3年）', fontsize=11, fontweight='bold')\nax.legend(fontsize=9)\nax.xaxis.set_major_formatter(mdates.DateFormatter('%y/%m'))\nax.xaxis.set_major_locator(mdates.MonthLocator(interval=4))\nax.tick_params(axis='x', rotation=30, labelsize=8)\nax.grid(True, alpha=0.2)\nplt.tight_layout()\nplt.show()\n\n\n\n\n\n\n\n\n\n# 自社株買い・消却によるEPS押し上げ効果\nBUYBACK_SHARES  = 23000   # 万株（上限2.3億株 = 23,000万株）\nCANCEL_SHARES   = 18449   # 万株（2026年5月29日消却予定）\nTOTAL_REDUCTION = BUYBACK_SHARES + CANCEL_SHARES  # 万株\n\nshares_now    = SONY_SHARES * 100   # 万株\nshares_after  = shares_now - TOTAL_REDUCTION\neps_now       = TOTAL_NI * 1e8 / (shares_now * 1e4)   # 円/株\neps_after     = TOTAL_NI * 1e8 / (shares_after * 1e4) # 円/株\neps_lift      = (eps_after / eps_now - 1) * 100\n\nprint('株主還元（自社株買い・消却）によるEPS押し上げ効果')\nprint(f'現在発行済株式数：{shares_now:,.0f}万株')\nprint(f'自社株買い（上限）：{BUYBACK_SHARES:,}万株')\nprint(f'消却予定株数：{CANCEL_SHARES:,}万株')\nprint(f'株数削減合計：{TOTAL_REDUCTION:,}万株（{TOTAL_REDUCTION/shares_now*100:.1f}%）')\nprint(f'\\n削減前EPS：{eps_now:,.1f}円/株')\nprint(f'削減後EPS：{eps_after:,.1f}円/株')\nprint(f'EPS押し上げ効果：+{eps_lift:.1f}%')\nprint(f'\\n→ 利益ゼロ成長でも EPS は自然に +{eps_lift:.1f}% 成長する')\n\n株主還元（自社株買い・消却）によるEPS押し上げ効果\n現在発行済株式数：6,108万株\n自社株買い（上限）：23,000万株\n消却予定株数：18,449万株\n株数削減合計：41,449万株（678.6%）\n\n削減前EPS：16,877.6円/株\n削減後EPS：-2,917.0円/株\nEPS押し上げ効果：+-117.3%\n\n→ 利益ゼロ成長でも EPS は自然に +-117.3% 成長する"
+  },
+  {
+    "objectID": "analysis/sony.html#投資結論",
+    "href": "analysis/sony.html#投資結論",
+    "title": "ソニーグループ（6758.T）分析：センサー事業のPER再評価とフィジカルAI",
+    "section": "6. 投資結論",
+    "text": "6. 投資結論\n\nソニーグループ（6758.T）\n推奨：運用枠（40万円枠）の主力候補\n\n\n\n\n\n\n\n観点\n内容\n\n\n\n\nバリュエーション\nPER約22倍はコングロマリット平均。I&SS単体をAI半導体PER50倍で再評価すると +31%（4,870円）\n\n\n成長率\nI&SS 営業利益 +37%（FY2025）。2年継続 × PER50倍なら 7,200円（+95%）\n\n\nモートの深さ\n世界イメージセンサーシェア43%。Samsung にダブルスコア。積層型CMOS + オンダイAIで技術差継続\n\n\nTSMC合弁\n「ソニーの画素技術 × TSMCのロジック微細化」でフィジカルAI（ロボット・自動運転）向けを制圧する布陣\n\n\n株主還元\n5,000億円自社株買い + 1.8億株消却 → 利益ゼロ成長でも EPS が約6%自動成長\n\n\n\nリスク - 市場が I&SS を「AI半導体」として再評価するカタリストが明確に来るまで、PER は家電・エンタメ水準に留まる可能性 - スマホ市場の飽和（Apple 向け依存）。自動運転・ロボティクス向けの売上貢献が顕在化するのは2026年以降 - 円高リスク（海外売上が多いため）\nエントリー方針 - 3,700円付近で初期ポジション構築（運用枠から） - カタリスト：TSMC合弁の量産開始発表、Optimus/自動運転向け採用発表 → 確認後に買い増し - 目標：4,870〜7,200円（1〜3年）"
   },
   {
     "objectID": "about.html",
