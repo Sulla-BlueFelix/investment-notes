@@ -2,3 +2,6 @@
 **/*.quarto_ipynb
 .venv/
 __pycache__/
+
+# 個人の保有・取得単価を含むため公開リポジトリには上げない（バックアップはprivate vault側）
+analysis/crystal_timing_and_holdings.ipynb

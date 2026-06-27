@@ -105,6 +105,16 @@ PRESETS: dict[str, dict[str, str]] = {
         "GLW": "Corning / fiber glass",
         "NVDA": "NVIDIA / networking platform",
     },
+    "crystal_timing": {
+        "6779.T": "Nihon Dempa / quartz timing (closed pos)",
+        "6971.T": "Kyocera / quartz diff clock + optical module",
+        "6724.T": "Seiko Epson / quartz timing OCXO",
+        "SITM": "SiTime / MEMS timing (structural rival)",
+        "COHR": "Coherent / optical transceiver (demand)",
+        "LITE": "Lumentum / optical transceiver (demand)",
+        "GLW": "Corning / fiber glass (demand)",
+        "SMH": "Semiconductor ETF",
+    },
     "custom_ai_silicon": {
         "NVDA": "NVIDIA / GPU CUDA platform",
         "AVGO": "Broadcom / custom XPU Ethernet",
