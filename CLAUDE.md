@@ -10,7 +10,7 @@
 
 - **投資判断・失敗・教訓は Obsidian Vault を一次記憶として蓄積する**
 - この投資分析プロジェクト内でのAIの呼称は **しぐまAI**。分析メモ、Daily、会話内でAIの暫定見解を出すときは、必要に応じて **「しぐまAIの考え」** という見出しを使う
-- Obsidian Vault: `/mnt/c/Users/BlueF/Dropbox/obsidian1/10_Specialty/投資分析 with Claude/`
+- Obsidian Vault: `/mnt/c/Users/BlueF/Dropbox/obsidian1/10_Investment/投資分析 with Claude/`
 - `investment-notes/learning/` は清書・公開用の二次置き場であり、日々のPDCA本体ではない
 - 日々の判断・心理・売買ログは Obsidian の `会話ログ/` に日付付きで保存する
 - 一般化できる教訓は Obsidian の `テーマ/投資ルール.md` に統合する
@@ -169,7 +169,7 @@ uv add <package-name>
 
 ## Obsidianノート管理
 
-- **Vault：** `/mnt/c/Users/BlueF/Dropbox/obsidian1/10_Specialty/投資分析 with Claude/`
+- **Vault：** `/mnt/c/Users/BlueF/Dropbox/obsidian1/10_Investment/投資分析 with Claude/`
 - **構成：**
   - `_INDEX.md` — 銘柄・テーマへのリンク集（ハブ）
   - `テーマ/` — 投資テーマごとの分析ノート
